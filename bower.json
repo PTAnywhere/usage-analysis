@@ -1,0 +1,29 @@
+{
+  "name": "webPacketTracer_usageAnalysis",
+  "version": "0.0.0",
+  "homepage": "https://github.com/gomezgoiri/webPacketTracer_usageAnalysis",
+  "authors": [
+    "Aitor Gómez Goiri <aitor.gomez-goiri@open.ac.uk>"
+  ],
+  "description": "Chart to help to analyse student's typical widget usage.",
+  "main": "chart.js",
+  "keywords": [
+    "chart",
+    "node",
+    "network",
+    "usage",
+    "widget"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "vis": "~4.2.0",
+    "tincan": "~0.33.0"
+  }
+}
