@@ -1,0 +1,201 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>uk.ac.open.kmi.forge.webPacketTracer.analyse</groupId>
+    <artifactId>webPTAnalyser</artifactId>
+    <packaging>war</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>webPTAnalyser</name>
+
+    <build>
+        <finalName>analysis</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <url>${tomcat.url}</url>
+                    <server>${tomcat.server}</server>
+                    <path>${tomcat.path}</path>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>env-development</id>
+            <!-- Activated by default or when -Denv=devel is given as parameter. -->
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>env</name>
+                    <value>devel</value>
+                </property>
+            </activation>
+            <properties>
+                <tomcat.url>http://localhost:8080/manager/text</tomcat.url>
+                <tomcat.server>developmentServer</tomcat.server>
+            <!--<tomcat.server>vagrantServer</tomcat.server>-->
+            <tomcat.path>/analyse</tomcat.path>
+        </properties>
+        <build>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <phase>test</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <tasks>
+                                    <delete file="${project.build.outputDirectory}/environment.properties"/>
+                                    <copy file="${project.build.outputDirectory}/environment.dev.properties"
+                                          tofile="${project.build.outputDirectory}/environment.properties"/>
+                                </tasks>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+    <profile>
+        <id>env-testing</id>
+        <!-- Activated when -Denv=test is given as parameter. -->
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>test</value>
+                </property>
+            </activation>
+            <properties>
+                <tomcat.url>http://forge.kmi.open.ac.uk/manager/text</tomcat.url>
+                <tomcat.server>testingServer</tomcat.server>
+                <tomcat.path>/analyse-test</tomcat.path>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <tasks>
+                                        <delete file="${project.build.outputDirectory}/environment.properties"/>
+                                        <copy file="${project.build.outputDirectory}/environment.test.properties"
+                                              tofile="${project.build.outputDirectory}/environment.properties"/>
+                                    </tasks>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>env-production</id>
+            <!-- Activated when -Denv=prod is given as parameter. -->
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>prod</value>
+                </property>
+            </activation>
+            <properties>
+                <tomcat.url>http://forge.kmi.open.ac.uk/manager/text</tomcat.url>
+                <tomcat.server>productionServer</tomcat.server>
+                <tomcat.path>/analyse</tomcat.path>
+            </properties>
+        </profile>
+    </profiles>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.glassfish.jersey</groupId>
+                <artifactId>jersey-bom</artifactId>
+                <version>${jersey.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <!-- <artifactId>jersey-container-servlet-core</artifactId>-->
+            <!-- use the following artifactId if you don't need servlet 2.x compatibility -->
+            <artifactId>jersey-container-servlet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-moxy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.main.extras</groupId>
+            <artifactId>glassfish-embedded-web</artifactId>
+            <scope>provided</scope>
+            <version>4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jettison</groupId>
+            <artifactId>jettison</artifactId>
+            <version>1.3.7</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.10</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
+        <!-- TinCanJava library locally installed, hopefully it will be updated to a Maven repo soon. -->
+        <dependency>
+            <groupId>com.rusticisoftware</groupId>
+            <artifactId>tincan</artifactId>
+            <version>0.7.0</version>
+        </dependency>
+        <!-- TinCanJava's dependencies, hopefully this won't be needed soon. -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-client</artifactId>
+            <version>8.1.9.v20130131</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-joda</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+    </dependencies>
+
+    <properties>
+        <jersey.version>2.18</jersey.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+</project>
