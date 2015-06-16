@@ -23,7 +23,6 @@
     "tests"
   ],
   "dependencies": {
-    "vis": "~4.2.0",
-    "tincan": "~0.33.0"
+    "vis": "~4.2.0"
   }
 }
