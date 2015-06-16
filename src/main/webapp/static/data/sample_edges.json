@@ -1,5 +1,8 @@
 [
-	["ADD1", "ADD2", "CONN3", "pass"],
-	["DEL1", "DISCONN2", "UPD3", "pass"],
-	["ADD1", "ADD2", "DEL3", "fail"]
+	[],
+	["ADD", "ADD", "CONN"],
+	["DEL", "DISCONN", "UPD"],
+	["ADD", "ADD", "DEL"],
+	["ADD"],
+  	["ADD", "ADD", "DEL", "ADD", "ADD", "DEL"]
 ]

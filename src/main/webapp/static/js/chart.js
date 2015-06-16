@@ -99,14 +99,25 @@ var chart = (function () {
   function drawEdges(actionsPerSessions) {
     var ret = [];
     for (var i=0; i<actionsPerSessions.length; i++) {
-        // Levels + final state
-        assert(actionsPerSessions[i].length==numberOfLevels+1, "The session has more states than expected.");
-        var previousState = "init";
-        for (var j=0; j<numberOfLevels+1; j++) {
-          var currentState = actionsPerSessions[i][j]; // Levels + final state
+        var action = 1;
+        var currentState, previousState = "init";
+        for (var j=0; j<actionsPerSessions[i].length; j++) {
+          currentState = actionsPerSessions[i][j] + String(j+1); // Levels + final state
+          ret.push({"from": previousState, "to": currentState});
+          console.log(previousState + " > " + currentState);
+          previousState = currentState;
+          action++;
+          if (action>numberOfLevels) break;
+        }
+        // If no enough events were registered, fill them with NOP.
+        for (var r=action; r<=numberOfLevels; r++) {
+          currentState = "NOOP" + String(r);
           ret.push({"from": previousState, "to": currentState});
           previousState = currentState;
         }
+        // Select random final state
+        currentState = (Math.random()>0.5)? "pass": "fail";
+        ret.push({"from": previousState, "to": currentState});
     }
     edges.clear();
     edges.add(ret);
