@@ -104,7 +104,6 @@ var chart = (function () {
         for (var j=0; j<actionsPerSessions[i].length; j++) {
           currentState = actionsPerSessions[i][j] + String(j+1); // Levels + final state
           ret.push({"from": previousState, "to": currentState});
-          console.log(previousState + " > " + currentState);
           previousState = currentState;
           action++;
           if (action>numberOfLevels) break;
