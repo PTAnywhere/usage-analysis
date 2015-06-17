@@ -62,6 +62,7 @@ public class TinCanDAO {
         final Map<UUID, JsonArrayBuilder> ret = new HashMap<UUID, JsonArrayBuilder>();
 
         final StatementsQuery query = new StatementsQuery();
+        query.setAscending(true);
         //query.setSince(new DateTime("2013-09-30T13:15:00.000Z"));
 
         final StatementsResultLRSResponse lrsRes = this.lrs.queryStatements(query);
