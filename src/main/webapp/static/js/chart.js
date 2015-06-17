@@ -162,7 +162,6 @@ var slider = (function () {
 
   function init(maxLevels, callback) {
     var defaultSelection = (maxLevels>=3)? 3: maxLevels;
-    updateMap(defaultSelection);
     $( elId ).slider({
       range: "min",
       value: defaultSelection,
