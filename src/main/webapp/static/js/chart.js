@@ -64,17 +64,8 @@ var chart = (function () {
 
   function drawSlider() {
     var maxLevels = getMaxLevel();
-    var defaultSelection = (maxLevels>=3)? 3: maxLevels;
-    updateMap(defaultSelection);
-    $( "#slider-levels" ).slider({
-      range: "min",
-      value: defaultSelection,
-      min: 1,
-      max: maxLevels,
-      slide: function( event, ui ) {
-        updateMap(ui.value);
-      }
-    });
+    slider.init(maxLevels, updateMap);
+    updateMap(slider.value());
   }
 
   function updateMap(numberOfLevels) {
@@ -142,24 +133,11 @@ var chart = (function () {
     network.fit(); // zoom to fit
   }
 
-  function openDialog(message) {
-      $( "#error-dialog p" ).text(message);
-      $( "#error-dialog" ).dialog({
-        modal: true,
-        buttons: {
-          Ok: function() {
-            $( this ).dialog( "close" );
-          }
-        }
-      });
-      console.error(message);
-  }
-
   function showLoadingError(xhr, textStatus, errorThrown) {
       if (textStatus == 'timeout') {
-          openDialog("The topology could not be loaded: timeout.");
+          errorDialog.open("The topology could not be loaded: timeout.");
       } else {
-          openDialog("The topology could not be loaded: " + errorThrown + ".");
+          errorDialog.open("The topology could not be loaded: " + errorThrown + ".");
       }
   }
 
@@ -176,4 +154,51 @@ var chart = (function () {
       load: loadEdges
   };
 
+})();
+
+
+var slider = (function () {
+    var elId = "#slider-levels";
+
+  function init(maxLevels, callback) {
+    var defaultSelection = (maxLevels>=3)? 3: maxLevels;
+    updateMap(defaultSelection);
+    $( elId ).slider({
+      range: "min",
+      value: defaultSelection,
+      min: 1,
+      max: maxLevels,
+      slide: function( event, ui ) {
+        callback(ui.value);
+      }
+    });
+  }
+
+  function getSelectedValue() {
+    return $( elId ).slider( "value" );
+  }
+
+  return {
+      init: init,
+      value: getSelectedValue,
+  };
+})();
+
+
+var errorDialog = (function () {
+  function init(message) {
+      $( "#error-dialog p" ).text(message);
+      $( "#error-dialog" ).dialog({
+        modal: true,
+        buttons: {
+          Ok: function() {
+            $( this ).dialog( "close" );
+          }
+        }
+      });
+      console.error(message);
+  }
+  return {
+      open: init
+  };
 })();
