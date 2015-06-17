@@ -3,6 +3,12 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF8">
   <title>Widget usage diagram</title>
+
+  <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+  <link type="text/css" rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css">
+  <link type="text/css" rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/theme.css">
+
   <script type="text/javascript" src="bower_components/vis/dist/vis.js"></script>
   <link type="text/css" rel="stylesheet" href="bower_components/vis/dist/vis.css">
 
@@ -12,6 +18,15 @@
       /*width: 800px;*/
       height: 500px;
       border: 1px solid lightgray;
+    }
+
+    #show-info {
+        display: none;
+    }
+
+    #slider-levels {
+        width: 400px;
+        margin: 0 0 30px 20px;
     }
 
     pre {
@@ -43,20 +58,31 @@
 
 <body>
 
-<h2>PT widget usage</h2>
-<p>Notes about the chart:</p>
-<ul>
-  <li>If a session has less than 3 steps, NOOP state will be selected.</li>
-  <li>If a session has more than 3 steps, the remaining ones are ignored.</li>
-  <li>The final state is selected randomly.</li>
-  <li>The actions have not been divided to consider the type of devices to avoid too many states.</li>
-</ul>
+<h1>PT widget usage</h1>
+
+<div id="show-info">
+    <p>Number of levels shown in the chart: <span class="number-levels"></span>.</p>
+
+    <div id="slider-levels"></div>
+
+    <p>Notes about the chart:</p>
+    <ul>
+      <li>If a session has less than <span class="number-levels"></span> steps, NOOP state will be selected for the remaining levels.</li>
+      <li>If a session has more than <span class="number-levels"></span> steps, the remaining ones will be ignored.</li>
+      <li>The final state is selected randomly.</li>
+      <li>The actions have not been divided to consider the type of devices created/deleted/modified to avoid too many states.</li>
+    </ul>
+</div>
+
 <div id="networkMap"></div>
 
 <script type="text/javascript">
   chart.create(3);
   chart.load('/analyse/data/usage'); //'data/sample_edges.json');
 </script>
+
+
+<div id="error-dialog" title="Error loading data"><p></p></div>
 
 
 </body>

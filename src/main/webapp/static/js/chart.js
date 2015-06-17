@@ -3,19 +3,16 @@
  */
 var chart = (function () {
 
+  var data;  // Cached events per session.
+
   var network;
 
   var nodes = new vis.DataSet();
   var edges = new vis.DataSet();
 
-  var numberOfLevels;
-
-
-  function init(statesPerSession) {
-    numberOfLevels = statesPerSession;
-
+  function init() {
     var container = document.getElementById('networkMap');
-    var data = {
+    var netData = {
       nodes: nodes,
       edges: edges
     };
@@ -30,7 +27,10 @@ var chart = (function () {
         width: 0.15,
         smooth: {
           type: 'continuous'
-        }
+        },
+        arrows: {
+            to: true,
+        },
       },
       interaction: {
         dragNodes: false
@@ -40,8 +40,7 @@ var chart = (function () {
       }
     };
 
-    network = new vis.Network(container, data, options);
-    drawStates();
+    network = new vis.Network(container, netData, options);
   }
 
   function getRandomColor() {
@@ -53,14 +52,40 @@ var chart = (function () {
     return color;
   }
 
-  function assert(condition, message) {
-    if (!condition) {
-        throw message || "Assertion failed";
+  function getMaxLevel() {
+    var max = 0;
+    for (var i=0; i<data.length; i++) {
+      if (data[i].length>max) {
+        max = data[i].length;
+      }
     }
+    return max;
   }
 
-  function drawStates() {
+  function drawSlider() {
+    var maxLevels = getMaxLevel();
+    var defaultSelection = (maxLevels>=3)? 3: maxLevels;
+    updateMap(defaultSelection);
+    $( "#slider-levels" ).slider({
+      range: "min",
+      value: defaultSelection,
+      min: 1,
+      max: maxLevels,
+      slide: function( event, ui ) {
+        updateMap(ui.value);
+      }
+    });
+  }
+
+  function updateMap(numberOfLevels) {
+      $(".number-levels").text(numberOfLevels);
+      drawStates(numberOfLevels);
+      drawEdges(numberOfLevels);
+  }
+
+  function drawStates(numberOfLevels) {
     var states = ['ADD', 'DEL', 'UPD', 'CONN', 'DISCONN', 'NOOP'];
+    nodes.clear();
     for (var i=1; i<=numberOfLevels; i++) {
       var color = getRandomColor();
       for (var j=0; j<states.length; j++) {
@@ -81,28 +106,22 @@ var chart = (function () {
   }
 
   function loadJSON(path, success, error) {
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          success(JSON.parse(xhr.responseText));
-        }
-        else {
-          error(xhr);
-        }
-      }
-    };
-    xhr.open('GET', path, true);
-    xhr.send();
+    $.ajax({
+        dataType: "json",
+        url: path,
+        success: success,
+        timeout: 2000,
+        error: error
+    });
   }
 
-  function drawEdges(actionsPerSessions) {
+  function drawEdges(numberOfLevels) {
     var ret = [];
-    for (var i=0; i<actionsPerSessions.length; i++) {
+    for (var i=0; i<data.length; i++) {
         var action = 1;
         var currentState, previousState = "init";
-        for (var j=0; j<actionsPerSessions[i].length; j++) {
-          currentState = actionsPerSessions[i][j] + String(j+1); // Levels + final state
+        for (var j=0; j<data[i].length; j++) {
+          currentState = data[i][j] + String(j+1); // Levels + final state
           ret.push({"from": previousState, "to": currentState});
           previousState = currentState;
           action++;
@@ -123,8 +142,33 @@ var chart = (function () {
     network.fit(); // zoom to fit
   }
 
+  function openDialog(message) {
+      $( "#error-dialog p" ).text(message);
+      $( "#error-dialog" ).dialog({
+        modal: true,
+        buttons: {
+          Ok: function() {
+            $( this ).dialog( "close" );
+          }
+        }
+      });
+      console.error(message);
+  }
+
+  function showLoadingError(xhr, textStatus, errorThrown) {
+      if (textStatus == 'timeout') {
+          openDialog("The topology could not be loaded: timeout.");
+      } else {
+          openDialog("The topology could not be loaded: " + errorThrown + ".");
+      }
+  }
+
   function loadEdges(jsonPath) {
-    loadJSON(jsonPath, drawEdges, function(err) {console.log('Problem loading edges.')});
+    loadJSON(jsonPath, function(actionsPerSessions) {
+      data = actionsPerSessions;
+      drawSlider();
+      $("#show-info").show();
+    }, showLoadingError);
   }
 
   return {
