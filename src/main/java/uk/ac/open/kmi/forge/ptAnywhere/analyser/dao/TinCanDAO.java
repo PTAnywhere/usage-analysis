@@ -81,4 +81,34 @@ public class TinCanDAO {
         // failure, error information is available in lrsRes.getErrMsg()
         return null;
     }
+
+    public String getActions(String registrationUuid) {
+        final StatementsQuery query = new StatementsQuery();
+        query.setAscending(true);
+        query.setRegistration(UUID.fromString(registrationUuid));
+
+        final StatementsResultLRSResponse lrsRes = this.lrs.queryStatements(query);
+        if (lrsRes.getSuccess()) {
+            return lrsRes.getContent().toJSON();
+        }
+        return null;
+    }
+
+    public JsonArray getRegistrations() {
+        final StatementsQuery query = new StatementsQuery();
+        query.setAscending(true);
+
+        final Set<String> registrations = new HashSet<String>();
+        final StatementsResultLRSResponse lrsRes = this.lrs.queryStatements(query);
+        if (lrsRes.getSuccess()) {
+            for (Statement st : lrsRes.getContent().getStatements()) {
+                registrations.add(st.getContext().getRegistration().toString());
+            }
+        }
+        final JsonArrayBuilder jab = Json.createArrayBuilder();
+        for (String registration: registrations) {
+            jab.add(registration);
+        }
+        return jab.build();
+    }
 }
