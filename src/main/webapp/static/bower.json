@@ -1,7 +1,7 @@
 {
-  "name": "webPacketTracer_usageAnalysis",
+  "name": "PTAnywhere_usage-Analysis",
   "version": "0.0.0",
-  "homepage": "https://github.com/gomezgoiri/webPacketTracer_usageAnalysis",
+  "homepage": "https://github.com/PTAnywhere/usage-analysis",
   "authors": [
     "Aitor Gómez Goiri <aitor.gomez-goiri@open.ac.uk>"
   ],
