@@ -1,4 +1,4 @@
-package uk.ac.open.kmi.forge.webPacketTracer.analyser.app;
+package uk.ac.open.kmi.forge.ptAnywhere.analyser.app;
 
 
 import org.apache.commons.logging.Log;

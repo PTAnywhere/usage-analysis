@@ -1,31 +1,24 @@
-package uk.ac.open.kmi.forge.webPacketTracer.analyser.dao;
+package uk.ac.open.kmi.forge.ptAnywhere.analyser.dao;
 
-import com.rusticisoftware.tincan.*;
-import com.rusticisoftware.tincan.lrsresponses.StatementsResultLRSResponse;
-import com.rusticisoftware.tincan.v10x.StatementsQuery;
-
+import java.util.*;
+import java.net.URI;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
-import javax.json.JsonString;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.util.*;
+import com.rusticisoftware.tincan.*;
+import com.rusticisoftware.tincan.lrsresponses.StatementsResultLRSResponse;
+import com.rusticisoftware.tincan.v10x.StatementsQuery;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 public class TinCanDAO {
 
+    private static final Log LOGGER = LogFactory.getLog(TinCanDAO.class);
+
     final RemoteLRS lrs = new RemoteLRS();
 
-    private static final String WIDGET = "http://ict-forge.eu/widget/packerTracer";
-
-    /* Verbs */
-    private static final String CREATED = "http://activitystrea.ms/schema/1.0/create";
-    private static final String DELETED = "http://activitystrea.ms/schema/1.0/delete";
-    private static final String UPDATED = "http://activitystrea.ms/schema/1.0/update";
-
-    /* Objects */
-    private static final String DEVICE_TYPE = WIDGET + "/devices/type/";
 
     public TinCanDAO(String endpoint, String username, String password) throws MalformedURLException {
         this.lrs.setEndpoint(endpoint);
@@ -35,23 +28,23 @@ public class TinCanDAO {
     }
 
     private boolean isDevice(Activity activity) {
-        final URI type = activity.getDefinition().getType();
+        final URI type = activity.getId();
         if (type == null) return false;
-        return type.toString().startsWith(DEVICE_TYPE);
+        return type.toString().startsWith(BaseVocabulary.SIMULATED_DEVICE);
     }
 
-    private String getSimplifiedState(Verb verb, StatementTarget obj) {
-        if (verb.getId().toString().equals(UPDATED)) {
+    private String getSimplifiedState(Verb verb, Activity activity) {
+        if (activity.getDefinition().getType().toString().equals(BaseVocabulary.COMMAND_LINE)) {
+            return "CMD";
+        }
+        if (verb.getId().toString().equals(BaseVocabulary.UPDATED)) {
             return "UPD";
         }
-        if (!(obj instanceof Activity)) return null; // I hate this
-
-        final Activity activity = (Activity) obj;
-        if (verb.getId().toString().equals(CREATED)) {
+        if (verb.getId().toString().equals(BaseVocabulary.CREATED)) {
             if (isDevice(activity)) return "ADD";
             return "CONN";
         }
-        if (verb.getId().toString().equals(DELETED)) {
+        if (verb.getId().toString().equals(BaseVocabulary.DELETED)) {
             if (isDevice(activity)) return "DEL";
             return "DISCONN";
         }
@@ -72,7 +65,7 @@ public class TinCanDAO {
                 if (!ret.containsKey(registration)) {
                     ret.put(registration, Json.createArrayBuilder()); //new ArrayList<String>());
                 }
-                final String state = getSimplifiedState(st.getVerb(), st.getObject());
+                final String state = getSimplifiedState(st.getVerb(), (Activity) st.getObject());
                 if (state != null) {
                     //final JsonString s = Json.createObjectBuilder().build().getJsonString(state);
                     ret.get(registration).add(state);

@@ -1,16 +1,12 @@
-package uk.ac.open.kmi.forge.webPacketTracer.analyser.app;
-
-
-import uk.ac.open.kmi.forge.webPacketTracer.analyser.dao.TinCanDAO;
+package uk.ac.open.kmi.forge.ptAnywhere.analyser.app;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.MalformedURLException;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.TinCanDAO;
 
 
 @Path("usage")

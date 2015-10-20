@@ -75,7 +75,7 @@ var chart = (function () {
   }
 
   function drawStates(numberOfLevels) {
-    var states = ['ADD', 'DEL', 'UPD', 'CONN', 'DISCONN', 'NOOP'];
+    var states = ['ADD', 'DEL', 'UPD', 'CONN', 'DISCONN', 'CMD', 'NOOP'];
     nodes.clear();
     for (var i=1; i<=numberOfLevels; i++) {
       var color = getRandomColor();
