@@ -145,7 +145,7 @@ var replayer = (function () {
         function printTime(timestamp) {
             var relative = new Date(timestamp - min());
             var secs = relative.getSeconds();
-            return relative.getMinutes() + ':' + ((secs<9)? '0' + secs: secs);
+            return relative.getMinutes() + ':' + ((secs<=9)? '0' + secs: secs);
         }
 
         function min(value) {
