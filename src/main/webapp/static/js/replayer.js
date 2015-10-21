@@ -31,7 +31,7 @@ var replayer = (function () {
     function loadRegistration(regId) {
         $.getJSON(path + '/' + regId, function(registration) {
             timeline.set(registration.statements);
-            timeline.play(btnSpeed.get());
+            timeline.play(btnSpeed.get(), function(statement) { console.log(statement); });
         }, function(error) {
             errorDialog.open(error);
         });
@@ -133,11 +133,13 @@ var replayer = (function () {
             };
         })();
 
-        var stmts;
+        var stmtIndex;
+        var statements;
         var stepsPerSecond;
 
-        function setStatements(statements) {
+        function setStatements(stmts) {
             // TODO check if statements is empty
+            statements = stmts;
             var start = new Date(statements[0].timestamp);
             var end = new Date(statements[statements.length-1].timestamp);
             startTime = start.getTime();
@@ -146,26 +148,47 @@ var replayer = (function () {
             slider.value(startTime);
         }
 
-        function updateSlider() {
+        function getCurrentEventTimestamp() {
+            if (stmtIndex >= statements.length)  return null;
+            return new Date(statements[stmtIndex].timestamp).getTime();
+        }
+
+        /**
+         * Dispatch statements which happened until 'timestamp' (included).
+         */
+        function dispatchEventsUntil(timestamp, callback) {
+            var nextEventTime = getCurrentEventTimestamp();
+            while (nextEventTime!=null && nextEventTime<=timestamp) {  // Process and move to next
+                callback(statements[stmtIndex]);
+                stmtIndex++;
+                nextEventTime = getCurrentEventTimestamp();
+            }
+
+        }
+
+        function updateSlider(callback) {
             var next = slider.value() + stepsPerSecond;
             var max = slider.max();
             if (next > max) {
                 slider.value(max);
+                dispatchEventsUntil(max, callback);
                 //console.log('Nothing else to update');
             } else {
                 slider.value(next);
-                setTimeout(updateSlider, 1000);
+                dispatchEventsUntil(next, callback);
+                setTimeout(updateSlider, 1000, callback);
             }
         }
 
-        function play(startingAt, speed) {
+        function play(startingAt, speed, callback) {
             stepsPerSecond = speed * 1000;  // x1 1 second each second, x2 2 seconds every second, etc.
             slider.value(startTime);
-            setTimeout(updateSlider, 1000);  // Updates slider every second
+            stmtIndex = 0;
+            setTimeout(updateSlider, 1000, callback);  // Updates slider every second
         }
 
-        function playFromBeginning(speed) {
-            play(0, speed);
+        function playFromBeginning(speed, callback) {
+            play(0, speed, callback);
         }
 
         return {
