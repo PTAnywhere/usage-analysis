@@ -8,6 +8,10 @@
     <script type="text/javascript" src="bower_components/jquery-ui/jquery-ui.min.js"></script>
     <link type="text/css" rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css">
     <link type="text/css" rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/theme.css">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <script type="text/javascript" src="js/replayer.js"></script>
     <style type="text/css">
@@ -53,7 +57,7 @@
 
       #timeline {
         float: right;
-        width: 70%;
+        width: 90%;
       }
 
       #timeline .start {
@@ -70,28 +74,54 @@
         margin-left: 5%;
         float: left;
       }
+
+      #event-log {
+        overflow: scroll;
+        height: 300px;
+      }
+
+      #event-log p {
+        margin: 0%;
+      }
     </style>
 
     <script type="text/javascript">
       $(function() {
-        replayer.create('../data/sessions', 'registrations', 'speed', 'play', 'timeline');
+        replayer.create('../data/sessions', 'registrations', 'speed', 'play', 'timeline', 'event-log');
       });
     </script>
 
   </head>
 
   <body>
+    <div class="container">
+      <h1>Replayer</h1>
 
-    <h1>Replayer</h1>
+      <div class="row">
+        <div class="col-md-4">
+          <p>Session to replay:
+            <select id="registrations"></select>
+            <button id="speed"></button>
+            <button id="play">
+              <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+            </button>
+          </p>
+        </div>
+        <div class="col-md-8">
+          <span id="timeline"></span>
+        </div>
+      </div>
 
-    <p>Session to replay:
-      <select id="registrations"></select>
-      <button id="speed"></button>
-      <button id="play">Run</button>
-      <span id="timeline"></span>
-    </p>
+      <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+          <div id="event-log" class="well"></div>
+        </div>
+        <div class="col-md-1"></div>
+      </div>
 
-    <div id="error-dialog" title="Error loading data"><p></p></div>
+      <div id="error-dialog" title="Error loading data"><p></p></div>
+    </div>
   </body>
 </html>
 
