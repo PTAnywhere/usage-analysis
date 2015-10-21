@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <title>Widget usage diagram</title>
+
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css">
+    <link type="text/css" rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/theme.css">
+
+    <script type="text/javascript" src="js/replayer.js"></script>
+    <style type="text/css">
+      #networkMap {
+        /*width: 800px;*/
+        height: 500px;
+        border: 1px solid lightgray;
+      }
+
+      #show-info {
+          display: none;
+      }
+
+      #slider-levels {
+          width: 400px;
+          margin: 0 0 30px 20px;
+      }
+
+      pre {
+        padding: 5px;
+        margin: 5px;
+      }
+
+      .string {
+        color: green;
+      }
+
+      .number {
+        color: darkorange;
+      }
+
+      .boolean {
+        color: blue;
+      }
+
+      .null {
+        color: magenta;
+      }
+
+      .key {
+        color: red;
+      }
+    </style>
+
+    <script type="text/javascript">
+      $(function() {
+        replayer.create('../data/sessions', 'registrations', 'speed');
+      });
+    </script>
+
+  </head>
+
+  <body>
+
+    <h1>Replayer</h1>
+
+    <p>Session to replay:
+      <select id="registrations"></select>
+      <button id="speed"></button>
+
+    </p>
+
+    <div id="error-dialog" title="Error loading data"><p></p></div>
+  </body>
+</html>
+
