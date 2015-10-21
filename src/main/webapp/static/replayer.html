@@ -50,11 +50,31 @@
       .key {
         color: red;
       }
+
+      #timeline {
+        float: right;
+        width: 70%;
+      }
+
+      #timeline .start {
+        float: left;
+        margin-right: 5%;
+      }
+
+      #timeline .slider {
+        float: left;
+        width: 80%;
+      }
+
+      #timeline .end {
+        margin-left: 5%;
+        float: left;
+      }
     </style>
 
     <script type="text/javascript">
       $(function() {
-        replayer.create('../data/sessions', 'registrations', 'speed');
+        replayer.create('../data/sessions', 'registrations', 'speed', 'play', 'timeline');
       });
     </script>
 
@@ -67,7 +87,8 @@
     <p>Session to replay:
       <select id="registrations"></select>
       <button id="speed"></button>
-
+      <button id="play">Run</button>
+      <span id="timeline"></span>
     </p>
 
     <div id="error-dialog" title="Error loading data"><p></p></div>
