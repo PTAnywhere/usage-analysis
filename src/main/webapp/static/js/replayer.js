@@ -5,19 +5,58 @@ var replayer = (function () {
 
     var path;
     var cbSession;
+    var btnPlayStop, btnPause;
     var speeds = [1, 2, 4, 8, 16];
 
-    function init(apiPath, cbSessionId, btnSpeedId, btnPlayId, sdrTimelineId, eventLogId) {
+    function init(apiPath, cbSessionId, btnSpeedId, btnPlayPauseId, btnStopId, sdrTimelineId, eventLogId) {
         path = apiPath;
         cbSession = $('#' + cbSessionId);
-        btnSpeed.init(btnSpeedId);
+        btnPlayPause = $('#' + btnPlayPauseId);
+        btnStop = $('#' + btnStopId);
+
         timeSlider.init(sdrTimelineId);
         eventLog.init(eventLogId, 4);
-        $('#' + btnPlayId).click(function() {
-            eventLog.clear();
+        btnSpeed.init(btnSpeedId);
+
+        cbSession.change(function() {
+            stop();
             loadRegistration(cbSession.val());
         });
+        btnSpeed.click(function() {
+            timeline.setSpeed(btnSpeed.get());
+        });
+        btnPlayPause.click(function() {
+            if ( $('span', btnPlayPause).hasClass('glyphicon-play') ) {
+                setPlayPauseIcon(false);
+                timeline.play();
+                btnStop.show();
+            } else {
+                setPlayPauseIcon(true);
+                timeline.pause();
+            }
+        });
+        btnStop.click(stop);
+
+        timeline.onStatement(function(statement) {
+            eventLog.add(printable(statement));
+            console.log(statement);
+        });
         loadRegistrations();
+    }
+
+    function stop() {
+        setPlayPauseIcon(true);
+        timeline.stop();
+        eventLog.clear();
+        btnStop.hide();
+    }
+
+    function setPlayPauseIcon(isPlay) {
+        var span = $('span', btnPlayPause);
+        var classToSet = (isPlay)? 'glyphicon-play': 'glyphicon-pause';
+        var classToUnset = (isPlay)? 'glyphicon-pause': 'glyphicon-play';
+        span.removeClass(classToUnset);
+        span.addClass(classToSet);
     }
 
     function loadRegistrations() {
@@ -25,6 +64,7 @@ var replayer = (function () {
             for (var i=0; i<registrations.length; i++) {
                 cbSession.append('<option value="' + registrations[i] + '">'  + i + '</option>');
             }
+            cbSession.change();  // Forcing the first registration load (which only happens on combobox change).
         }, function(error) {
             errorDialog.open(error);
         });
@@ -45,10 +85,11 @@ var replayer = (function () {
     function loadRegistration(regId) {
         $.getJSON(path + '/' + regId, function(registration) {
             timeline.set(registration.statements);
-            timeline.play(btnSpeed.get(), function(statement) {
+            timeline.stop();
+            /*timeline.play(btnSpeed.get(), function(statement) {
                                             eventLog.add(printable(statement));
                                             console.log(statement);
-            });
+            });*/
         }, function(error) {
             errorDialog.open(error);
         });
@@ -78,13 +119,18 @@ var replayer = (function () {
             }
         }
 
+        function click(callback) {
+            btnSpeed.click(callback);  // Additional callback to the one set in 'init'.
+        }
+
         function getSpeed() {
             return speeds[btnSpeed.val()];
         }
 
         return {
             init: init,
-            get: getSpeed
+            get: getSpeed,
+            click: click,
         };
     })();
 
@@ -172,28 +218,34 @@ var replayer = (function () {
             }
         }
 
+        function reset() {
+            val(min());
+        }
+
         return {
             init: init,
             min: min,
             max: max,
             value: val,
+            reset: reset,
         };
     })();
 
     var timeline = (function () {
+        var stepsPerSecond = 1000;
         var stmtIndex;
         var statements;
-        var stepsPerSecond;
+        var updateCallback;
+        var isPaused;
 
         function setStatements(stmts) {
-            // TODO check if statements is empty
             statements = stmts;
+            // TODO check if statements is empty
             var start = new Date(statements[0].timestamp);
             var end = new Date(statements[statements.length-1].timestamp);
-            startTime = start.getTime();
-            timeSlider.min(startTime);
+            timeSlider.min(start.getTime());
             timeSlider.max(end.getTime());
-            timeSlider.value(startTime);
+            stop();
         }
 
         function getCurrentEventTimestamp() {
@@ -211,37 +263,54 @@ var replayer = (function () {
                 stmtIndex++;
                 nextEventTime = getCurrentEventTimestamp();
             }
-
         }
 
-        function updateSlider(callback) {
-            var next = timeSlider.value() + stepsPerSecond;
-            var max = timeSlider.max();
-            if (next > max) {
-                timeSlider.value(max);
-                dispatchEventsUntil(max, callback);
-                //console.log('Nothing else to update');
+        function updateSlider() {  // Updates slider every second
+            if (isPaused) {
+                console.log('Timeline paused.')
             } else {
-                timeSlider.value(next);
-                dispatchEventsUntil(next, callback);
-                setTimeout(updateSlider, 1000, callback);
+                var next = timeSlider.value() + stepsPerSecond;
+                var max = timeSlider.max();
+                if (next > max) {
+                    timeSlider.value(max);
+                    dispatchEventsUntil(max, updateCallback);
+                    //console.log('Nothing else to update');
+                } else {
+                    timeSlider.value(next);
+                    dispatchEventsUntil(next, updateCallback);
+                    setTimeout(updateSlider, 1000);
+                }
             }
         }
 
-        function play(startingAt, speed, callback) {
+        function setSpeed(speed) {
             stepsPerSecond = speed * 1000;  // x1 1 second each second, x2 2 seconds every second, etc.
-            timeSlider.value(startTime);
-            stmtIndex = 0;
-            setTimeout(updateSlider, 1000, callback);  // Updates slider every second
         }
 
-        function playFromBeginning(speed, callback) {
-            play(0, speed, callback);
+        function setUpdateCallback(callback) {
+            updateCallback = callback;
+        }
+
+        function stop() {
+            isPaused = true;
+            stmtIndex = 0;
+            timeSlider.reset();
+        }
+
+        function playPause() {
+            isPaused = !isPaused;
+            if (!isPaused) {  // Resume
+                updateSlider();
+            }
         }
 
         return {
             set: setStatements,
-            play: playFromBeginning
+            setSpeed: setSpeed,
+            play: playPause,
+            stop: stop,
+            pause: playPause,
+            onStatement: setUpdateCallback,
         };
     })();
 
