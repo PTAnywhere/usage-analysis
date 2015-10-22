@@ -94,20 +94,31 @@ public class TinCanDAO {
         return null;
     }
 
+
     public JsonArray getRegistrations() {
+        return getRegistrations(1);
+    }
+
+    public JsonArray getRegistrations(int minStatements) {
         final StatementsQuery query = new StatementsQuery();
         query.setAscending(true);
 
-        final Set<String> registrations = new HashSet<String>();
+        final Map<String, Integer> registrations = new HashMap<String, Integer>();
         final StatementsResultLRSResponse lrsRes = this.lrs.queryStatements(query);
         if (lrsRes.getSuccess()) {
             for (Statement st : lrsRes.getContent().getStatements()) {
-                registrations.add(st.getContext().getRegistration().toString());
+                final String registrationUuid = st.getContext().getRegistration().toString();
+                if (registrations.containsKey(registrationUuid)) {
+                    registrations.put(registrationUuid, registrations.get(registrationUuid) + 1);
+                } else {
+                    registrations.put(registrationUuid, 1);
+                }
             }
         }
         final JsonArrayBuilder jab = Json.createArrayBuilder();
-        for (String registration: registrations) {
-            jab.add(registration);
+        for (String regUuid: registrations.keySet()) {
+            if (minStatements <= registrations.get(regUuid))
+                jab.add(regUuid);
         }
         return jab.build();
     }

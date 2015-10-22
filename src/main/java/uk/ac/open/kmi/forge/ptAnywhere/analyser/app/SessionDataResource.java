@@ -25,7 +25,9 @@ public class SessionDataResource {
     @GET
     public Response getUsageSummaries(@Context ServletContext servletContext) throws MalformedURLException {
         final TinCanDAO dao = getTinCanDAO(servletContext);
-        return Response.ok(dao.getRegistrations().toString()).build();
+        // Filter sessions with less than 2 statements (/events) registered.
+        // This way, sessions where nothing else apart from allocating PT has been done will be filtered.
+        return Response.ok(dao.getRegistrations(2).toString()).build();
     }
 
     @Path("{registration}")
