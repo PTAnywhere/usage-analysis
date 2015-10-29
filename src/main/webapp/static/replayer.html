@@ -4,23 +4,27 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <title>PTAnywhere widget usage player</title>
 
-    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script type="text/javascript" src="bower_components/jquery-ui/jquery-ui.min.js"></script>
-    <link type="text/css" rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css">
-    <link type="text/css" rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/theme.css">
-
-    <script type="text/javascript" src="bower_components/vis/dist/vis.js"></script>
-    <link type="text/css" rel="stylesheet" href="bower_components/vis/dist/vis.min.css">
-
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
+    <!-- JQuery -->
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css">
+    <link type="text/css" rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/theme.css">
+
+    <!-- Vis.js -->
+    <script type="text/javascript" src="bower_components/vis/dist/vis.js"></script>
+    <link type="text/css" rel="stylesheet" href="bower_components/vis/dist/vis.min.css">
+
+    <!-- PTAnywhere -->
     <link type="text/css" rel="stylesheet" href="bower_components/widget-ui/css/widget.css">
     <script type="text/javascript" src="bower_components/widget-ui/js/locale/en.js"></script>
     <script type="text/javascript" src="bower_components/widget-ui/js/widget.js"></script>
 
+    <!-- Replayer -->
     <link rel="stylesheet" href="css/replayer.css">
     <script type="text/javascript" src="js/replayer.js"></script>
     <script type="text/javascript" src="data/base_map.js"></script>
@@ -30,9 +34,7 @@
         var widget = ptAnywhere.createNonInteractiveWidget('.widget', 'bower_components/widget-ui/images/', data, {});
       });
     </script>
-
   </head>
-
   <body>
     <div class="container">
       <h1>Replayer</h1>
@@ -56,15 +58,12 @@
       </div>
 
       <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-4">
           <div id="event-log" class="well"></div>
         </div>
-        <div class="col-md-1"></div>
-      </div>
-
-      <div class="row">
-        <div class="widget"></div>
+        <div class="col-md-8">
+          <div class="widget"></div>
+        </div>
       </div>
 
       <div id="error-dialog" title="Error loading data"><p></p></div>
