@@ -8,86 +8,26 @@
     <script type="text/javascript" src="bower_components/jquery-ui/jquery-ui.min.js"></script>
     <link type="text/css" rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css">
     <link type="text/css" rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/theme.css">
+
+    <script type="text/javascript" src="bower_components/vis/dist/vis.js"></script>
+    <link type="text/css" rel="stylesheet" href="bower_components/vis/dist/vis.min.css">
+
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
+    <link type="text/css" rel="stylesheet" href="bower_components/widget-ui/css/widget.css">
+    <script type="text/javascript" src="bower_components/widget-ui/js/locale/en.js"></script>
+    <script type="text/javascript" src="bower_components/widget-ui/js/widget.js"></script>
+
+    <link rel="stylesheet" href="css/replayer.css">
     <script type="text/javascript" src="js/replayer.js"></script>
-    <style type="text/css">
-      #networkMap {
-        /*width: 800px;*/
-        height: 500px;
-        border: 1px solid lightgray;
-      }
-
-      #show-info {
-          display: none;
-      }
-
-      #slider-levels {
-          width: 400px;
-          margin: 0 0 30px 20px;
-      }
-
-      pre {
-        padding: 5px;
-        margin: 5px;
-      }
-
-      .string {
-        color: green;
-      }
-
-      .number {
-        color: darkorange;
-      }
-
-      .boolean {
-        color: blue;
-      }
-
-      .null {
-        color: magenta;
-      }
-
-      .key {
-        color: red;
-      }
-
-      #timeline {
-        float: right;
-        width: 90%;
-      }
-
-      #timeline .start {
-        float: left;
-        margin-right: 5%;
-      }
-
-      #timeline .slider {
-        float: left;
-        width: 80%;
-      }
-
-      #timeline .end {
-        margin-left: 5%;
-        float: left;
-      }
-
-      #event-log {
-        overflow: scroll;
-        height: 300px;
-      }
-
-      #event-log p {
-        margin: 0%;
-      }
-    </style>
-
+    <script type="text/javascript" src="data/base_map.js"></script>
     <script type="text/javascript">
       $(function() {
         replayer.create('../data/sessions', 'registrations', 'speed', 'playPause', 'stop', 'timeline', 'event-log');
+        var widget = ptAnywhere.createNonInteractiveWidget('.widget', 'bower_components/widget-ui/images/', data, {});
       });
     </script>
 
@@ -121,6 +61,10 @@
           <div id="event-log" class="well"></div>
         </div>
         <div class="col-md-1"></div>
+      </div>
+
+      <div class="row">
+        <div class="widget"></div>
       </div>
 
       <div id="error-dialog" title="Error loading data"><p></p></div>

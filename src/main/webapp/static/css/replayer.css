@@ -1,0 +1,68 @@
+#networkMap {
+    /*width: 800px;*/
+    height: 500px;
+    border: 1px solid lightgray;
+}
+
+#show-info {
+    display: none;
+}
+
+#slider-levels {
+    width: 400px;
+    margin: 0 0 30px 20px;
+}
+
+pre {
+    padding: 5px;
+    margin: 5px;
+}
+
+.string {
+    color: green;
+}
+
+.number {
+    color: darkorange;
+}
+
+.boolean {
+    color: blue;
+}
+
+.null {
+    color: magenta;
+}
+
+.key {
+    color: red;
+}
+
+#timeline {
+    float: right;
+    width: 90%;
+}
+
+#timeline .start {
+    float: left;
+    margin-right: 5%;
+}
+
+#timeline .slider {
+    float: left;
+    width: 80%;
+}
+
+#timeline .end {
+    margin-left: 5%;
+    float: left;
+}
+
+#event-log {
+    overflow: scroll;
+    height: 300px;
+}
+
+#event-log p {
+    margin: 0%;
+}
