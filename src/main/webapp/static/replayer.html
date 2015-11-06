@@ -32,6 +32,9 @@
       $(function() {
         replayer.create('../data/sessions', 'registrations', 'speed', 'playPause', 'stop', 'timeline', 'event-log');
         var widget = ptAnywhere.createNonInteractiveWidget('.widget', 'bower_components/widget-ui/images/', data, {});
+        replayer.onStatement(function(statement) {
+            console.log(statement);
+        });
       });
     </script>
   </head>

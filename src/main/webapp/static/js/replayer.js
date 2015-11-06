@@ -39,9 +39,12 @@ var replayer = (function () {
 
         timeline.onStatement(function(statement) {
             eventLog.add(printable(statement));
-            console.log(statement);
         });
         loadRegistrations();
+    }
+
+    function onStatement(callback) {
+        timeline.onStatement(callback);
     }
 
     function stop() {
@@ -233,9 +236,9 @@ var replayer = (function () {
 
     var timeline = (function () {
         var stepsPerSecond = 1000;
+        var updateCallbacks = [];
         var stmtIndex;
         var statements;
-        var updateCallback;
         var isPaused;
 
         function setStatements(stmts) {
@@ -256,10 +259,12 @@ var replayer = (function () {
         /**
          * Dispatch statements which happened until 'timestamp' (included).
          */
-        function dispatchEventsUntil(timestamp, callback) {
+        function dispatchEventsUntil(timestamp) {
             var nextEventTime = getCurrentEventTimestamp();
             while (nextEventTime!=null && nextEventTime<=timestamp) {  // Process and move to next
-                callback(statements[stmtIndex]);
+                for(var i in updateCallbacks) {
+                    updateCallbacks[i](statements[stmtIndex]);
+                }
                 stmtIndex++;
                 nextEventTime = getCurrentEventTimestamp();
             }
@@ -273,11 +278,11 @@ var replayer = (function () {
                 var max = timeSlider.max();
                 if (next > max) {
                     timeSlider.value(max);
-                    dispatchEventsUntil(max, updateCallback);
+                    dispatchEventsUntil(max);
                     //console.log('Nothing else to update');
                 } else {
                     timeSlider.value(next);
-                    dispatchEventsUntil(next, updateCallback);
+                    dispatchEventsUntil(next);
                     setTimeout(updateSlider, 1000);
                 }
             }
@@ -287,8 +292,8 @@ var replayer = (function () {
             stepsPerSecond = speed * 1000;  // x1 1 second each second, x2 2 seconds every second, etc.
         }
 
-        function setUpdateCallback(callback) {
-            updateCallback = callback;
+        function addUpdateCallback(callback) {
+            updateCallbacks.push(callback);
         }
 
         function stop() {
@@ -310,12 +315,13 @@ var replayer = (function () {
             play: playPause,
             stop: stop,
             pause: playPause,
-            onStatement: setUpdateCallback,
+            onStatement: addUpdateCallback,
         };
     })();
 
     return {
         create: init,
+        onStatement: onStatement,
         load: loadRegistration,
     };
 
