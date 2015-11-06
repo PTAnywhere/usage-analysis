@@ -319,6 +319,20 @@ var ptAnywhere = (function () {
         }
 
         /**
+         * @arg name Name of the node to be deleted.
+         */
+        function removeNode(name) {
+            var toDelete = nodes.get({
+                filter: function (item) {
+                    return (item.label == name);
+                }
+            });
+            for(var i in toDelete) {
+                nodes.remove(toDelete[i]);
+            }
+        }
+
+        /**
          * Canvas' (0,0) does not correspond with the network map's DOM (0,0) position.
          *   @arg x DOM X coordinate relative to the canvas element.
          *   @arg y DOM Y coordinate relative to the canvas element.
@@ -341,6 +355,7 @@ var ptAnywhere = (function () {
             create: createMap,
             update: update,
             addNode: addNode,
+            removeNode: removeNode,
             getCoordinate: toNetworkMapCoordinate,
             error: showError,
        };
@@ -872,6 +887,7 @@ var ptAnywhere = (function () {
         networkMap.update(networkData);
         return {  // Controls to programatically modify the module
             addDevice: networkMap.addNode,
+            removeDevice: networkMap.removeNode,
             reset: function() { networkMap.update(networkData); },
         };
     }

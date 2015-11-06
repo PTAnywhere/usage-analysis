@@ -35,6 +35,13 @@
             return this.indexOf(suffix, 0) === 0;
         };
 
+        function getId(url) {
+            var els = url.split("/");
+            var ret = els[els.length-1];
+            if (ret.length!=0) return ret;
+            return els[els.length-2];
+        }
+
         $(function() {
             var htmlElements = {
                 cbSessionId: 'registrations',
@@ -46,7 +53,6 @@
             };
             replayer.create('../data/sessions', htmlElements);
             var widget = ptAnywhere.createNonInteractiveWidget('.widget', 'bower_components/widget-ui/images/', data, {});
-            console.log(widget);
             replayer.onStop(widget.reset);
             replayer.onStatement(function(statement) {
                 console.log(statement);
@@ -55,9 +61,15 @@
                 if (statement.verb.id===verb.create) {
                     if (statement.object.id.startsWith(devices.any)) {
                         var dext = statement.result.extensions;
-                        widget.addDevice({ group: dext[extensions.type], label: dext[extensions.name],
+                        var dId = getId(dext[extensions.uri]);
+                        widget.addDevice({ id: dId, group: dext[extensions.type], label: dext[extensions.name],
                                             x: dext[extensions.position].x, y: dext[extensions.position].y,
-                                            url: dext[extensions.position].uri});
+                                            url: dext[extensions.uri] });
+                    }
+                } else if (statement.verb.id===verb.delete) {
+                    if (statement.object.id.startsWith(devices.any)) {
+                        var dext = statement.result.extensions;
+                        widget.removeDevice(dext[extensions.name]);
                     }
                 }
             });
