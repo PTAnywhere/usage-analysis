@@ -19,7 +19,7 @@ var replayer = (function () {
         btnSpeed.init(htmlElements.btnSpeedId);
 
         cbSession.change(function() {
-            stop();
+            btnStop.click();  // Let's imagine that stop button was pressed.
             loadRegistration(cbSession.val());
         });
         btnSpeed.click(function() {
