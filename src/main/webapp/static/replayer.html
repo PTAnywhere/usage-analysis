@@ -58,18 +58,23 @@
                 console.log(statement);
             });
             replayer.onStatement(function(statement) {
+                var dext = (statement.result===undefined)? null: statement.result.extensions;
                 if (statement.verb.id===verb.create) {
                     if (statement.object.id.startsWith(devices.any)) {
-                        var dext = statement.result.extensions;
-                        var dId = getId(dext[extensions.uri]);
-                        widget.addDevice({ id: dId, group: dext[extensions.type], label: dext[extensions.name],
-                                            x: dext[extensions.position].x, y: dext[extensions.position].y,
-                                            url: dext[extensions.uri] });
+                        var dId = getId(dext[extension.uri]);
+                        widget.addDevice({ id: dId, group: dext[extension.type], label: dext[extension.name],
+                                            x: dext[extension.position].x, y: dext[extension.position].y,
+                                            url: dext[extension.uri] });
+                    } else if (statement.object.id == activity.link) {
+                        var ends = dext[extension.endpoints];
+                        widget.connect(ends[0].device, ends[1].device);
                     }
                 } else if (statement.verb.id===verb.delete) {
                     if (statement.object.id.startsWith(devices.any)) {
-                        var dext = statement.result.extensions;
-                        widget.removeDevice(dext[extensions.name]);
+                        widget.removeDevice(dext[extension.name]);
+                    } else if (statement.object.id == activity.link) {
+                        var ends = dext[extension.endpoints];
+                        widget.disconnect([ ends[0].device, ends[1].device ]);
                     }
                 }
             });

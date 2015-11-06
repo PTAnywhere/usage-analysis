@@ -5,6 +5,12 @@ var prefix = {
     ext: 'http://pt-anywhere.kmi.open.ac.uk/extensions/',
 };
 
+
+var activity = {
+    link: prefix.forge + 'link',
+};
+
+
 var verb = {
     initialized: prefix.adlnet + 'initialized',
     terminated: prefix.adlnet + 'terminated',
@@ -14,12 +20,15 @@ var verb = {
     use: prefix.activity + 'use',
 };
 
-var extensions = {
+
+var extension = {
     name: prefix.ext + 'device/name',
     position: prefix.ext + 'device/position',
     type: prefix.ext + 'device/type',
     uri: prefix.ext + 'device/uri',
+    endpoints: prefix.ext + 'endpoints',
 };
+
 
 var devices = {
     any: prefix.forge + 'device/',

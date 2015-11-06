@@ -318,18 +318,52 @@ var ptAnywhere = (function () {
             nodes.add(newNode);
         }
 
-        /**
-         * @arg name Name of the node to be deleted.
-         */
-        function removeNode(name) {
-            var toDelete = nodes.get({
+        function getByName(name) {
+            var ret = nodes.get({
                 filter: function (item) {
                     return (item.label == name);
                 }
             });
-            for(var i in toDelete) {
-                nodes.remove(toDelete[i]);
-            }
+            if (ret.length==0) return null;
+            // CAUTION: If there are more than a device with the same name, we return one randomly.
+            return ret[0];
+        }
+
+        /**
+         * @arg name Name of the node to be deleted.
+         */
+        function removeNode(name) {
+            nodes.remove(getByName(name));
+        }
+
+        /**
+         * @arg fromDeviceName Name of the origin endpoint.
+         * @arg toDeviceName Name of the destination endpoint.
+         */
+        function connect(fromDeviceName, toDeviceName) {
+            var newEdge = { from: getByName(fromDeviceName).id, to: getByName(toDeviceName).id };
+            edges.add(newEdge);
+        }
+
+        function getEdgeByNames(names) {
+            var ids = [getByName(names[0]).id, getByName(names[1]).id];
+            var ret = edges.get({
+                filter: function (item) {
+
+                    return ( (item.from == ids[0]) && (item.to == ids[1]) ) ||
+                           ( (item.from == ids[1]) && (item.to == ids[0]) );
+                }
+            });
+            if (ret.length==0) return null;
+            // CAUTION: If there are more than one link between devices, we return one randomly.
+            return ret[0];
+        }
+
+        /**
+         * @arg deviceNames Array with the names of the nodes to be disconnected.
+         */
+        function disconnect(deviceNames) {
+            edges.remove(getEdgeByNames(deviceNames).id);
         }
 
         /**
@@ -356,6 +390,8 @@ var ptAnywhere = (function () {
             update: update,
             addNode: addNode,
             removeNode: removeNode,
+            connect: connect,
+            disconnect: disconnect,
             getCoordinate: toNetworkMapCoordinate,
             error: showError,
        };
@@ -888,6 +924,8 @@ var ptAnywhere = (function () {
         return {  // Controls to programatically modify the module
             addDevice: networkMap.addNode,
             removeDevice: networkMap.removeNode,
+            connect: networkMap.connect,
+            disconnect: networkMap.disconnect,
             reset: function() { networkMap.update(networkData); },
         };
     }
