@@ -28,14 +28,40 @@
     <link rel="stylesheet" href="css/replayer.css">
     <script type="text/javascript" src="js/replayer.js"></script>
     <script type="text/javascript" src="data/base_map.js"></script>
+    <script type="text/javascript" src="data/vocabulary.js"></script>
     <script type="text/javascript">
-      $(function() {
-        replayer.create('../data/sessions', 'registrations', 'speed', 'playPause', 'stop', 'timeline', 'event-log');
-        var widget = ptAnywhere.createNonInteractiveWidget('.widget', 'bower_components/widget-ui/images/', data, {});
-        replayer.onStatement(function(statement) {
-            console.log(statement);
+        // Starts with (not yet supported by all browsers)
+        String.prototype.startsWith = function(suffix) {
+            return this.indexOf(suffix, 0) === 0;
+        };
+
+        $(function() {
+            var htmlElements = {
+                cbSessionId: 'registrations',
+                btnSpeedId: 'speed',
+                btnPlayPauseId: 'playPause',
+                btnStopId: 'stop',
+                sdrTimelineId: 'timeline',
+                eventLogId: 'event-log',
+            };
+            replayer.create('../data/sessions', htmlElements);
+            var widget = ptAnywhere.createNonInteractiveWidget('.widget', 'bower_components/widget-ui/images/', data, {});
+            console.log(widget);
+            replayer.onStop(widget.reset);
+            replayer.onStatement(function(statement) {
+                console.log(statement);
+            });
+            replayer.onStatement(function(statement) {
+                if (statement.verb.id===verb.create) {
+                    if (statement.object.id.startsWith(devices.any)) {
+                        var dext = statement.result.extensions;
+                        widget.addDevice({ group: dext[extensions.type], label: dext[extensions.name],
+                                            x: dext[extensions.position].x, y: dext[extensions.position].y,
+                                            url: dext[extensions.position].uri});
+                    }
+                }
+            });
         });
-      });
     </script>
   </head>
   <body>

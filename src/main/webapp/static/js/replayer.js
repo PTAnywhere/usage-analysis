@@ -8,15 +8,15 @@ var replayer = (function () {
     var btnPlayStop, btnPause;
     var speeds = [1, 2, 4, 8, 16];
 
-    function init(apiPath, cbSessionId, btnSpeedId, btnPlayPauseId, btnStopId, sdrTimelineId, eventLogId) {
+    function init(apiPath, htmlElements) {
         path = apiPath;
-        cbSession = $('#' + cbSessionId);
-        btnPlayPause = $('#' + btnPlayPauseId);
-        btnStop = $('#' + btnStopId);
+        cbSession = $('#' + htmlElements.cbSessionId);
+        btnPlayPause = $('#' + htmlElements.btnPlayPauseId);
+        btnStop = $('#' + htmlElements.btnStopId);
 
-        timeSlider.init(sdrTimelineId);
-        eventLog.init(eventLogId, 4);
-        btnSpeed.init(btnSpeedId);
+        timeSlider.init(htmlElements.sdrTimelineId);
+        eventLog.init(htmlElements.eventLogId, 4);
+        btnSpeed.init(htmlElements.btnSpeedId);
 
         cbSession.change(function() {
             stop();
@@ -35,7 +35,7 @@ var replayer = (function () {
                 timeline.pause();
             }
         });
-        btnStop.click(stop);
+        onStop(stop);
 
         timeline.onStatement(function(statement) {
             eventLog.add(printable(statement));
@@ -43,8 +43,8 @@ var replayer = (function () {
         loadRegistrations();
     }
 
-    function onStatement(callback) {
-        timeline.onStatement(callback);
+    function onStop(callback) {
+        btnStop.click(callback);
     }
 
     function stop() {
@@ -321,7 +321,8 @@ var replayer = (function () {
 
     return {
         create: init,
-        onStatement: onStatement,
+        onStatement: timeline.onStatement,
+        onStop: onStop,
         load: loadRegistration,
     };
 
