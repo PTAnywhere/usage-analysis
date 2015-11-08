@@ -9,6 +9,7 @@ var chart = (function () {
 
   var nodes = new vis.DataSet();
   var edges = new vis.DataSet();
+  var filter = function(sessionNum) { return true; };
 
   function init() {
     var container = document.getElementById('networkMap');
@@ -109,24 +110,26 @@ var chart = (function () {
   function drawEdges(numberOfLevels) {
     var ret = [];
     for (var i=0; i<data.length; i++) {
-        var action = 1;
-        var currentState, previousState = "init";
-        for (var j=0; j<data[i].length; j++) {
-          currentState = data[i][j] + String(j+1); // Levels + final state
-          ret.push({"from": previousState, "to": currentState});
-          previousState = currentState;
-          action++;
-          if (action>numberOfLevels) break;
+        if (filter(i)) {
+            var action = 1;
+            var currentState, previousState = "init";
+            for (var j=0; j<data[i].length; j++) {
+              currentState = data[i][j] + String(j+1); // Levels + final state
+              ret.push({"from": previousState, "to": currentState});
+              previousState = currentState;
+              action++;
+              if (action>numberOfLevels) break;
+            }
+            // If no enough events were registered, fill them with NOP.
+            for (var r=action; r<=numberOfLevels; r++) {
+              currentState = "NOOP" + String(r);
+              ret.push({"from": previousState, "to": currentState});
+              previousState = currentState;
+            }
+            // Select random final state
+            currentState = (Math.random()>0.5)? "pass": "fail";
+            ret.push({"from": previousState, "to": currentState});
         }
-        // If no enough events were registered, fill them with NOP.
-        for (var r=action; r<=numberOfLevels; r++) {
-          currentState = "NOOP" + String(r);
-          ret.push({"from": previousState, "to": currentState});
-          previousState = currentState;
-        }
-        // Select random final state
-        currentState = (Math.random()>0.5)? "pass": "fail";
-        ret.push({"from": previousState, "to": currentState});
     }
     edges.clear();
     edges.add(ret);
@@ -149,9 +152,23 @@ var chart = (function () {
     }, showLoadingError);
   }
 
+  function filterLastSession() {
+     filter = function(sessionNum) {
+        return sessionNum==data.length-1;
+     };
+     drawEdges(slider.value());
+  }
+
+  function filterNone() {
+     filter = function(sessionNum) { return true; };
+     drawEdges(slider.value());
+  }
+
   return {
       create: init,
-      load: loadEdges
+      load: loadEdges,
+      filterLast: filterLastSession,
+      filterNone: filterNone,
   };
 
 })();
