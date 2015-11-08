@@ -103,22 +103,19 @@ public class TinCanDAO {
         final StatementsQuery query = new StatementsQuery();
         query.setAscending(true);
 
-        final Map<String, Integer> registrations = new HashMap<String, Integer>();
+        final JsonArrayBuilder jab = Json.createArrayBuilder();
         final StatementsResultLRSResponse lrsRes = this.lrs.queryStatements(query);
         if (lrsRes.getSuccess()) {
+            final Map<String, Integer> registrations = new HashMap<String, Integer>();
             for (Statement st : lrsRes.getContent().getStatements()) {
                 final String registrationUuid = st.getContext().getRegistration().toString();
-                if (registrations.containsKey(registrationUuid)) {
-                    registrations.put(registrationUuid, registrations.get(registrationUuid) + 1);
-                } else {
-                    registrations.put(registrationUuid, 1);
+                Integer numberStatements = registrations.get(registrationUuid);
+                numberStatements = (numberStatements==null)? 1: numberStatements+1;  // Update
+                registrations.put(registrationUuid, numberStatements);
+                if (numberStatements==minStatements) { // == to add it only one time
+                    jab.add(registrationUuid);
                 }
             }
-        }
-        final JsonArrayBuilder jab = Json.createArrayBuilder();
-        for (String regUuid: registrations.keySet()) {
-            if (minStatements <= registrations.get(regUuid))
-                jab.add(regUuid);
         }
         return jab.build();
     }
