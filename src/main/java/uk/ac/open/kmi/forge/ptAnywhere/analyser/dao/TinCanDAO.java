@@ -52,29 +52,30 @@ public class TinCanDAO {
     }
 
     public JsonArray getActionsPerSession() {
-        final Map<UUID, JsonArrayBuilder> ret = new HashMap<UUID, JsonArrayBuilder>();
-
         final StatementsQuery query = new StatementsQuery();
         query.setAscending(true);
         //query.setSince(new DateTime("2013-09-30T13:15:00.000Z"));
 
         final StatementsResultLRSResponse lrsRes = this.lrs.queryStatements(query);
         if (lrsRes.getSuccess()) {
+            final List<UUID> registrationsInOrder = new ArrayList<UUID>();
+            final Map<UUID, JsonArrayBuilder> actionsByRegistration = new HashMap<UUID, JsonArrayBuilder>();
             for (Statement st : lrsRes.getContent().getStatements()) {
                 final UUID registration = st.getContext().getRegistration();
-                if (!ret.containsKey(registration)) {
-                    ret.put(registration, Json.createArrayBuilder()); //new ArrayList<String>());
+                if (!actionsByRegistration.containsKey(registration)) {
+                    registrationsInOrder.add(registration);
+                    actionsByRegistration.put(registration, Json.createArrayBuilder()); //new ArrayList<String>());
                 }
                 final String state = getSimplifiedState(st.getVerb(), (Activity) st.getObject());
                 if (state != null) {
                     //final JsonString s = Json.createObjectBuilder().build().getJsonString(state);
-                    ret.get(registration).add(state);
+                    actionsByRegistration.get(registration).add(state);
                 }
             }
             // success, use lrsRes.getContent() to get the StatementsResult object
             final JsonArrayBuilder jab = Json.createArrayBuilder();
-            for (JsonArrayBuilder perSession: ret.values()) {
-                jab.add(perSession.build());
+            for (UUID registration: registrationsInOrder) {
+                jab.add(actionsByRegistration.get(registration).build());
             }
             return jab.build();
         }
