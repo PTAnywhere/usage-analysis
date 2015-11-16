@@ -64,10 +64,14 @@ var replayer = (function () {
 
     function loadRegistrations() {
         $.getJSON(path, function(registrations) {
-            for (var i=0; i<registrations.length; i++) {
-                cbSession.append('<option value="' + registrations[i] + '">'  + i + '</option>');
-            }
+            if (registrations.length==0) {
+                errorDialog.show('There are not sessions recorded in the requested LRS.');
+            } else {
+                for (var i=0; i<registrations.length; i++) {
+                    cbSession.append('<option value="' + registrations[i] + '">'  + i + '</option>');
+                }
             cbSession.change();  // Forcing the first registration load (which only happens on combobox change).
+            }
         }).fail(errorDialog.open);
     }
 
@@ -340,7 +344,7 @@ var errorDialog = (function () {
       console.error(message);
   }
 
-  function handleError(xhr, textStatus, errorThrown) {
+  function handleRequestFailure(xhr, textStatus, errorThrown) {
       if (textStatus == 'timeout') {
           show("The topology could not be loaded: timeout.");
       } else {
@@ -349,6 +353,7 @@ var errorDialog = (function () {
   }
 
   return {
-      open: handleError
+      show: show,
+      handle: handleRequestFailure,
   };
 })();
