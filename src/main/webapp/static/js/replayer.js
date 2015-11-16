@@ -68,9 +68,7 @@ var replayer = (function () {
                 cbSession.append('<option value="' + registrations[i] + '">'  + i + '</option>');
             }
             cbSession.change();  // Forcing the first registration load (which only happens on combobox change).
-        }, function(error) {
-            errorDialog.open(error);
-        });
+        }).fail(errorDialog.open);
     }
 
     function printable(statement) {
@@ -93,9 +91,7 @@ var replayer = (function () {
                                             eventLog.add(printable(statement));
                                             console.log(statement);
             });*/
-        }, function(error) {
-            errorDialog.open(error);
-        });
+        }).fail(errorDialog.open);;
     }
 
     var btnSpeed = (function () {
@@ -328,8 +324,10 @@ var replayer = (function () {
 
 })();
 
+
 var errorDialog = (function () {
-  function init(message) {
+
+  function show(message) {
       $( "#error-dialog p" ).text(message);
       $( "#error-dialog" ).dialog({
         modal: true,
@@ -341,7 +339,16 @@ var errorDialog = (function () {
       });
       console.error(message);
   }
+
+  function handleError(xhr, textStatus, errorThrown) {
+      if (textStatus == 'timeout') {
+          show("The topology could not be loaded: timeout.");
+      } else {
+          show("The topology could not be loaded: " + errorThrown + ".");
+      }
+  }
+
   return {
-      open: init
+      open: handleError
   };
 })();
