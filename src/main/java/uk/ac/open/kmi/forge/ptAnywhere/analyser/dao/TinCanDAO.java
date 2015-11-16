@@ -11,6 +11,7 @@ import com.rusticisoftware.tincan.lrsresponses.StatementsResultLRSResponse;
 import com.rusticisoftware.tincan.v10x.StatementsQuery;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.exceptions.LRSException;
 
 
 public class TinCanDAO {
@@ -51,11 +52,12 @@ public class TinCanDAO {
         return null;
     }
 
-    public JsonArray getActionsPerSession() {
+    public JsonArray getActionsPerSession() throws LRSException {
         final StatementsQuery query = new StatementsQuery();
         query.setAscending(true);
         //query.setSince(new DateTime("2013-09-30T13:15:00.000Z"));
 
+        final JsonArrayBuilder jab = Json.createArrayBuilder();
         final StatementsResultLRSResponse lrsRes = this.lrs.queryStatements(query);
         if (lrsRes.getSuccess()) {
             final List<UUID> registrationsInOrder = new ArrayList<UUID>();
@@ -73,14 +75,13 @@ public class TinCanDAO {
                 }
             }
             // success, use lrsRes.getContent() to get the StatementsResult object
-            final JsonArrayBuilder jab = Json.createArrayBuilder();
+
             for (UUID registration: registrationsInOrder) {
                 jab.add(actionsByRegistration.get(registration).build());
             }
             return jab.build();
-        }
-        // failure, error information is available in lrsRes.getErrMsg()
-        return null;
+        } // else
+        throw new LRSException(lrsRes.getErrMsg());
     }
 
     public String getActions(String registrationUuid) {
@@ -91,16 +92,16 @@ public class TinCanDAO {
         final StatementsResultLRSResponse lrsRes = this.lrs.queryStatements(query);
         if (lrsRes.getSuccess()) {
             return lrsRes.getContent().toJSON();
-        }
-        return null;
+        } // else
+        throw new LRSException(lrsRes.getErrMsg());
     }
 
 
-    public JsonArray getRegistrations() {
+    public JsonArray getRegistrations() throws LRSException {
         return getRegistrations(1);
     }
 
-    public JsonArray getRegistrations(int minStatements) {
+    public JsonArray getRegistrations(int minStatements) throws LRSException {
         final StatementsQuery query = new StatementsQuery();
         query.setAscending(true);
 
@@ -117,7 +118,9 @@ public class TinCanDAO {
                     jab.add(registrationUuid);
                 }
             }
+            return jab.build();
         }
-        return jab.build();
+        // else
+        throw new LRSException(lrsRes.getErrMsg());
     }
 }
