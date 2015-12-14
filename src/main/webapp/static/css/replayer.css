@@ -18,9 +18,17 @@
     float: left;
 }
 
-#event-log {
-    overflow: scroll;
+.replaying-area {
     height: 670px;
+}
+
+.replaying-area>div {
+    height: 100%;
+}
+
+#event-log {
+    height: 100%;
+    overflow: scroll;
 }
 
 #event-log p {

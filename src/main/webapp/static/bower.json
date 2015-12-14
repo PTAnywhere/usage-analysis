@@ -1,12 +1,16 @@
 {
   "name": "PTAnywhere_usage-Analysis",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "homepage": "https://github.com/PTAnywhere/usage-analysis",
   "authors": [
     "Aitor Gómez Goiri <aitor.gomez-goiri@open.ac.uk>"
   ],
-  "description": "Chart to help to analyse student's typical widget usage.",
-  "main": "chart.js",
+  "description": "Charts to analyse student's typical widget usage.",
+  "main": [
+    "chart.js",
+    "replayer.js",
+    "replayer.css"
+  ],
   "keywords": [
     "chart",
     "node",
@@ -23,8 +27,11 @@
     "tests"
   ],
   "dependencies": {
-    "vis": "~4.7.0",
-    "jquery-ui": "~1.11.4",
     "widget-ui": "git://github.com/PTAnywhere/widget-ui.git"
-  }
+  },
+  "keywords": [
+    "PTAnywhere",
+    "widget",
+    "analytics"
+  ]
 }

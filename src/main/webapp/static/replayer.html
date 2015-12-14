@@ -4,19 +4,19 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <title>PTAnywhere widget usage player</title>
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-
     <!-- JQuery -->
     <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="bower_components/jquery-ui/jquery-ui.min.js"></script>
-    <link type="text/css" rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css">
-    <link type="text/css" rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/theme.css">
+    <!-- For the slider -->
+    <link rel="stylesheet" href="bower_components/jquery-ui/themes/base/jquery-ui.min.css">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css">
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
     <!-- Vis.js -->
-    <script type="text/javascript" src="bower_components/vis/dist/vis.js"></script>
+    <script type="text/javascript" src="bower_components/vis/dist/vis.min.js"></script>
     <link type="text/css" rel="stylesheet" href="bower_components/vis/dist/vis.min.css">
 
     <!-- PTAnywhere -->
@@ -52,7 +52,7 @@
                 eventLogId: 'event-log',
             };
             replayer.create('../data/sessions', htmlElements);
-            var widget = ptAnywhere.createNonInteractiveWidget('.widget', 'bower_components/widget-ui/images/', data, {});
+            var widget = ptAnywhereWidgets.all.createNonInteractiveWidget('.widget', 'bower_components/widget-ui/images/', data, {});
             replayer.onStop(widget.reset);
             replayer.onStatement(function(statement) {
                 console.log(statement);
@@ -103,7 +103,7 @@
         </div>
       </div>
 
-      <div class="row">
+      <div class="row replaying-area">
         <div class="col-md-4">
           <div id="event-log" class="well"></div>
         </div>

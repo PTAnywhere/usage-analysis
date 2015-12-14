@@ -7,7 +7,9 @@
   "description": "Javascript module with GUI helpers to build PTAnywhere widgets.",
   "main": [
     "js/widget.js",
-    "css/widget.css"
+    "js/console.js",
+    "css/widget.css",
+    "css/console.css"
   ],
   "repository": {
     "type": "git",
@@ -23,18 +25,19 @@
   "dependencies": {
     "vis": "~4.7.0",
     "jquery-ui": "~1.11.4",
-    "jquery-ui-touch-punch": "git://github.com/furf/jquery-ui-touch-punch.git"
+    "jquery-ui-touch-punch": "git://github.com/furf/jquery-ui-touch-punch.git",
+    "bootstrap": "3.3.6"
   },
   "keywords": [
     "PTAnywhere",
     "widget",
     "user interface"
   ],
-  "_release": "4cbdb72267",
+  "_release": "2d52210c86",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "4cbdb72267ef696bbf4614051fb206a6d747b1f6"
+    "commit": "2d52210c864c7155f0686d011568987662e0777b"
   },
   "_source": "git://github.com/PTAnywhere/widget-ui.git",
   "_target": "*",
