@@ -5,7 +5,7 @@ var replayer = (function () {
 
     var path;
     var cbSession;
-    var btnPlayStop, btnPause;
+    var btnPlayPause, btnStop;
     var speeds = [1, 2, 4, 8, 16];
 
     function init(apiPath, htmlElements) {
@@ -70,7 +70,7 @@ var replayer = (function () {
                 for (var i=0; i<registrations.length; i++) {
                     cbSession.append('<option value="' + registrations[i] + '">'  + i + '</option>');
                 }
-            cbSession.change();  // Forcing the first registration load (which only happens on combobox change).
+                cbSession.change();  // Forcing the first registration load (which only happens on combobox change).
             }
         }).fail(errorDialog.open);
     }
@@ -96,6 +96,30 @@ var replayer = (function () {
                                             console.log(statement);
             });*/
         }).fail(errorDialog.open);;
+    }
+
+    function disableControls() {
+        cbSession.attr('disabled', 'disabled');
+        btnPlayPause.attr('disabled', 'disabled');
+        btnStop.attr('disabled', 'disabled');
+        btnSpeed.disable();
+    }
+
+    function enableControls() {
+        cbSession.removeAttr('disabled');
+        btnPlayPause.removeAttr('disabled');
+        btnStop.removeAttr('disabled');
+        btnSpeed.enable();
+    }
+
+    function freeze() {
+        disableControls();
+        timeline.pause();
+    }
+
+    function unfreeze() {
+        enableControls();
+        timeline.play();
     }
 
     var btnSpeed = (function () {
@@ -130,10 +154,20 @@ var replayer = (function () {
             return speeds[btnSpeed.val()];
         }
 
+        function enable() {
+            btnSpeed.removeAttr('disabled');
+        }
+
+        function disable() {
+            btnSpeed.attr('disabled', 'disabled');
+        }
+
         return {
             init: init,
             get: getSpeed,
             click: click,
+            enable: enable,
+            disable: disable,
         };
     })();
 
@@ -272,7 +306,7 @@ var replayer = (function () {
 
         function updateSlider() {  // Updates slider every second
             if (isPaused) {
-                console.log('Timeline paused.')
+                console.log('Timeline paused.');
             } else {
                 var next = timeSlider.value() + stepsPerSecond;
                 var max = timeSlider.max();
@@ -321,6 +355,8 @@ var replayer = (function () {
 
     return {
         create: init,
+        freeze: freeze,
+        unfreeze: unfreeze,
         onStatement: timeline.onStatement,
         onStop: onStop,
         load: loadRegistration,
