@@ -269,7 +269,7 @@ var replayer = (function () {
     })();
 
     var timeline = (function () {
-        var stepsPerSecond = 1000;
+        var millisPerStep = 1000;
         var updateCallbacks = [];
         var stmtIndex;
         var statements;
@@ -292,6 +292,8 @@ var replayer = (function () {
 
         /**
          * Dispatch statements which happened until 'timestamp' (included).
+         *
+         * It might dispatch more than an event and a latter call to pause() will not affect this.
          */
         function dispatchEventsUntil(timestamp) {
             var nextEventTime = getCurrentEventTimestamp();
@@ -308,7 +310,8 @@ var replayer = (function () {
             if (isPaused) {
                 console.log('Timeline paused.');
             } else {
-                var next = timeSlider.value() + stepsPerSecond;
+                // One step == A real interaction second
+                var next = timeSlider.value() + 1000;
                 var max = timeSlider.max();
                 if (next > max) {
                     timeSlider.value(max);
@@ -317,13 +320,14 @@ var replayer = (function () {
                 } else {
                     timeSlider.value(next);
                     dispatchEventsUntil(next);
-                    setTimeout(updateSlider, 1000);
+                    setTimeout(updateSlider, millisPerStep);
                 }
             }
         }
 
         function setSpeed(speed) {
-            stepsPerSecond = speed * 1000;  // x1 1 second each second, x2 2 seconds every second, etc.
+            // x1 1000ms per step, x2 500ms per step, etc.
+            millisPerStep = 1000.0 / speed;
         }
 
         function addUpdateCallback(callback) {
