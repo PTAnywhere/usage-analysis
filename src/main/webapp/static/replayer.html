@@ -52,7 +52,7 @@
                 eventLogId: 'event-log',
             };
             replayer.create('../data/sessions', htmlElements);
-            var widget = ptAnywhereWidgets.all.createNonInteractiveWidget('.widget', 'bower_components/widget-ui/images/', data, {});
+            var widget = ptAnywhereWidgets.all.createNonInteractiveWidget('.widget', 'bower_components/widget-ui/images/', data, { backdrop: false });
             replayer.onStop(widget.reset);
             replayer.onStatement(function(statement) {
                 console.log(statement);
@@ -62,20 +62,42 @@
                 if (statement.verb.id===verb.create) {
                     if (statement.object.id.startsWith(devices.any)) {
                         var dId = getId(dext[extension.uri]);
-                        widget.addDevice({ id: dId, group: dext[extension.type], label: dext[extension.name],
+                        widget.map.addNode({ id: dId, group: dext[extension.type], label: dext[extension.name],
                                             x: dext[extension.position].x, y: dext[extension.position].y,
                                             url: dext[extension.uri] });
+                        widget.map.fit();
                     } else if (statement.object.id == activity.link) {
                         var ends = dext[extension.endpoints];
-                        widget.connect(ends[0].device, ends[1].device);
+                        widget.map.connect(ends[0].device, ends[1].device);
                     }
                 } else if (statement.verb.id===verb.delete) {
                     if (statement.object.id.startsWith(devices.any)) {
-                        widget.removeDevice(dext[extension.name]);
+                        widget.map.removeNode(dext[extension.name]);
                     } else if (statement.object.id == activity.link) {
                         var ends = dext[extension.endpoints];
-                        widget.disconnect([ ends[0].device, ends[1].device ]);
+                        widget.map.disconnect([ ends[0].device, ends[1].device ]);
                     }
+                } else if (statement.verb.id===verb.update) {
+                    var dName = dext[extension.name];
+                    var nodeToModify = widget.map.get(dName);
+
+                    replayer.freeze();
+
+                    widget.dialogs.modification.selectFirstTab();  // selectSecondTab();
+                    widget.dialogs.modification.setDeviceName(dName);
+                    if (nodeToModify.hasOwnProperty('defaultGateway')) {
+                        widget.dialogs.modification.setDefaultGateway(nodeToModify.defaultGateway);
+                    } else {
+                        widget.dialogs.modification.setDefaultGateway(null);
+                    }
+                    widget.dialogs.modification.open();
+
+                    // TODO typing effects
+                    setTimeout(function(){
+                        widget.map.updateNode(nodeToModify);
+                        widget.dialogs.modification.close();
+                        replayer.unfreeze();
+                    }, 2000);
                 }
             });
         });
