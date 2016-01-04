@@ -1,15 +1,17 @@
 package uk.ac.open.kmi.forge.ptAnywhere.analyser.app;
 
-
+import com.rusticisoftware.tincan.RemoteLRS;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
+import javax.annotation.PreDestroy;
 import javax.servlet.ServletContext;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
 import java.util.Properties;
+
 
 @ApplicationPath("data")
 public class AnalyserApp extends ResourceConfig {
@@ -34,7 +36,6 @@ public class AnalyserApp extends ResourceConfig {
         }
     }
 
-
     public void loadLRSProperties(ServletContext servletContext, String propertyFileLRS) {
         try {
             final Properties lRSDetails = new Properties();
@@ -49,4 +50,12 @@ public class AnalyserApp extends ResourceConfig {
         }
     }
 
+    @PreDestroy
+    public void stop() {
+        try {
+            RemoteLRS.destroy();
+        } catch(Exception e) {
+            LOGGER.error("The RemoteLRS cannot be properly destroyed.");
+        }
+    }
 }
