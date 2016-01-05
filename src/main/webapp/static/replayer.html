@@ -1,141 +1,143 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF8">
-    <title>PTAnywhere widget usage player</title>
+        <meta http-equiv="content-type" content="text/html; charset=UTF8">
+        <title>PTAnywhere widget usage player</title>
 
-    <!-- JQuery -->
-    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script type="text/javascript" src="bower_components/jquery-ui/jquery-ui.min.js"></script>
-    <!-- For the slider -->
-    <link rel="stylesheet" href="bower_components/jquery-ui/themes/base/jquery-ui.min.css">
+        <!-- JQuery -->
+        <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+        <script type="text/javascript" src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+        <!-- For the slider -->
+        <link rel="stylesheet" href="bower_components/jquery-ui/themes/base/jquery-ui.min.css">
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css">
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css">
+        <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
-    <!-- Vis.js -->
-    <script type="text/javascript" src="bower_components/vis/dist/vis.min.js"></script>
-    <link type="text/css" rel="stylesheet" href="bower_components/vis/dist/vis.min.css">
+        <!-- Vis.js -->
+        <script type="text/javascript" src="bower_components/vis/dist/vis.min.js"></script>
+        <link type="text/css" rel="stylesheet" href="bower_components/vis/dist/vis.min.css">
 
-    <!-- PTAnywhere -->
-    <link type="text/css" rel="stylesheet" href="bower_components/widget-ui/css/widget.css">
-    <script type="text/javascript" src="bower_components/widget-ui/js/locale/en.js"></script>
-    <script type="text/javascript" src="bower_components/widget-ui/js/widget.js"></script>
+        <!-- PTAnywhere -->
+        <link type="text/css" rel="stylesheet" href="bower_components/widget-ui/css/widget.css">
+        <script type="text/javascript" src="bower_components/widget-ui/js/locale/en.js"></script>
+        <script type="text/javascript" src="bower_components/widget-ui/js/widget.js"></script>
 
-    <!-- Replayer -->
-    <link rel="stylesheet" href="css/replayer.css">
-    <script type="text/javascript" src="js/replayer.js"></script>
-    <script type="text/javascript" src="data/base_map.js"></script>
-    <script type="text/javascript" src="data/vocabulary.js"></script>
-    <script type="text/javascript">
-        // Starts with (not yet supported by all browsers)
-        String.prototype.startsWith = function(suffix) {
-            return this.indexOf(suffix, 0) === 0;
-        };
-
-        function getId(url) {
-            var els = url.split("/");
-            var ret = els[els.length-1];
-            if (ret.length!=0) return ret;
-            return els[els.length-2];
-        }
-
-        $(function() {
-            var htmlElements = {
-                cbSessionId: 'registrations',
-                btnSpeedId: 'speed',
-                btnPlayPauseId: 'playPause',
-                btnStopId: 'stop',
-                sdrTimelineId: 'timeline',
-                eventLogId: 'event-log',
+        <!-- Replayer -->
+        <link rel="stylesheet" href="css/replayer.css">
+        <script type="text/javascript" src="js/replayer.js"></script>
+        <script type="text/javascript" src="data/base_map.js"></script>
+        <script type="text/javascript" src="data/vocabulary.js"></script>
+        <script type="text/javascript">
+            // Starts with (not yet supported by all browsers)
+            String.prototype.startsWith = function(suffix) {
+                return this.indexOf(suffix, 0) === 0;
             };
-            replayer.create('../data/sessions', htmlElements);
-            var widget = ptAnywhereWidgets.all.createNonInteractiveWidget('.widget', 'bower_components/widget-ui/images/', data, { backdrop: false });
-            replayer.onStop(widget.reset);
-            replayer.onStatement(function(statement) {
-                console.log(statement);
+
+            function getId(url) {
+                var els = url.split("/");
+                var ret = els[els.length-1];
+                if (ret.length!=0) return ret;
+                return els[els.length-2];
+            }
+
+            $(function() {
+                var htmlElements = {
+                    cbSessionId: 'registrations',
+                    btnSpeedId: 'speed',
+                    btnPlayPauseId: 'playPause',
+                    btnStopId: 'stop',
+                    sdrTimelineId: 'timeline',
+                    eventLogId: 'event-log',
+                };
+                replayer.create('../data/sessions', htmlElements);
+                var widget = ptAnywhereWidgets.all.createNonInteractiveWidget('.widget', 'bower_components/widget-ui/images/', data,
+                                                                                { backdrop: 'static', dialogWrapper: '.dialogs', backdropArea: '.widget' });
+                replayer.onStop(widget.reset);
+                replayer.onStatement(function(statement) {
+                    console.log(statement);
+                });
+                replayer.onStatement(function(statement) {
+                    var dext = (statement.result===undefined)? null: statement.result.extensions;
+                    if (statement.verb.id===verb.create) {
+                        if (statement.object.id.startsWith(devices.any)) {
+                            var dId = getId(dext[extension.uri]);
+                            widget.map.addNode({ id: dId, group: dext[extension.type], label: dext[extension.name],
+                                                x: dext[extension.position].x, y: dext[extension.position].y,
+                                                url: dext[extension.uri] });
+                            widget.map.fit();
+                        } else if (statement.object.id == activity.link) {
+                            var ends = dext[extension.endpoints];
+                            widget.map.connect(ends[0].device, ends[1].device);
+                        }
+                    } else if (statement.verb.id===verb.delete) {
+                        if (statement.object.id.startsWith(devices.any)) {
+                            widget.map.removeNode(dext[extension.name]);
+                        } else if (statement.object.id == activity.link) {
+                            var ends = dext[extension.endpoints];
+                            widget.map.disconnect([ ends[0].device, ends[1].device ]);
+                        }
+                    } else if (statement.verb.id===verb.update) {
+                        var dName = dext[extension.name];
+                        var nodeToModify = widget.map.get(dName);
+
+                        replayer.freeze();
+
+                        widget.dialogs.modification.selectFirstTab();  // selectSecondTab();
+                        widget.dialogs.modification.setDeviceName(dName);
+                        if (nodeToModify.hasOwnProperty('defaultGateway')) {
+                            widget.dialogs.modification.setDefaultGateway(nodeToModify.defaultGateway);
+                        } else {
+                            widget.dialogs.modification.setDefaultGateway(null);
+                        }
+                        widget.dialogs.modification.open();
+
+                        // TODO typing effects
+                        setTimeout(function() {
+                            widget.map.updateNode(nodeToModify);
+                            widget.dialogs.modification.close();
+                            replayer.unfreeze();
+                        }, 2000);
+                    }
+                });
             });
-            replayer.onStatement(function(statement) {
-                var dext = (statement.result===undefined)? null: statement.result.extensions;
-                if (statement.verb.id===verb.create) {
-                    if (statement.object.id.startsWith(devices.any)) {
-                        var dId = getId(dext[extension.uri]);
-                        widget.map.addNode({ id: dId, group: dext[extension.type], label: dext[extension.name],
-                                            x: dext[extension.position].x, y: dext[extension.position].y,
-                                            url: dext[extension.uri] });
-                        widget.map.fit();
-                    } else if (statement.object.id == activity.link) {
-                        var ends = dext[extension.endpoints];
-                        widget.map.connect(ends[0].device, ends[1].device);
-                    }
-                } else if (statement.verb.id===verb.delete) {
-                    if (statement.object.id.startsWith(devices.any)) {
-                        widget.map.removeNode(dext[extension.name]);
-                    } else if (statement.object.id == activity.link) {
-                        var ends = dext[extension.endpoints];
-                        widget.map.disconnect([ ends[0].device, ends[1].device ]);
-                    }
-                } else if (statement.verb.id===verb.update) {
-                    var dName = dext[extension.name];
-                    var nodeToModify = widget.map.get(dName);
+        </script>
+      </head>
+      <body>
+            <div class="container">
+                  <h1>Replayer</h1>
 
-                    replayer.freeze();
+                  <div class="row">
+                        <div class="col-md-4">
+                              <p>Session to replay:
+                                    <select id="registrations"></select>
+                                    <button id="speed"></button>
+                                    <button id="playPause">
+                                        <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                                    </button>
+                                    <button id="stop">
+                                        <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
+                                    </button>
+                              </p>
+                        </div>
+                        <div class="col-md-8">
+                            <span id="timeline"></span>
+                        </div>
+                  </div>
 
-                    widget.dialogs.modification.selectFirstTab();  // selectSecondTab();
-                    widget.dialogs.modification.setDeviceName(dName);
-                    if (nodeToModify.hasOwnProperty('defaultGateway')) {
-                        widget.dialogs.modification.setDefaultGateway(nodeToModify.defaultGateway);
-                    } else {
-                        widget.dialogs.modification.setDefaultGateway(null);
-                    }
-                    widget.dialogs.modification.open();
+                  <div class="row replaying-area">
+                        <div class="col-md-4">
+                            <div id="event-log" class="well"></div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="widget"></div>
+                            <div class="dialogs"></div>
+                        </div>
+                  </div>
 
-                    // TODO typing effects
-                    setTimeout(function(){
-                        widget.map.updateNode(nodeToModify);
-                        widget.dialogs.modification.close();
-                        replayer.unfreeze();
-                    }, 2000);
-                }
-            });
-        });
-    </script>
-  </head>
-  <body>
-    <div class="container">
-      <h1>Replayer</h1>
-
-      <div class="row">
-        <div class="col-md-4">
-          <p>Session to replay:
-            <select id="registrations"></select>
-            <button id="speed"></button>
-            <button id="playPause">
-              <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-            </button>
-            <button id="stop">
-              <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
-            </button>
-          </p>
-        </div>
-        <div class="col-md-8">
-          <span id="timeline"></span>
-        </div>
-      </div>
-
-      <div class="row replaying-area">
-        <div class="col-md-4">
-          <div id="event-log" class="well"></div>
-        </div>
-        <div class="col-md-8">
-          <div class="widget"></div>
-        </div>
-      </div>
-
-      <div id="error-dialog" title="Error loading data"><p></p></div>
-    </div>
-  </body>
+                  <div id="error-dialog" title="Error loading data"><p></p></div>
+            </div>
+      </body>
 </html>
 

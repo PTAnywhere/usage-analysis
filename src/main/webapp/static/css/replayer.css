@@ -34,3 +34,7 @@
 #event-log p {
     margin: 0%;
 }
+
+.modal, .modal-backdrop {
+    position: absolute !important;
+}
