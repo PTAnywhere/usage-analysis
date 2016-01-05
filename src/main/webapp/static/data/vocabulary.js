@@ -8,6 +8,7 @@ var prefix = {
 
 var activity = {
     link: prefix.forge + 'link',
+    commandLine: prefix.forge + 'command-line',
 };
 
 

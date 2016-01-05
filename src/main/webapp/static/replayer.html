@@ -99,7 +99,20 @@
                             widget.dialogs.modification.close();
                             replayer.unfreeze();
                         }, 2000);
-                    }
+                   } else if (statement.verb.id===verb.initialized) {
+                       if (statement.object.definition.type==activity.commandLine) {
+                           widget.dialogs.cmd.open();
+                       }
+                   } else if (statement.verb.id===verb.terminated) {
+                       if (statement.object.definition.type==activity.commandLine) {
+                           widget.dialogs.cmd.close();
+                           // TODO make sure that it is closed in the end of the simulation!
+                       }
+                   } else if (statement.verb.id===verb.use) {
+                       if (statement.object.definition.type==activity.commandLine) {
+                           widget.dialogs.cmd.setBody(statement.result.response);
+                       }
+                   }
                 });
             });
         </script>
