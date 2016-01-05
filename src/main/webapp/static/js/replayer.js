@@ -330,6 +330,11 @@ var replayer = (function () {
             millisPerStep = 1000.0 / speed;
         }
 
+        function getSpeed() {
+            // x1 1000ms per step, x2 500ms per step, etc.
+            return Math.round(1000.0 / millisPerStep);
+        }
+
         function addUpdateCallback(callback) {
             updateCallbacks.push(callback);
         }
@@ -350,6 +355,7 @@ var replayer = (function () {
         return {
             set: setStatements,
             setSpeed: setSpeed,
+            getSpeed: getSpeed,
             play: playPause,
             stop: stop,
             pause: playPause,
@@ -364,6 +370,7 @@ var replayer = (function () {
         onStatement: timeline.onStatement,
         onStop: onStop,
         load: loadRegistration,
+        getSpeed: timeline.getSpeed,
     };
 
 })();

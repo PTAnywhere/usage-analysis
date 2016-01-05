@@ -59,7 +59,9 @@
                     console.log(statement);
                 });
                 replayer.onStatement(function(statement) {
+                    var dialogAnimationTime = (replayer.getSpeed()==1)? 2000: 1000;
                     var dext = (statement.result===undefined)? null: statement.result.extensions;
+                    // TODO typing effects in dialogs
                     if (statement.verb.id===verb.create) {
                         if (statement.object.id.startsWith(devices.any)) {
                             var dId = getId(dext[extension.uri]);
@@ -69,7 +71,20 @@
                             widget.map.fit();
                         } else if (statement.object.id == activity.link) {
                             var ends = dext[extension.endpoints];
-                            widget.map.connect(ends[0].device, ends[1].device);
+
+                            replayer.freeze();
+                            widget.dialogs.link.setFromDevice(ends[0].device);
+                            widget.dialogs.link.setFromPorts([{portName: ends[0].port, portURL: ''}]);
+                            widget.dialogs.link.setToDevice(ends[1].device);
+                            widget.dialogs.link.setToPorts([{portName: ends[1].port, portURL: ''}]);
+                            widget.dialogs.link.showLoaded();
+                            widget.dialogs.link.open();
+
+                            setTimeout(function() {
+                                widget.map.connect(ends[0].device, ends[1].device);
+                                widget.dialogs.link.close();
+                                replayer.unfreeze();
+                            }, dialogAnimationTime);
                         }
                     } else if (statement.verb.id===verb.delete) {
                         if (statement.object.id.startsWith(devices.any)) {
@@ -93,12 +108,11 @@
                         }
                         widget.dialogs.modification.open();
 
-                        // TODO typing effects
                         setTimeout(function() {
                             widget.map.updateNode(nodeToModify);
                             widget.dialogs.modification.close();
                             replayer.unfreeze();
-                        }, 2000);
+                        }, dialogAnimationTime);
                    } else if (statement.verb.id===verb.initialized) {
                        if (statement.object.definition.type==activity.commandLine) {
                            widget.dialogs.cmd.open();
@@ -106,7 +120,7 @@
                    } else if (statement.verb.id===verb.terminated) {
                        if (statement.object.definition.type==activity.commandLine) {
                            widget.dialogs.cmd.close();
-                           // TODO make sure that it is closed in the end of the simulation!
+                           // TODO Make sure that it is closed when the simulation ends.
                        }
                    } else if (statement.verb.id===verb.use) {
                        if (statement.object.definition.type==activity.commandLine) {
