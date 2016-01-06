@@ -7,10 +7,11 @@ var prefix = {
 
 
 var activity = {
+    device: prefix.forge + 'device',
+    port: prefix.forge + 'port',
     link: prefix.forge + 'link',
     commandLine: prefix.forge + 'command-line',
 };
-
 
 var verb = {
     initialized: prefix.adlnet + 'initialized',
@@ -23,10 +24,19 @@ var verb = {
 
 
 var extension = {
-    name: prefix.ext + 'device/name',
-    position: prefix.ext + 'device/position',
-    type: prefix.ext + 'device/type',
-    uri: prefix.ext + 'device/uri',
+    device: {
+        name: prefix.ext + 'device/name',
+        position: prefix.ext + 'device/position',
+        type: prefix.ext + 'device/type',
+        defaultGateway: prefix.ext + 'device/defaultGateway',
+        uri: prefix.ext + 'device/uri'
+    },
+    port: {
+        name: prefix.ext + 'port/name',
+        ipAddress: prefix.ext + 'port/ipAddress',
+        subnetMask: prefix.ext + 'port/subnetMask',
+        uri: prefix.ext + 'port/uri'
+    },
     endpoints: prefix.ext + 'endpoints',
 };
 

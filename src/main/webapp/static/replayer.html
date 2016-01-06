@@ -64,10 +64,15 @@
                     // TODO typing effects in dialogs
                     if (statement.verb.id===verb.create) {
                         if (statement.object.id.startsWith(devices.any)) {
-                            var dId = getId(dext[extension.uri]);
-                            widget.map.addNode({ id: dId, group: dext[extension.type], label: dext[extension.name],
-                                                x: dext[extension.position].x, y: dext[extension.position].y,
-                                                url: dext[extension.uri] });
+                            var dId = getId(dext[extension.device.uri]);
+                            var baseDevice = { id: dId, group: dext[extension.device.type], label: dext[extension.device.name],
+                                                x: dext[extension.device.position].x, y: dext[extension.device.position].y,
+                                                url: dext[extension.device.uri] };
+                            console.log(dext);
+                            if (extension.device.defaultGateway in dext) {
+                                baseDevice.defaultGateway = dext[extension.device.defaultGateway];
+                            }
+                            widget.map.addNode(baseDevice);
                             widget.map.fit();
                         } else if (statement.object.id == activity.link) {
                             var ends = dext[extension.endpoints];
@@ -88,27 +93,36 @@
                         }
                     } else if (statement.verb.id===verb.delete) {
                         if (statement.object.id.startsWith(devices.any)) {
-                            widget.map.removeNode(dext[extension.name]);
+                            widget.map.removeNode(dext[extension.device.name]);
                         } else if (statement.object.id == activity.link) {
                             var ends = dext[extension.endpoints];
                             widget.map.disconnect([ ends[0].device, ends[1].device ]);
                         }
                     } else if (statement.verb.id===verb.update) {
-                        var dName = dext[extension.name];
+                        var dName = dext[extension.device.name];
                         var nodeToModify = widget.map.get(dName);
 
                         replayer.freeze();
-
-                        widget.dialogs.modification.selectFirstTab();  // selectSecondTab();
-                        widget.dialogs.modification.setDeviceName(dName);
-                        if (nodeToModify.hasOwnProperty('defaultGateway')) {
-                            widget.dialogs.modification.setDefaultGateway(nodeToModify.defaultGateway);
-                        } else {
-                            widget.dialogs.modification.setDefaultGateway(null);
+                        if (statement.object.id.startsWith(devices.any)) {
+                            widget.dialogs.modification.selectFirstTab();
+                            widget.dialogs.modification.setDeviceName(dName);
+                            if (nodeToModify.hasOwnProperty('defaultGateway')) {
+                                widget.dialogs.modification.setDefaultGateway(nodeToModify.defaultGateway);
+                            } else {
+                                widget.dialogs.modification.setDefaultGateway(null);
+                            }
+                        } else if (statement.object.definition.type==activity.port) {
+                            widget.dialogs.modification.selectSecondTab();
+                            widget.dialogs.modification.setPorts([{portName: dext[extension.port.name], portURL: ''}]);
+                            widget.dialogs.modification.setPortIpAddress(dext[extension.port.ipAddress]);
+                            widget.dialogs.modification.setPortSubnetMask(dext[extension.port.subnetMask]);
+                            widget.dialogs.modification.showLoaded();
+                            widget.dialogs.modification.showIFaceDetails();
                         }
                         widget.dialogs.modification.open();
 
                         setTimeout(function() {
+                            // TODO check that the name has changed
                             widget.map.updateNode(nodeToModify);
                             widget.dialogs.modification.close();
                             replayer.unfreeze();
