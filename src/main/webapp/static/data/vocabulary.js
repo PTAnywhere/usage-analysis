@@ -20,6 +20,7 @@ var verb = {
     delete: prefix.activity + 'delete',
     update: prefix.activity + 'update',
     use: prefix.activity + 'use',
+    read: prefix.activity + 'read',
 };
 
 
