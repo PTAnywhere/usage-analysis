@@ -68,7 +68,6 @@
                             var baseDevice = { id: dId, group: dext[extension.device.type], label: dext[extension.device.name],
                                                 x: dext[extension.device.position].x, y: dext[extension.device.position].y,
                                                 url: dext[extension.device.uri] };
-                            console.log(dext);
                             if (extension.device.defaultGateway in dext) {
                                 baseDevice.defaultGateway = dext[extension.device.defaultGateway];
                             }
@@ -99,13 +98,14 @@
                             widget.map.disconnect([ ends[0].device, ends[1].device ]);
                         }
                     } else if (statement.verb.id===verb.update) {
-                        var dName = dext[extension.device.name];
-                        var nodeToModify = widget.map.get(dName);
+                        var originalName = dext[extension.device.name];
+                        var nodeToModify = widget.map.get(originalName);
 
                         replayer.freeze();
                         if (statement.object.id.startsWith(devices.any)) {
                             widget.dialogs.modification.selectFirstTab();
-                            widget.dialogs.modification.setDeviceName(dName);
+                            widget.dialogs.modification.setDeviceName(statement.result.response);
+                            nodeToModify.label = statement.result.response;
                             if (nodeToModify.hasOwnProperty('defaultGateway')) {
                                 widget.dialogs.modification.setDefaultGateway(nodeToModify.defaultGateway);
                             } else {
@@ -122,25 +122,24 @@
                         widget.dialogs.modification.open();
 
                         setTimeout(function() {
-                            // TODO check that the name has changed
                             widget.map.updateNode(nodeToModify);
                             widget.dialogs.modification.close();
                             replayer.unfreeze();
                         }, dialogAnimationTime);
-                   } else if (statement.verb.id===verb.initialized) {
-                       if (statement.object.definition.type==activity.commandLine) {
-                           widget.dialogs.cmd.open();
-                       }
-                   } else if (statement.verb.id===verb.terminated) {
-                       if (statement.object.definition.type==activity.commandLine) {
-                           widget.dialogs.cmd.close();
-                           // TODO Make sure that it is closed when the simulation ends.
-                       }
-                   } else if (statement.verb.id===verb.use) {
-                       if (statement.object.definition.type==activity.commandLine) {
-                           widget.dialogs.cmd.setBody(statement.result.response);
-                       }
-                   }
+                    } else if (statement.verb.id===verb.initialized) {
+                        if (statement.object.definition.type==activity.commandLine) {
+                            widget.dialogs.cmd.open();
+                        }
+                    } else if (statement.verb.id===verb.terminated) {
+                        if (statement.object.definition.type==activity.commandLine) {
+                            widget.dialogs.cmd.close();
+                            // TODO Make sure that it is closed when the simulation ends.
+                        }
+                    } else if (statement.verb.id===verb.use) {
+                        if (statement.object.definition.type==activity.commandLine) {
+                            widget.dialogs.cmd.setBody(statement.result.response);
+                        }
+                    }
                 });
             });
         </script>
