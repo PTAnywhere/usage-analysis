@@ -129,7 +129,7 @@
                         }, dialogAnimationTime);
                     } else if (statement.verb.id===verb.initialized) {
                         if (statement.object.definition.type==activity.commandLine) {
-                            widget.dialogs.cmd.setBody('<div class="messages"></div>');
+                            widget.dialogs.cmd.setBody('<div class="messages commandLine"></div>');
                             widget.dialogs.cmd.open();
                         }
                     } else if (statement.verb.id===verb.terminated) {
@@ -145,6 +145,8 @@
                     } else if (statement.verb.id===verb.read) {
                         if (statement.object.definition.type==activity.commandLine) {
                             widget.dialogs.cmd.appendTo('.messages', statement.result.response);
+                            var cmdDiv = $(".commandLine");
+                            cmdDiv.scrollTop(cmdDiv[0].scrollHeight);
                         }
                     }
                 });

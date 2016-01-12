@@ -38,3 +38,8 @@
 .modal, .modal-backdrop {
     position: absolute !important;
 }
+
+.commandLine {
+    height: 100%;
+    overflow: auto;
+}
