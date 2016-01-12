@@ -19,6 +19,8 @@ var verb = {
     create: prefix.activity + 'create',
     delete: prefix.activity + 'delete',
     update: prefix.activity + 'update',
+    opened: prefix.activity + 'open',
+    closed: prefix.activity + 'close',
     use: prefix.activity + 'use',
     read: prefix.activity + 'read',
 };

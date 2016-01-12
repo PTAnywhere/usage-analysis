@@ -190,6 +190,11 @@
             <artifactId>commons-logging</artifactId>
             <version>1.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.3</version>
+        </dependency>
 
         <!-- TinCanJava library locally installed, hopefully it will be updated to a Maven repo soon. -->
         <dependency>

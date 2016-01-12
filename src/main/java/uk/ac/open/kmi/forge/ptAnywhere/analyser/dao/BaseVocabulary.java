@@ -1,5 +1,6 @@
 package uk.ac.open.kmi.forge.ptAnywhere.analyser.dao;
 
+
 /**
  * For a more comprehensive and human-oriented description of the vocabulary used to describe interactions,
  * please go to [1].
@@ -10,6 +11,7 @@ public class BaseVocabulary {
     // Own vocabulary
     private static final String VOCAB = "http://ict-forge.eu/vocab";
     public static final String PTANYWHERE = "http://pt-anywhere.kmi.open.ac.uk";  // For PTAnywhere related extensions
+    public static final String UNKNOWN_WIDGET = VOCAB + "/widgets/unknown";
 
     /* Verbs */
     public static final String INITIALIZED = "http://adlnet.gov/expapi/verbs/initialized";
@@ -17,14 +19,18 @@ public class BaseVocabulary {
     public static final String CREATED = "http://activitystrea.ms/schema/1.0/create";
     public static final String DELETED = "http://activitystrea.ms/schema/1.0/delete";
     public static final String UPDATED = "http://activitystrea.ms/schema/1.0/update";
-    // For command line, instead of initialized and terminated we could also register: "open" or "close".
+    // Verbs used with command line activities:
+    public static final String OPENED = "http://activitystrea.ms/schema/1.0/open";
+    public static final String CLOSED = "http://activitystrea.ms/schema/1.0/close";
     public static final String USED = "http://activitystrea.ms/schema/1.0/use";
+    public static final String READ = "http://activitystrea.ms/schema/1.0/read";
 
     /* Objects */
     /** Objects -> Actitivies **/
     public static final String SIMULATION = "http://adlnet.gov/expapi/activities/simulation";
     public static final String ACTIVITIES = VOCAB + "/activities";
     public static final String SIMULATED_DEVICE = ACTIVITIES + "/device";
+    public static final String SIMULATED_PORT = ACTIVITIES + "/port";
     public static final String SIMULATED_LINK = ACTIVITIES + "/link";
     public static final String COMMAND_LINE = ACTIVITIES + "/command-line";
 
@@ -32,8 +38,13 @@ public class BaseVocabulary {
     private static final String EXTENSION = PTANYWHERE + "/extensions";
     public static final String EXT_DEVICE_NAME = EXTENSION + "/device/name";
     public static final String EXT_DEVICE_TYPE = EXTENSION + "/device/type";
+    public static final String EXT_DEVICE_GW = EXTENSION + "/device/defaultGateway";
     public static final String EXT_DEVICE_URI = EXTENSION + "/device/uri";  // URI in the context of PTAnywhere API
     public static final String EXT_DEVICE_POSITION = EXTENSION + "/device/position";
+    public static final String EXT_PORT_URI = EXTENSION + "/port/uri";
+    public static final String EXT_PORT_NAME = EXTENSION + "/port/name";
+    public static final String EXT_PORT_IP_ADDR = EXTENSION + "/port/ipAddress";
+    public static final String EXT_PORT_SUBNET_MASK = EXTENSION + "/port/subnetMask";
     public static final String EXT_ENDPOINTS = EXTENSION + "/endpoints";
     public static final String EXT_LINK_URI = EXTENSION + "/link/uri";
 

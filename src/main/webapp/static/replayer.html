@@ -127,12 +127,12 @@
                             widget.dialogs.modification.close();
                             replayer.unfreeze();
                         }, dialogAnimationTime);
-                    } else if (statement.verb.id===verb.initialized) {
+                    } else if (statement.verb.id===verb.opened) {
                         if (statement.object.definition.type==activity.commandLine) {
                             widget.dialogs.cmd.setBody('<div class="messages commandLine"></div>');
                             widget.dialogs.cmd.open();
                         }
-                    } else if (statement.verb.id===verb.terminated) {
+                    } else if (statement.verb.id===verb.closed) {
                         if (statement.object.definition.type==activity.commandLine) {
                             widget.dialogs.cmd.close();
                             // TODO Make sure that it is closed when the simulation ends.
@@ -145,7 +145,7 @@
                     } else if (statement.verb.id===verb.read) {
                         if (statement.object.definition.type==activity.commandLine) {
                             widget.dialogs.cmd.appendTo('.messages', statement.result.response);
-                            var cmdDiv = $(".commandLine");
+                            var cmdDiv = $('.commandLine');
                             cmdDiv.scrollTop(cmdDiv[0].scrollHeight);
                         }
                     }
