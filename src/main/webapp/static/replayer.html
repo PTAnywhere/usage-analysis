@@ -108,7 +108,7 @@
                             widget.dialogs.modification.setDeviceName(statement.result.response);
                             nodeToModify.label = statement.result.response;
                             if (nodeToModify.hasOwnProperty('defaultGateway')) {
-                                widget.dialogs.modification.setDefaultGateway(nodeToModify.defaultGateway);
+                                widget.dialogs.modification.setDefaultGateway(dext[extension.device.defaultGateway]);
                             } else {
                                 widget.dialogs.modification.setDefaultGateway(null);
                             }
