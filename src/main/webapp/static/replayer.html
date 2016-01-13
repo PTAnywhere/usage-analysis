@@ -134,7 +134,17 @@
                         }
                     } else if (statement.verb.id===verb.closed) {
                         if (statement.object.definition.type==activity.commandLine) {
+                            // An undesired effect can be seen when the open method is processed before the modal has
+                            // been properly been closed (it usually only happens when it is replayed at x16).
+                            // The following code will ensure that next event is processed ONLY after the dialog has been closed.
+
+                            replayer.freeze();
+                            widget.dialogs.cmd.selector.on('hidden.bs.modal', function (e) {
+                                $(e.currentTarget).unbind();  // Unbind previous
+                                replayer.unfreeze();
+                            });
                             widget.dialogs.cmd.close();
+
                             // TODO Make sure that it is closed when the simulation ends.
                         }
                     } else if (statement.verb.id===verb.use) {
