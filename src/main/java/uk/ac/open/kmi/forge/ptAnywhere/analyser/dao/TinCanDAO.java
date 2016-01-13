@@ -12,7 +12,6 @@ import com.rusticisoftware.tincan.lrsresponses.StatementsResultLRSResponse;
 import com.rusticisoftware.tincan.v10x.StatementsQuery;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.joda.time.DateTime;
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.exceptions.LRSException;
 
 
