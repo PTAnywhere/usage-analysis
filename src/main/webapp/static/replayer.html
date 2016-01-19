@@ -53,8 +53,14 @@
                     eventLogId: 'event-log',
                 };
                 replayer.create('../data/sessions', htmlElements);
-                var widget = ptAnywhereWidgets.all.createNonInteractiveWidget('.widget', 'bower_components/widget-ui/images/', data,
-                                                                                { backdrop: 'static', dialogWrapper: '.dialogs', backdropArea: '.widget' });
+                var widget = ptAnywhereWidgets.all.createNonInteractiveWidget('.widget',
+                                                                              'bower_components/widget-ui/images/',
+                                                                              data,
+                                                                              { sessionCreation: false,
+                                                                                backdrop: 'static',
+                                                                                dialogWrapper: '.dialogs',
+                                                                                backdropArea: '.widget'
+                                                                              });
                 replayer.onStop(widget.reset);
                 replayer.onStatement(function(statement) {
                     console.log(statement);
