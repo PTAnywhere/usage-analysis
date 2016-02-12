@@ -14,17 +14,9 @@ import java.net.MalformedURLException;
 @Path("sessions")
 public class SessionDataResource {
 
-    private TinCanDAO getTinCanDAO(ServletContext servletContext) throws MalformedURLException {
-        return new TinCanDAO(
-                    (String) servletContext.getAttribute(AnalyserApp.LRS_ENDPOINT),
-                    (String) servletContext.getAttribute(AnalyserApp.LRS_USERNAME),
-                    (String) servletContext.getAttribute(AnalyserApp.LRS_PASSWD)
-        );
-    }
-
     @GET
     public Response getUsageSummaries(@Context ServletContext servletContext) throws MalformedURLException {
-        final TinCanDAO dao = getTinCanDAO(servletContext);
+        final TinCanDAO dao = AnalyserApp.getTinCanDAO(servletContext);
         // Filter sessions with less than 2 statements (/events) registered.
         // This way, sessions where nothing else apart from allocating PT has been done will be filtered.
         return Response.ok(dao.getRegistrations(2).toString()).build();
@@ -35,7 +27,7 @@ public class SessionDataResource {
     //@Produces(MediaType.APPLICATION_JSON)
     public Response getUsageSummaries(@Context ServletContext servletContext,
                                       @PathParam("registration") String registrationId) throws MalformedURLException {
-        final TinCanDAO dao = getTinCanDAO(servletContext);
+        final TinCanDAO dao = AnalyserApp.getTinCanDAO(servletContext);
         return Response.ok(dao.getActions(registrationId)).build();  //dao.getActions(sessionId).toString()).build();
     }
 }

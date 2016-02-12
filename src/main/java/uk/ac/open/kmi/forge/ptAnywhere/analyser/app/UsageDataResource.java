@@ -12,18 +12,10 @@ import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.TinCanDAO;
 @Path("usage")
 public class UsageDataResource {
 
-    private TinCanDAO getTinCanDAO(ServletContext servletContext) throws MalformedURLException {
-        return new TinCanDAO(
-                    (String) servletContext.getAttribute(AnalyserApp.LRS_ENDPOINT),
-                    (String) servletContext.getAttribute(AnalyserApp.LRS_USERNAME),
-                    (String) servletContext.getAttribute(AnalyserApp.LRS_PASSWD)
-        );
-    }
-
     @GET
     //@Produces(MediaType.APPLICATION_JSON)
     public Response getUsageSummaries(@Context ServletContext servletContext) throws MalformedURLException {
-        final TinCanDAO dao = getTinCanDAO(servletContext);
+        final TinCanDAO dao = AnalyserApp.getTinCanDAO(servletContext);
         return Response.ok(dao.getActionsPerSession().toString()).build();
     }
 }

@@ -4,12 +4,14 @@ import com.rusticisoftware.tincan.RemoteLRS;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.TinCanDAO;
 
 import javax.annotation.PreDestroy;
 import javax.servlet.ServletContext;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.Properties;
 
 
@@ -57,5 +59,14 @@ public class AnalyserApp extends ResourceConfig {
         } catch(Exception e) {
             LOGGER.error("The RemoteLRS cannot be properly destroyed.");
         }
+    }
+
+
+    protected static TinCanDAO getTinCanDAO(ServletContext servletContext) throws MalformedURLException {
+        return new TinCanDAO(
+                (String) servletContext.getAttribute(AnalyserApp.LRS_ENDPOINT),
+                (String) servletContext.getAttribute(AnalyserApp.LRS_USERNAME),
+                (String) servletContext.getAttribute(AnalyserApp.LRS_PASSWD)
+        );
     }
 }
