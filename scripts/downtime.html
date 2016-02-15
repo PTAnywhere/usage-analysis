@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>PTAnywhere downtime during January</title>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+    <script src="Chart.Scatter.min.js"></script>
+    <script src="results.js"></script>
+    <script>
+      $(function() {
+        var ctx = document.getElementById("downtimeChart").getContext("2d");
+        reformated = [];
+        reformated.push({x: new Date(results[0].x), y: results[0].y});
+        var j = 1;
+        for (var i=1; i<results.length; i++) {
+          reformated.push({
+            x: new Date(results[i].x),
+            y: (results[i].y==1)? 0: 1
+          });
+          reformated.push({
+            x: new Date(results[i].x),
+            y: results[i].y
+          });
+          reformated[j+1].x.setMilliseconds(1);
+          j += 2;
+        }
+        //console.log(reformated);
+        var data = [{
+            label: 'Availability',
+            strokeColor: '#F16220',
+            pointColor: '#F16220',
+            pointStrokeColor: '#fff',
+            data: reformated
+          }];
+        var downtimeChart = new Chart(ctx).Scatter(data, {
+                                                    animation: false,
+                                                    bezierCurve: false,
+                                                    scaleType: "date",
+	                                                  scaleLabel: function (value) {
+                                                                  if (parseInt(value.value)==0) {
+                                                                    return 'Unavailable';
+                                                                  }
+                                                                  return 'Available';
+                                                                }
+                            });
+      });
+    </script>
+  </head>
+  <body>
+      <h1 class="project-name">PTAnywhere downtime</h1>
+      <p>The trial happen during January 27 and January 28.</p>
+      <canvas id="downtimeChart" width="1200" height="400"></canvas>
+  </body>
+</html>
