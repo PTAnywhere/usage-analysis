@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+      <meta http-equiv="content-type" content="text/html; charset=UTF8">
+      <title>PTAnywhere widget usage histogram</title>
+
+      <!-- JQuery -->
+      <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+
+      <!-- Bootstrap -->
+      <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+      <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css">
+      <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+      <!-- Bootstrap Datetimepicker & Moment.js dependency-->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+
+      <!-- Chart.js -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+      <script type="text/javascript">
+            var dateFormat = 'MM/DD/YYYY HH:00';
+
+            function createLabels(beginDate, steps) {
+                var ret = [];
+                for (var i=0; i<steps; i++) {
+                    ret.push(beginDate.add(1, 'hours').format(dateFormat));
+                }
+                return ret;
+            }
+
+
+            $(function() {
+                $('#startTime').datetimepicker({
+                    format: dateFormat,
+                    useCurrent: true,
+                    defaultDate: moment().startOf('day'),
+                });
+                $('#endTime').datetimepicker({
+                    format: dateFormat,
+                    useCurrent: true,
+                    defaultDate: moment().endOf('day'),
+                });
+                $('#startTime').on('dp.change', function(e) {
+                    $('#endTime').data("DateTimePicker").minDate(e.date.add(1, 'hours'));
+                });
+                $('#endTime').on('dp.change', function(e) {
+                    var startDate = $('#endTime').data("DateTimePicker").date();
+                    if (e.date<startDate) {
+                        $('#endTime').data("DateTimePicker").date(e.date.add(1, 'days'));
+                    }
+                });
+
+                var ctx = document.getElementById("myChart").getContext("2d");
+                var fakeData = [65, 59, 80, 81, 56, 55, 40, 41];
+                var data = {
+                    labels: createLabels(moment(), fakeData.length),
+                    datasets: [
+                        {
+                            label: "Sessions started",
+                            fillColor: "rgba(151,187,205,0.7)",
+                            strokeColor: "rgba(151,187,205,0.8)",
+                            highlightFill: "rgba(151,187,205,0.9)",
+                            highlightStroke: "rgba(151,187,205,1)",
+                            data: fakeData
+                        }
+                    ]
+                };
+                var options = {
+                    barShowStroke : false,
+                    barValueSpacing : 0,
+                    barValueSpacing : 0
+                };
+                var myBarChart = new Chart(ctx).Bar(data, options);
+            });
+      </script>
+</head>
+<body>
+<div class="container">
+    <h1>Usage histogram</h1>
+
+    <div class="row">
+        <div class="col-md-1">Start: </div>
+        <div class="col-md-3">
+            <div class='input-group date' id='startTime'>
+                <input type='text' class="form-control" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+        <div class="col-md-1 col-md-offset-1">Finish: </div>
+        <div class="col-md-3">
+            <div class='input-group date' id='endTime'>
+                <input type='text' class="form-control" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+        <div class="col-md-1 col-md-offset-1">
+            <button type="button" class="btn btn-primary" id="update">Update</button>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top: 5%;">
+      <canvas id="myChart" width="800" height="400"></canvas>
+    </div>
+</div>
+</body>
+</html>
