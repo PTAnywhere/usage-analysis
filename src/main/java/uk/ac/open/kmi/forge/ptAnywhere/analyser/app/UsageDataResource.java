@@ -16,6 +16,6 @@ public class UsageDataResource {
     //@Produces(MediaType.APPLICATION_JSON)
     public Response getUsageSummaries(@Context ServletContext servletContext) throws MalformedURLException {
         final TinCanDAO dao = AnalyserApp.getTinCanDAO(servletContext);
-        return Response.ok(dao.getActionsPerSession().toString()).build();
+        return Response.ok(dao.getSimplifiedActionsPerSession().toString()).build();
     }
 }

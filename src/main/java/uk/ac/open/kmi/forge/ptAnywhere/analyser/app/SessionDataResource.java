@@ -1,12 +1,14 @@
 package uk.ac.open.kmi.forge.ptAnywhere.analyser.app;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.TinCanDAO;
 
 import javax.servlet.ServletContext;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.MalformedURLException;
 
@@ -14,20 +16,48 @@ import java.net.MalformedURLException;
 @Path("sessions")
 public class SessionDataResource {
 
+    private DateTime parseDate(DateTimeFormatter fmt, String date) {
+        if (date==null) return null;
+        return fmt.parseDateTime(date);
+    }
+
     @GET
-    public Response getUsageSummaries(@Context ServletContext servletContext) throws MalformedURLException {
+    public Response getRegistrations(@Context ServletContext servletContext,
+                                      @DefaultValue("2") @QueryParam("minStatements") int step,
+                                      @QueryParam("start") String start,
+                                      @QueryParam("end") String end) throws MalformedURLException {
+        final DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
+        final DateTime since = parseDate(fmt, start);
+        final DateTime until = parseDate(fmt, end);
+
         final TinCanDAO dao = AnalyserApp.getTinCanDAO(servletContext);
-        // Filter sessions with less than 2 statements (/events) registered.
+        // Filter sessions with less than 'step' statements (/events) registered.
         // This way, sessions where nothing else apart from allocating PT has been done will be filtered.
-        return Response.ok(dao.getRegistrations(2).toString()).build();
+        return Response.ok(dao.getRegistrations(step, since, until).toString()).build();
     }
 
     @Path("{registration}")
     @GET
     //@Produces(MediaType.APPLICATION_JSON)
-    public Response getUsageSummaries(@Context ServletContext servletContext,
+    public Response getStatementsInRegistration(@Context ServletContext servletContext,
                                       @PathParam("registration") String registrationId) throws MalformedURLException {
         final TinCanDAO dao = AnalyserApp.getTinCanDAO(servletContext);
-        return Response.ok(dao.getActions(registrationId)).build();  //dao.getActions(sessionId).toString()).build();
+        return Response.ok(dao.getStatements(registrationId)).build();
+    }
+
+
+    @Path("counter")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    // Order by hour
+    public Response getSessionCount(@Context ServletContext servletContext,
+                                    @DefaultValue("2") @QueryParam("minStatements") int minStatements,
+                                    @QueryParam("start") String start,
+                                    @QueryParam("end") String end) throws MalformedURLException {
+        final DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
+        final DateTime since = parseDate(fmt, start);
+        final DateTime until = parseDate(fmt, end);
+        final TinCanDAO dao = AnalyserApp.getTinCanDAO(servletContext);
+        return Response.ok(dao.countActions(minStatements, since, until)).build();
     }
 }

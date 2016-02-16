@@ -170,6 +170,10 @@
             <artifactId>jersey-media-moxy</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-processing</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.glassfish.main.extras</groupId>
             <artifactId>glassfish-embedded-web</artifactId>
             <scope>provided</scope>
