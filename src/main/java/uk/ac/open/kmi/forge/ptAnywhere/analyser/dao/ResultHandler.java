@@ -7,7 +7,7 @@ import com.rusticisoftware.tincan.Statement;
 import com.rusticisoftware.tincan.lrsresponses.StatementsResultLRSResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.formatters.SuccessfulResponseChecker;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.exceptions.LRSException;
 
 
 /**
@@ -23,6 +23,7 @@ public class ResultHandler implements Iterator<Statement> {
     // Partial cached results
     Iterator<Statement> statements;
     Future<StatementsResultLRSResponse> nextStatements;
+    LRSException exceptionToBeThrown;
 
 
 
@@ -30,6 +31,7 @@ public class ResultHandler implements Iterator<Statement> {
         this.requestExecutor = Executors.newSingleThreadExecutor();
         this.lrs = lrs;
         this.nextStatements = null;
+        this.exceptionToBeThrown = null;
         updateStatements(oldResponse);
         requestMoreResults(oldResponse);
     }
@@ -38,23 +40,27 @@ public class ResultHandler implements Iterator<Statement> {
      * @return The new result used to update statements.
      */
     protected void updateStatements(StatementsResultLRSResponse newResponse) {
-        SuccessfulResponseChecker.checkSuccessful(newResponse);  // Check if it was invalid
-        this.statements = newResponse.getContent().getStatements().iterator();
+        if (newResponse.getSuccess()) {
+            this.statements = newResponse.getContent().getStatements().iterator();
+        } else {
+            this.exceptionToBeThrown = new LRSException(newResponse.getErrMsg());
+        }
     }
 
     protected void requestMoreResults(StatementsResultLRSResponse response) {
-        final String moreUrl = response.getContent().getMoreURL();
-        if (moreUrl!=null) {
-            this.nextStatements = this.requestExecutor.submit(
-                new Callable<StatementsResultLRSResponse>() {
-                    @Override
-                    public StatementsResultLRSResponse call() {
-                        LOGGER.info("Sending request to get more results:" + moreUrl);
-                        return lrs.moreStatements(moreUrl);
-                    }
-                });
-        } else {
-            this.nextStatements = null;
+        this.nextStatements = null;
+        if (response.getContent()!=null) {
+            final String moreUrl = response.getContent().getMoreURL();
+            if ( moreUrl!=null && !moreUrl.equals("")) {
+                this.nextStatements = this.requestExecutor.submit(
+                        new Callable<StatementsResultLRSResponse>() {
+                            @Override
+                            public StatementsResultLRSResponse call() {
+                                LOGGER.info("Sending request to get more results:" + moreUrl);
+                                return lrs.moreStatements(moreUrl);
+                            }
+                        });
+            }
         }
     }
 
@@ -76,13 +82,18 @@ public class ResultHandler implements Iterator<Statement> {
         }
     }
 
+    boolean stHasNext() {
+        if (this.exceptionToBeThrown!=null) throw this.exceptionToBeThrown;
+        return this.statements.hasNext();
+    }
+
     @Override
-    public boolean hasNext() {
-        if (this.statements.hasNext()) {
+    public boolean hasNext() throws LRSException {
+        if (stHasNext()) {
             return true;
         } else {
             updateResult();
-            return this.statements.hasNext();
+            return stHasNext();
         }
     }
 

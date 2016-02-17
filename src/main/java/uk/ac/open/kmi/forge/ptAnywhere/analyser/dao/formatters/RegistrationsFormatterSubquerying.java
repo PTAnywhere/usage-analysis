@@ -1,18 +1,17 @@
 package uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.formatters;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.HashMap;
+import java.util.Iterator;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import com.rusticisoftware.tincan.RemoteLRS;
 import com.rusticisoftware.tincan.Statement;
 import com.rusticisoftware.tincan.lrsresponses.StatementsResultLRSResponse;
 import com.rusticisoftware.tincan.v10x.StatementsQuery;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.StatementResultFormatter;
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.exceptions.LRSException;
-
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 
 /**
@@ -36,13 +35,12 @@ public class RegistrationsFormatterSubquerying extends RegistrationsFormatter {
      *     - The statement limit must be set to the maximum to avoid ignoring latest sessions.
      */
     @Override
-    public JsonArray toJson(StatementsResultLRSResponse response) throws LRSException {
-        SuccessfulResponseChecker.checkSuccessful(response);
-
+    public JsonArray toJson(Iterator<Statement> statements) throws LRSException {
         final JsonArrayBuilder jab = Json.createArrayBuilder();
 
         final Map<String, Integer> registrations = new HashMap<String, Integer>();
-        for (Statement st : response.getContent().getStatements()) {
+        while (statements.hasNext()) {
+            final Statement st = statements.next();
             final UUID registrationUuid = st.getContext().getRegistration();
             if (this.minStatements == 1) {
                 // We already know that the statement with the initialized verb exists

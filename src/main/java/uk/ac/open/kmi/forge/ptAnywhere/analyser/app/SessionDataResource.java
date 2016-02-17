@@ -22,6 +22,7 @@ public class SessionDataResource {
     }
 
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getRegistrations(@Context ServletContext servletContext,
                                       @DefaultValue("2") @QueryParam("minStatements") int step,
                                       @QueryParam("start") String start,
@@ -38,7 +39,7 @@ public class SessionDataResource {
 
     @Path("{registration}")
     @GET
-    //@Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getStatementsInRegistration(@Context ServletContext servletContext,
                                       @PathParam("registration") String registrationId) throws MalformedURLException {
         final TinCanDAO dao = AnalyserApp.getTinCanDAO(servletContext);

@@ -1,18 +1,15 @@
 package uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.formatters;
 
-import com.rusticisoftware.tincan.Activity;
-import com.rusticisoftware.tincan.Statement;
-import com.rusticisoftware.tincan.Verb;
-import com.rusticisoftware.tincan.lrsresponses.StatementsResultLRSResponse;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.BaseVocabulary;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.StatementResultFormatter;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.exceptions.LRSException;
-
+import java.util.*;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import java.net.URI;
-import java.util.*;
+import com.rusticisoftware.tincan.Activity;
+import com.rusticisoftware.tincan.Statement;
+import com.rusticisoftware.tincan.Verb;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.BaseVocabulary;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.exceptions.LRSException;
 
 
 /**
@@ -28,17 +25,20 @@ public class SimplifiedStatesFormatter implements StatementResultFormatter<JsonA
     }
 
     private String getSimplifiedState(Verb verb, Activity activity) {
+        final String verbStr = verb.getId().toString();
+
         if (activity.getDefinition().getType().toString().equals(BaseVocabulary.COMMAND_LINE)) {
+            if (verbStr.equals(BaseVocabulary.READ)) return null;  // Ignore read activities.
             return "CMD";
         }
-        if (verb.getId().toString().equals(BaseVocabulary.UPDATED)) {
+        if (verbStr.equals(BaseVocabulary.UPDATED)) {
             return "UPD";
         }
-        if (verb.getId().toString().equals(BaseVocabulary.CREATED)) {
+        if (verbStr.equals(BaseVocabulary.CREATED)) {
             if (isDevice(activity)) return "ADD";
             return "CONN";
         }
-        if (verb.getId().toString().equals(BaseVocabulary.DELETED)) {
+        if (verbStr.equals(BaseVocabulary.DELETED)) {
             if (isDevice(activity)) return "DEL";
             return "DISCONN";
         }
@@ -46,14 +46,13 @@ public class SimplifiedStatesFormatter implements StatementResultFormatter<JsonA
     }
 
     @Override
-    public JsonArray toJson(StatementsResultLRSResponse response) throws LRSException {
-        SuccessfulResponseChecker.checkSuccessful(response);
-
+    public JsonArray toJson(Iterator<Statement> statements) throws LRSException {
         final JsonArrayBuilder jab = Json.createArrayBuilder();
 
         final List<UUID> registrationsInOrder = new ArrayList<UUID>();
         final Map<UUID, JsonArrayBuilder> actionsByRegistration = new HashMap<UUID, JsonArrayBuilder>();
-        for (Statement st : response.getContent().getStatements()) {
+        while (statements.hasNext()) {
+            final Statement st = statements.next();
             final UUID registration = st.getContext().getRegistration();
             if (!actionsByRegistration.containsKey(registration)) {
                 registrationsInOrder.add(registration);

@@ -31,6 +31,7 @@ public class TinCanDAO {
     StatementsQuery createQuery() {
         final StatementsQuery query = new StatementsQuery();
         query.setAscending(true);
+        query.setLimit(1000);
         return query;
     }
 
@@ -51,9 +52,13 @@ public class TinCanDAO {
         return query;
     }
 
+    ResultHandler makeRequest(StatementsQuery query) {
+        return new ResultHandler(this.lrs, this.lrs.queryStatements(query));
+    }
+
     public JsonArray getSimplifiedActionsPerSession() throws LRSException {
         final SimplifiedStatesFormatter formatter = new SimplifiedStatesFormatter();
-        return formatter.toJson( this.lrs.queryStatements( createQuery() ) );
+        return formatter.toJson( makeRequest(createQuery()) );
     }
 
     public String getStatements(String registrationUuid) {
@@ -81,10 +86,9 @@ public class TinCanDAO {
      */
     protected JsonArray getRegistrationsProcessAll(int minStatements, DateTime since, DateTime until) throws LRSException {
         final StatementsQuery query = createQuery(since, until);
-        query.setLimit(Integer.MAX_VALUE);
 
         final RegistrationsFormatter formatter = new RegistrationsFormatter(minStatements);
-        return formatter.toJson( this.lrs.queryStatements(query) );
+        return formatter.toJson( makeRequest(query) );
     }
 
     /**
@@ -99,15 +103,14 @@ public class TinCanDAO {
             throw new LRSException(e.getMessage());
         }
         RegistrationsFormatterSubquerying formatter = new RegistrationsFormatterSubquerying(minStatements, this.lrs);
-        return formatter.toJson( this.lrs.queryStatements(query) );
+        return formatter.toJson( makeRequest(query) );
     }
 
-    public JsonObject countActions(int minStatements, DateTime since, DateTime until) {
+    public JsonObject countActions(int minStatements, DateTime since, DateTime until) throws LRSException {
         final StatementsQuery query = createQuery(since, until);
-        query.setLimit(2000); //Integer.MAX_VALUE);
         query.setFormat(QueryResultFormat.IDS);
-        final ResultHandler result = new ResultHandler(this.lrs, this.lrs.queryStatements(query));
+        query.setLimit(2000);
         final RegistrationsHistogramFormatter formatter = new RegistrationsHistogramFormatter(since, until, minStatements);
-        return formatter.toJson( result );
+        return formatter.toJson( makeRequest(query) );
     }
 }

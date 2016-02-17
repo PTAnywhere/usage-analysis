@@ -4,6 +4,8 @@ import com.rusticisoftware.tincan.Statement;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.exceptions.LRSException;
+
 import javax.json.*;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,7 +16,7 @@ import java.util.TreeMap;
 /**
  * It returns a JSON representing the number of sessions started in a given time interval classified per hour.
  */
-public class RegistrationsHistogramFormatter /*implements StatementResultFormatter<JsonObject>*/ {
+public class RegistrationsHistogramFormatter implements StatementResultFormatter<JsonObject> {
 
     final DateTime since, until;
     final int minStatements;
@@ -41,8 +43,8 @@ public class RegistrationsHistogramFormatter /*implements StatementResultFormatt
         }
     }
 
-    //@Override
-    public JsonObject toJson(Iterator<Statement> results) {
+    @Override
+    public JsonObject toJson(Iterator<Statement> results) throws LRSException {
         // Filter for sessions with less than "minStatements"
         final Map<String, SimplifiedRegistration> registrations = new HashMap<String, SimplifiedRegistration>();
         while (results.hasNext()) {
