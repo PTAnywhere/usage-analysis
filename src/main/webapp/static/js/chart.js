@@ -203,15 +203,8 @@ var slider = (function () {
 
 var errorDialog = (function () {
   function init(message) {
-      $( "#error-dialog p" ).text(message);
-      $( "#error-dialog" ).dialog({
-        modal: true,
-        buttons: {
-          Ok: function() {
-            $( this ).dialog( "close" );
-          }
-        }
-      });
+      $('#errorDialog div.modal-body p').text(message);
+      $('#errorDialog').modal('show')
       console.error(message);
   }
   return {
