@@ -106,7 +106,8 @@ public class TinCanDAO {
         final StatementsQuery query = createQuery(since, until);
         query.setLimit(2000); //Integer.MAX_VALUE);
         query.setFormat(QueryResultFormat.IDS);
-        final RegistrationsHistogramFormatter formatter = new RegistrationsHistogramFormatter(this.lrs, since, until, minStatements);
-        return formatter.toJson( this.lrs.queryStatements(query) );
+        final ResultHandler result = new ResultHandler(this.lrs, this.lrs.queryStatements(query));
+        final RegistrationsHistogramFormatter formatter = new RegistrationsHistogramFormatter(since, until, minStatements);
+        return formatter.toJson( result );
     }
 }
