@@ -19,6 +19,13 @@
   <script type="text/javascript" src="bower_components/vis/dist/vis.min.js"></script>
   <link type="text/css" rel="stylesheet" href="bower_components/vis/dist/vis.min.css">
 
+  <!-- Bootstrap Datetimepicker & Moment.js dependency-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+
+  <script type="text/javascript" src="js/date_filter.js"></script>
+
   <!-- Main chart -->
   <script type="text/javascript" src="js/chart.js"></script>
   <style type="text/css">
@@ -30,6 +37,7 @@
 
     #show-info {
         display: none;
+        margin-top: 20px;
     }
 
     #slider-levels {
@@ -62,6 +70,26 @@
       color: red;
     }
   </style>
+
+  <script type="text/javascript">
+      $(function() {
+          timeFilter.configure('startTime', 'endTime');
+          chart.create(3);
+
+
+          $('#btnUpdate').click(function() {
+                              chart.load('../data/usage?' + timeFilter.getURLParameters()); //'data/sample_edges.json');
+                              $('#show-last').attr('checked', false);  // Make sure that at the beginning is unchecked.
+                              $('#show-last').change(function() {
+                                if($(this).is(":checked")) {
+                                  chart.filterLast();
+                                } else {
+                                  chart.filterNone();
+                                }
+                              });
+                          });
+      });
+  </script>
 </head>
 
 <body>
@@ -69,7 +97,32 @@
     <h1>PT widget usage</h1>
 
     <div class="row">
-      <div id="show-info">
+      <div class="col-md-1">Start: </div>
+      <div class="col-md-3">
+        <div class='input-group date' id='startTime'>
+          <input type='text' class="form-control" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+        </div>
+      </div>
+      <div class="col-md-1 col-md-offset-1">Finish: </div>
+      <div class="col-md-3">
+        <div class='input-group date' id='endTime'>
+          <input type='text' class="form-control" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+        </div>
+      </div>
+      <div class="col-md-1 col-md-offset-1">
+        <button type="button" class="btn btn-primary" id="btnUpdate">Update</button>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div id="show-info" class="col-md-12">
           <p>Number of levels shown in the chart: <span class="number-levels"></span>.</p>
           <div id="slider-levels"></div>
 
@@ -88,19 +141,6 @@
     <div class="row">
       <div id="networkMap"></div>
     </div>
-
-    <script type="text/javascript">
-      chart.create(3);
-      chart.load('../data/usage'); //'data/sample_edges.json');
-      $('#show-last').attr('checked', false);  // Make sure that at the beginning is unchecked.
-      $('#show-last').change(function() {
-        if($(this).is(":checked")) {
-            chart.filterLast();
-        } else {
-            chart.filterNone();
-        }
-    });
-    </script>
 
     <div id="errorDialog" class="modal fade" tabindex="-1" role="dialog">
       <div class="modal-dialog">

@@ -16,11 +16,6 @@ import java.net.MalformedURLException;
 @Path("sessions")
 public class SessionDataResource {
 
-    private DateTime parseDate(DateTimeFormatter fmt, String date) {
-        if (date==null) return null;
-        return fmt.parseDateTime(date);
-    }
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRegistrations(@Context ServletContext servletContext,
@@ -28,8 +23,8 @@ public class SessionDataResource {
                                       @QueryParam("start") String start,
                                       @QueryParam("end") String end) throws MalformedURLException {
         final DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
-        final DateTime since = parseDate(fmt, start);
-        final DateTime until = parseDate(fmt, end);
+        final DateTime since = AnalyserApp.parseDate(fmt, start);
+        final DateTime until = AnalyserApp.parseDate(fmt, end);
 
         final TinCanDAO dao = AnalyserApp.getTinCanDAO(servletContext);
         // Filter sessions with less than 'step' statements (/events) registered.
@@ -56,8 +51,8 @@ public class SessionDataResource {
                                     @QueryParam("start") String start,
                                     @QueryParam("end") String end) throws MalformedURLException {
         final DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
-        final DateTime since = parseDate(fmt, start);
-        final DateTime until = parseDate(fmt, end);
+        final DateTime since = AnalyserApp.parseDate(fmt, start);
+        final DateTime until = AnalyserApp.parseDate(fmt, end);
         final TinCanDAO dao = AnalyserApp.getTinCanDAO(servletContext);
         return Response.ok(dao.countActions(minStatements, since, until)).build();
     }

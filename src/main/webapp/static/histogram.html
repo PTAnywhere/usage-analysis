@@ -17,18 +17,18 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
 
+      <script type="text/javascript" src="js/date_filter.js"></script>
+
       <!-- Chart.js -->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
 
 
-      <script type="text/javascript" src="js/date_filter.js"></script>
       <script type="text/javascript">
-            var dateFormat = 'MM/DD/YYYY HH:00';
 
             function createLabels(beginDate, steps) {
                 var ret = [];
                 for (var i=0; i<steps; i++) {
-                    ret.push(beginDate.add(1, 'hours').format(dateFormat));
+                    ret.push(beginDate.add(1, 'hours').format('MM/DD/YYYY HH'));
                 }
                 return ret;
             }

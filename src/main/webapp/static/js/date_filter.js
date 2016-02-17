@@ -1,5 +1,7 @@
 
 var timeFilter = (function () {
+
+    var displayDateFormat = 'MM/DD/YYYY HH:00';
     var startEl, endEl;
 
     function getStartDate() {
@@ -19,13 +21,13 @@ var timeFilter = (function () {
         endEl = $('#' + endId);
 
         startEl.datetimepicker({
-            format: dateFormat,
+            format: displayDateFormat,
             useCurrent: false,
             defaultDate: moment().startOf('day'),
         });
 
         endEl.datetimepicker({
-            format: dateFormat,
+            format: displayDateFormat,
             useCurrent: false,
             defaultDate: moment().endOf('day'),
         });

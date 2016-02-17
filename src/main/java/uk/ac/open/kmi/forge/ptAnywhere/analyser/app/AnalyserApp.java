@@ -4,6 +4,8 @@ import com.rusticisoftware.tincan.RemoteLRS;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.TinCanDAO;
 
 import javax.annotation.PreDestroy;
@@ -68,5 +70,11 @@ public class AnalyserApp extends ResourceConfig {
                 (String) servletContext.getAttribute(AnalyserApp.LRS_USERNAME),
                 (String) servletContext.getAttribute(AnalyserApp.LRS_PASSWD)
         );
+    }
+
+
+    public static DateTime parseDate(DateTimeFormatter fmt, String date) {
+        if (date==null) return null;
+        return fmt.parseDateTime(date);
     }
 }

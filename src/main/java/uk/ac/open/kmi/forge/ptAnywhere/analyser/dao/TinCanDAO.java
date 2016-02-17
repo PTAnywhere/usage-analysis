@@ -56,9 +56,9 @@ public class TinCanDAO {
         return new ResultHandler(this.lrs, this.lrs.queryStatements(query));
     }
 
-    public JsonArray getSimplifiedActionsPerSession() throws LRSException {
+    public JsonArray getSimplifiedActionsPerSession(DateTime since, DateTime until) throws LRSException {
         final SimplifiedStatesFormatter formatter = new SimplifiedStatesFormatter();
-        return formatter.toJson( makeRequest(createQuery()) );
+        return formatter.toJson( makeRequest(createQuery(since, until)) );
     }
 
     public String getStatements(String registrationUuid) {

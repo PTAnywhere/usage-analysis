@@ -102,7 +102,7 @@ var chart = (function () {
         dataType: "json",
         url: path,
         success: success,
-        timeout: 2000,
+        //timeout: 2000,
         error: error
     });
   }
