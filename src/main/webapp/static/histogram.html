@@ -19,6 +19,9 @@
 
       <!-- Chart.js -->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+
+
+      <script type="text/javascript" src="js/date_filter.js"></script>
       <script type="text/javascript">
             var dateFormat = 'MM/DD/YYYY HH:00';
 
@@ -55,37 +58,12 @@
 
 
             $(function() {
-                $('#startTime').datetimepicker({
-                    format: dateFormat,
-                    useCurrent: false,
-                    defaultDate: moment().startOf('day'),
-                });
-
-                $('#endTime').datetimepicker({
-                    format: dateFormat,
-                    useCurrent: false,
-                    defaultDate: moment().endOf('day'),
-                });
-
-                $('#startTime').on('dp.change', function(e) {
-                    $('#endTime').data("DateTimePicker").minDate(e.date.add(1, 'hours'));
-                });
-
-                $('#endTime').on('dp.change', function(e) {
-                    var startDate = $('#endTime').data("DateTimePicker").date();
-                    if (e.date<startDate) {
-                        $('#endTime').data("DateTimePicker").date(e.date.add(1, 'days'));
-                    }
-                });
-
-                 $('#startTime').data("DateTimePicker").date(moment('2016-01-27').startOf('day'));
-                 $('#endTime').data("DateTimePicker").date(moment('2016-01-28').endOf('day'));
+                timeFilter.configure('startTime', 'endTime');
+                timeFilter.setStartDate( moment('2016-01-27').startOf('day') );
+                timeFilter.setEndDate( moment('2016-01-28').endOf('day') );
 
                 $('#btnUpdate').click(function() {
-                    var startISO = $('#startTime').data("DateTimePicker").date().toISOString();
-                    var endISO = $('#endTime').data("DateTimePicker").date().toISOString();
-                    console.log('../data/sessions/counter?start=' + startISO +'&end=' + endISO);
-                    $.getJSON('../data/sessions/counter?start=' + startISO +'&end=' + endISO)
+                    $.getJSON('../data/sessions/counter?' + timeFilter.getURLParameters())
                         .done(function(histogram) {
                             myBarChart.destroy();
                             var startTime = moment(histogram.start);
