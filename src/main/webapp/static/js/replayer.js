@@ -8,8 +8,12 @@ var replayer = (function () {
     var btnPlayPause, btnStop;
     var speeds = [1, 2, 4, 8, 16];
 
-    function init(apiPath, htmlElements) {
-        path = apiPath;
+    function init(registrationsUrl, htmlElements) {
+        path = registrationsUrl;
+        var argsPos = registrationsUrl.indexOf("?");
+        if (argsPos!=-1) {  // It might be filtered using args
+            path = path.substring(0, argsPos);
+        }
         cbSession = $('#' + htmlElements.cbSessionId);
         btnPlayPause = $('#' + htmlElements.btnPlayPauseId);
         btnStop = $('#' + htmlElements.btnStopId);
@@ -40,7 +44,7 @@ var replayer = (function () {
         timeline.onStatement(function(statement) {
             eventLog.add(printable(statement));
         });
-        loadRegistrations();
+        loadRegistrations(registrationsUrl);
     }
 
     function onStop(callback) {
@@ -62,8 +66,8 @@ var replayer = (function () {
         span.addClass(classToSet);
     }
 
-    function loadRegistrations() {
-        $.getJSON(path, function(registrations) {
+    function loadRegistrations(registrationsUrl) {
+        $.getJSON(registrationsUrl, function(registrations) {
             if (registrations.length==0) {
                 errorDialog.show('There are not sessions recorded in the requested LRS.');
             } else {

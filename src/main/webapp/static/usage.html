@@ -76,7 +76,6 @@
           timeFilter.configure('startTime', 'endTime');
           chart.create(3);
 
-
           $('#btnUpdate').click(function() {
                               chart.load('../data/usage?' + timeFilter.getURLParameters()); //'data/sample_edges.json');
                               $('#show-last').attr('checked', false);  // Make sure that at the beginning is unchecked.

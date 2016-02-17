@@ -25,6 +25,13 @@
       <script type="text/javascript" src="bower_components/widget-ui/js/locale/en.js"></script>
       <script type="text/javascript" src="bower_components/widget-ui/js/widget.js"></script>
 
+      <!-- Bootstrap Datetimepicker & Moment.js dependency-->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+
+      <script type="text/javascript" src="js/date_filter.js"></script>
+
       <!-- Replayer -->
       <link rel="stylesheet" href="css/replayer.css">
       <script type="text/javascript" src="js/replayer.js"></script>
@@ -44,16 +51,17 @@
             }
 
             $(function() {
-                var htmlElements = {
+                 var htmlElements = {
                     cbSessionId: 'registrations',
                     btnSpeedId: 'speed',
                     btnPlayPauseId: 'playPause',
                     btnStopId: 'stop',
                     sdrTimelineId: 'timeline',
                     eventLogId: 'event-log',
-                };
-                replayer.create('../data/sessions', htmlElements);
-                var widget = ptAnywhereWidgets.all.createNonInteractiveWidget('.widget',
+                 };
+
+                 timeFilter.configure('startTime', 'endTime');
+                 var widget = ptAnywhereWidgets.all.createNonInteractiveWidget('.widget',
                                                                               'bower_components/widget-ui/images/',
                                                                               data,
                                                                               { sessionCreation: false,
@@ -61,111 +69,116 @@
                                                                                 dialogWrapper: '.dialogs',
                                                                                 backdropArea: '.widget'
                                                                               });
-                replayer.onStop(widget.reset);
-                replayer.onStatement(function(statement) {
-                    console.log(statement);
-                });
-                replayer.onStatement(function(statement) {
-                    var dialogAnimationTime = (replayer.getSpeed()==1)? 2000: 1000;
-                    var dext = (statement.result===undefined)? null: statement.result.extensions;
-                    // TODO typing effects in dialogs
-                    if (statement.verb.id===verb.create) {
-                        if (statement.object.id.startsWith(devices.any)) {
-                            var dId = getId(dext[extension.device.uri]);
-                            var baseDevice = { id: dId, group: dext[extension.device.type], label: dext[extension.device.name],
-                                                x: dext[extension.device.position].x, y: dext[extension.device.position].y,
-                                                url: dext[extension.device.uri] };
-                            if (extension.device.defaultGateway in dext) {
-                                baseDevice.defaultGateway = dext[extension.device.defaultGateway];
-                            }
-                            widget.map.addNode(baseDevice);
-                            widget.map.fit();
-                        } else if (statement.object.id == activity.link) {
-                            var ends = dext[extension.endpoints];
 
-                            replayer.freeze();
-                            widget.dialogs.link.setFromDevice(ends[0].device);
-                            widget.dialogs.link.setFromPorts([{portName: ends[0].port, portURL: ''}]);
-                            widget.dialogs.link.setToDevice(ends[1].device);
-                            widget.dialogs.link.setToPorts([{portName: ends[1].port, portURL: ''}]);
-                            widget.dialogs.link.showLoaded();
-                            widget.dialogs.link.open();
+                 $('#btnUpdate').click(function() {
+                      replayer.create('../data/sessions?' + timeFilter.getURLParameters(), htmlElements);
 
-                            setTimeout(function() {
-                                widget.map.connect(ends[0].device, ends[1].device);
-                                widget.dialogs.link.close();
-                                replayer.unfreeze();
-                            }, dialogAnimationTime);
-                        }
-                    } else if (statement.verb.id===verb.delete) {
-                        if (statement.object.id.startsWith(devices.any)) {
-                            widget.map.removeNode(dext[extension.device.name]);
-                        } else if (statement.object.id == activity.link) {
-                            var ends = dext[extension.endpoints];
-                            widget.map.disconnect([ ends[0].device, ends[1].device ]);
-                        }
-                    } else if (statement.verb.id===verb.update) {
-                        var originalName = dext[extension.device.name];
-                        var nodeToModify = widget.map.get(originalName);
+                      replayer.onStop(widget.reset);
+                      replayer.onStatement(function(statement) {
+                          console.log(statement);
+                      });
+                      replayer.onStatement(function(statement) {
+                          var dialogAnimationTime = (replayer.getSpeed()==1)? 2000: 1000;
+                          var dext = (statement.result===undefined)? null: statement.result.extensions;
+                          // TODO typing effects in dialogs
+                          if (statement.verb.id===verb.create) {
+                              if (statement.object.id.startsWith(devices.any)) {
+                                  var dId = getId(dext[extension.device.uri]);
+                                  var baseDevice = { id: dId, group: dext[extension.device.type], label: dext[extension.device.name],
+                                                      x: dext[extension.device.position].x, y: dext[extension.device.position].y,
+                                                      url: dext[extension.device.uri] };
+                                  if (extension.device.defaultGateway in dext) {
+                                      baseDevice.defaultGateway = dext[extension.device.defaultGateway];
+                                  }
+                                  widget.map.addNode(baseDevice);
+                                  widget.map.fit();
+                              } else if (statement.object.id == activity.link) {
+                                  var ends = dext[extension.endpoints];
 
-                        replayer.freeze();
-                        if (statement.object.id.startsWith(devices.any)) {
-                            widget.dialogs.modification.selectFirstTab();
-                            widget.dialogs.modification.setDeviceName(statement.result.response);
-                            nodeToModify.label = statement.result.response;
-                            if (nodeToModify.hasOwnProperty('defaultGateway')) {
-                                widget.dialogs.modification.setDefaultGateway(dext[extension.device.defaultGateway]);
-                            } else {
-                                widget.dialogs.modification.setDefaultGateway(null);
-                            }
-                        } else if (statement.object.definition.type==activity.port) {
-                            widget.dialogs.modification.selectSecondTab();
-                            widget.dialogs.modification.setPorts([{portName: dext[extension.port.name], portURL: ''}]);
-                            widget.dialogs.modification.setPortIpAddress(dext[extension.port.ipAddress]);
-                            widget.dialogs.modification.setPortSubnetMask(dext[extension.port.subnetMask]);
-                            widget.dialogs.modification.showLoaded();
-                            widget.dialogs.modification.showIFaceDetails();
-                        }
-                        widget.dialogs.modification.open();
+                                  replayer.freeze();
+                                  widget.dialogs.link.setFromDevice(ends[0].device);
+                                  widget.dialogs.link.setFromPorts([{portName: ends[0].port, portURL: ''}]);
+                                  widget.dialogs.link.setToDevice(ends[1].device);
+                                  widget.dialogs.link.setToPorts([{portName: ends[1].port, portURL: ''}]);
+                                  widget.dialogs.link.showLoaded();
+                                  widget.dialogs.link.open();
 
-                        setTimeout(function() {
-                            widget.map.updateNode(nodeToModify);
-                            widget.dialogs.modification.close();
-                            replayer.unfreeze();
-                        }, dialogAnimationTime);
-                    } else if (statement.verb.id===verb.opened) {
-                        if (statement.object.definition.type==activity.commandLine) {
-                            widget.dialogs.cmd.setBody('<div class="messages commandLine"></div>');
-                            widget.dialogs.cmd.open();
-                        }
-                    } else if (statement.verb.id===verb.closed) {
-                        if (statement.object.definition.type==activity.commandLine) {
-                            // An undesired effect can be seen when the open method is processed before the modal has
-                            // been properly been closed (it usually only happens when it is replayed at x16).
-                            // The following code will ensure that next event is processed ONLY after the dialog has been closed.
+                                  setTimeout(function() {
+                                      widget.map.connect(ends[0].device, ends[1].device);
+                                      widget.dialogs.link.close();
+                                      replayer.unfreeze();
+                                  }, dialogAnimationTime);
+                              }
+                          } else if (statement.verb.id===verb.delete) {
+                              if (statement.object.id.startsWith(devices.any)) {
+                                  widget.map.removeNode(dext[extension.device.name]);
+                              } else if (statement.object.id == activity.link) {
+                                  var ends = dext[extension.endpoints];
+                                  widget.map.disconnect([ ends[0].device, ends[1].device ]);
+                              }
+                          } else if (statement.verb.id===verb.update) {
+                              var originalName = dext[extension.device.name];
+                              var nodeToModify = widget.map.get(originalName);
 
-                            replayer.freeze();
-                            widget.dialogs.cmd.selector.on('hidden.bs.modal', function (e) {
-                                $(e.currentTarget).unbind();  // Unbind previous
-                                replayer.unfreeze();
-                            });
-                            widget.dialogs.cmd.close();
+                              replayer.freeze();
+                              if (statement.object.id.startsWith(devices.any)) {
+                                  widget.dialogs.modification.selectFirstTab();
+                                  widget.dialogs.modification.setDeviceName(statement.result.response);
+                                  nodeToModify.label = statement.result.response;
+                                  if (nodeToModify.hasOwnProperty('defaultGateway')) {
+                                      widget.dialogs.modification.setDefaultGateway(dext[extension.device.defaultGateway]);
+                                  } else {
+                                      widget.dialogs.modification.setDefaultGateway(null);
+                                  }
+                              } else if (statement.object.definition.type==activity.port) {
+                                  widget.dialogs.modification.selectSecondTab();
+                                  widget.dialogs.modification.setPorts([{portName: dext[extension.port.name], portURL: ''}]);
+                                  widget.dialogs.modification.setPortIpAddress(dext[extension.port.ipAddress]);
+                                  widget.dialogs.modification.setPortSubnetMask(dext[extension.port.subnetMask]);
+                                  widget.dialogs.modification.showLoaded();
+                                  widget.dialogs.modification.showIFaceDetails();
+                              }
+                              widget.dialogs.modification.open();
 
-                            // TODO Make sure that it is closed when the simulation ends.
-                        }
-                    } else if (statement.verb.id===verb.use) {
-                        if (statement.object.definition.type==activity.commandLine) {
-                            // Already echoed in read
-                            // widget.dialogs.cmd.appendTo('.messages', statement.result.response);
-                        }
-                    } else if (statement.verb.id===verb.read) {
-                        if (statement.object.definition.type==activity.commandLine) {
-                            widget.dialogs.cmd.appendTo('.messages', statement.result.response);
-                            var cmdDiv = $('.commandLine');
-                            cmdDiv.scrollTop(cmdDiv[0].scrollHeight);
-                        }
-                    }
-                });
+                              setTimeout(function() {
+                                  widget.map.updateNode(nodeToModify);
+                                  widget.dialogs.modification.close();
+                                  replayer.unfreeze();
+                              }, dialogAnimationTime);
+                          } else if (statement.verb.id===verb.opened) {
+                              if (statement.object.definition.type==activity.commandLine) {
+                                  widget.dialogs.cmd.setBody('<div class="messages commandLine"></div>');
+                                  widget.dialogs.cmd.open();
+                              }
+                          } else if (statement.verb.id===verb.closed) {
+                              if (statement.object.definition.type==activity.commandLine) {
+                                  // An undesired effect can be seen when the open method is processed before the modal has
+                                  // been properly been closed (it usually only happens when it is replayed at x16).
+                                  // The following code will ensure that next event is processed ONLY after the dialog has been closed.
+
+                                  replayer.freeze();
+                                  widget.dialogs.cmd.selector.on('hidden.bs.modal', function (e) {
+                                      $(e.currentTarget).unbind();  // Unbind previous
+                                      replayer.unfreeze();
+                                  });
+                                  widget.dialogs.cmd.close();
+
+                                  // TODO Make sure that it is closed when the simulation ends.
+                              }
+                          } else if (statement.verb.id===verb.use) {
+                              if (statement.object.definition.type==activity.commandLine) {
+                                  // Already echoed in read
+                                  // widget.dialogs.cmd.appendTo('.messages', statement.result.response);
+                              }
+                          } else if (statement.verb.id===verb.read) {
+                              if (statement.object.definition.type==activity.commandLine) {
+                                  widget.dialogs.cmd.appendTo('.messages', statement.result.response);
+                                  var cmdDiv = $('.commandLine');
+                                  cmdDiv.scrollTop(cmdDiv[0].scrollHeight);
+                              }
+                          }
+                      });
+                 });
             });
       </script>
 </head>
@@ -173,7 +186,32 @@
 <div class="container">
       <h1>Replayer</h1>
 
+
       <div class="row">
+            <div class="col-md-1">Start: </div>
+            <div class="col-md-3">
+                  <div class='input-group date' id='startTime'>
+                        <input type='text' class="form-control" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+                  </div>
+            </div>
+            <div class="col-md-1 col-md-offset-1">Finish: </div>
+            <div class="col-md-3">
+                  <div class='input-group date' id='endTime'>
+                        <input type='text' class="form-control" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+                  </div>
+            </div>
+            <div class="col-md-1 col-md-offset-1">
+                  <button type="button" class="btn btn-primary" id="btnUpdate">Update</button>
+            </div>
+      </div>
+
+      <div class="row" style="margin-top: 20px;">
             <div class="col-md-4">
                   <p>Session to replay:
                         <select id="registrations"></select>
