@@ -9,10 +9,7 @@ import com.rusticisoftware.tincan.*;
 import com.rusticisoftware.tincan.lrsresponses.StatementsResultLRSResponse;
 import com.rusticisoftware.tincan.v10x.StatementsQuery;
 import org.joda.time.DateTime;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.formatters.RegistrationsFormatter;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.formatters.RegistrationsFormatterSubquerying;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.formatters.RegistrationsHistogramFormatter;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.formatters.SimplifiedStatesFormatter;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.formatters.*;
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.exceptions.LRSException;
 
 
@@ -111,6 +108,14 @@ public class TinCanDAO {
         query.setFormat(QueryResultFormat.IDS);
         query.setLimit(2000);
         final RegistrationsHistogramFormatter formatter = new RegistrationsHistogramFormatter(since, until, minStatements);
+        return formatter.toJson( makeRequest(query) );
+    }
+
+    public JsonArray countSessionsPerNumberOfActions(DateTime since, DateTime until) throws LRSException {
+        final StatementsQuery query = createQuery(since, until);
+        query.setFormat(QueryResultFormat.IDS);
+        query.setLimit(2000);
+        final ActionsHistogramFormatter formatter = new ActionsHistogramFormatter(since, until);
         return formatter.toJson( makeRequest(query) );
     }
 }

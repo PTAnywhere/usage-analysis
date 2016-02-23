@@ -25,21 +25,21 @@
 
       <script type="text/javascript">
 
-            function createLabels(beginDate, steps) {
+            function createLabels(steps) {
                 var ret = [];
-                for (var i=0; i<steps; i++) {
-                    ret.push(beginDate.add(1, 'hours').format('MM/DD/YYYY HH'));
+                for (var i=1; i<=steps; i++) {
+                    ret.push(i);
                 }
                 return ret;
             }
 
-            function createChart(chartId, startTime, data) {
+            function createChart(chartId, data) {
                 var ctx = document.getElementById(chartId).getContext("2d");
                 var data = {
-                    labels: createLabels(startTime, data.length),
+                    labels: createLabels(data.length),
                     datasets: [
                         {
-                            label: "Sessions started",
+                            label: "Actions per session",
                             fillColor: "rgba(151,187,205,0.7)",
                             strokeColor: "rgba(151,187,205,0.8)",
                             highlightFill: "rgba(151,187,205,0.9)",
@@ -51,7 +51,6 @@
                 var options = {
                     responsive: true,
                     barShowStroke: false,
-                    scaleShowHorizontalLines: true,
                     barValueSpacing: 0,
                     barValueSpacing: 0
                 };
@@ -65,16 +64,15 @@
                 timeFilter.setEndDate( moment('2016-01-28').endOf('day') );
 
                 $('#btnUpdate').click(function() {
-                    $.getJSON('../data/sessions/counter?' + timeFilter.getURLParameters())
-                        .done(function(histogram) {
+                    $.getJSON('../data/sessions/actions?' + timeFilter.getURLParameters())
+                        .done(function(values) {
                             myBarChart.destroy();
-                            var startTime = moment(histogram.start);
-                            myBarChart = createChart('myChart', startTime, histogram.values);
+                            myBarChart = createChart('myChart', values);
                             console.log(histogram);
                         });
                 });
                 var fakeData = [65, 59, 80, 81, 56, 55, 40, 41];
-                var myBarChart = createChart('myChart', moment(), fakeData);
+                var myBarChart = createChart('myChart', fakeData);
             });
       </script>
 </head>

@@ -46,7 +46,7 @@ public class SessionDataResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     // Order by hour
-    public Response getSessionCount(@Context ServletContext servletContext,
+    public Response getSessionCountPerHour(@Context ServletContext servletContext,
                                     @DefaultValue("2") @QueryParam("minStatements") int minStatements,
                                     @QueryParam("start") String start,
                                     @QueryParam("end") String end) throws MalformedURLException {
@@ -55,5 +55,19 @@ public class SessionDataResource {
         final DateTime until = AnalyserApp.parseDate(fmt, end);
         final TinCanDAO dao = AnalyserApp.getTinCanDAO(servletContext);
         return Response.ok(dao.countActions(minStatements, since, until)).build();
+    }
+
+    @Path("actions")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    // Order by hour
+    public Response getSessionCountPerActions(@Context ServletContext servletContext,
+                                    @QueryParam("start") String start,
+                                    @QueryParam("end") String end) throws MalformedURLException {
+        final DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
+        final DateTime since = AnalyserApp.parseDate(fmt, start);
+        final DateTime until = AnalyserApp.parseDate(fmt, end);
+        final TinCanDAO dao = AnalyserApp.getTinCanDAO(servletContext);
+        return Response.ok(dao.countSessionsPerNumberOfActions(since, until)).build();
     }
 }
