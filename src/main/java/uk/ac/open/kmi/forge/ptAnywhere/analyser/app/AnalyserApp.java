@@ -6,6 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker.LearningLockerDAO;
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.tincan.TinCanDAO;
 
 import javax.annotation.PreDestroy;
@@ -51,8 +52,8 @@ public class AnalyserApp extends ResourceConfig {
             lRSDetails.load(AnalyserApp.class.getClassLoader().getResourceAsStream(propertyFileLRS));
 
             // We use the same properties names as in the property file.
-            servletContext.setAttribute(LRS_XAPI, lRSDetails.getProperty(LRS_ENDPOINT + XAPI_PATH));
-            servletContext.setAttribute(LRS_LLAPI, lRSDetails.getProperty(LRS_ENDPOINT + LLAPI_PATH));
+            servletContext.setAttribute(LRS_XAPI, lRSDetails.getProperty(LRS_ENDPOINT) + XAPI_PATH);
+            servletContext.setAttribute(LRS_LLAPI, lRSDetails.getProperty(LRS_ENDPOINT) + LLAPI_PATH);
             servletContext.setAttribute(LRS_USERNAME, lRSDetails.getProperty(LRS_USERNAME));
             servletContext.setAttribute(LRS_PASSWD, lRSDetails.getProperty(LRS_PASSWD));
         } catch(IOException e) {
@@ -77,8 +78,8 @@ public class AnalyserApp extends ResourceConfig {
         );
     }
 
-    protected static TinCanDAO getLearningLockerDAO(ServletContext servletContext) throws MalformedURLException {
-        return new TinCanDAO(
+    protected static LearningLockerDAO getLearningLockerDAO(ServletContext servletContext) throws MalformedURLException {
+        return new LearningLockerDAO(
                 (String) servletContext.getAttribute(AnalyserApp.LRS_LLAPI),
                 (String) servletContext.getAttribute(AnalyserApp.LRS_USERNAME),
                 (String) servletContext.getAttribute(AnalyserApp.LRS_PASSWD)

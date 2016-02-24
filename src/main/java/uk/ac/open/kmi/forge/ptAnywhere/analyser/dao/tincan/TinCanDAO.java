@@ -110,7 +110,7 @@ public class TinCanDAO implements DAO {
     }
 
     @Override
-    public JsonObject countActions(int minStatements, DateTime since, DateTime until) throws LRSException {
+    public JsonObject countSessionsPerHour(int minStatements, DateTime since, DateTime until) throws LRSException {
         final StatementsQuery query = createQuery(since, until);
         query.setFormat(QueryResultFormat.IDS);
         query.setLimit(2000);

@@ -3,6 +3,7 @@ package uk.ac.open.kmi.forge.ptAnywhere.analyser.app;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker.LearningLockerDAO;
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.tincan.TinCanDAO;
 
 import javax.servlet.ServletContext;
@@ -54,7 +55,7 @@ public class SessionDataResource {
         final DateTime since = AnalyserApp.parseDate(fmt, start);
         final DateTime until = AnalyserApp.parseDate(fmt, end);
         final TinCanDAO dao = AnalyserApp.getTinCanDAO(servletContext);
-        return Response.ok(dao.countActions(minStatements, since, until)).build();
+        return Response.ok(dao.countSessionsPerHour(minStatements, since, until)).build();
     }
 
     @Path("actions")
@@ -67,7 +68,7 @@ public class SessionDataResource {
         final DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
         final DateTime since = AnalyserApp.parseDate(fmt, start);
         final DateTime until = AnalyserApp.parseDate(fmt, end);
-        final TinCanDAO dao = AnalyserApp.getTinCanDAO(servletContext);
+        final LearningLockerDAO dao = AnalyserApp.getLearningLockerDAO(servletContext);
         return Response.ok(dao.countSessionsPerNumberOfActions(since, until)).build();
     }
 }
