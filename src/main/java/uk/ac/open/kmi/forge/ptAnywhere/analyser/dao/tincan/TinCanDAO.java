@@ -1,4 +1,4 @@
-package uk.ac.open.kmi.forge.ptAnywhere.analyser.dao;
+package uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.tincan;
 
 import java.net.URISyntaxException;
 import java.util.*;
@@ -9,11 +9,13 @@ import com.rusticisoftware.tincan.*;
 import com.rusticisoftware.tincan.lrsresponses.StatementsResultLRSResponse;
 import com.rusticisoftware.tincan.v10x.StatementsQuery;
 import org.joda.time.DateTime;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.formatters.*;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.BaseVocabulary;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.DAO;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.tincan.formatters.*;
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.exceptions.LRSException;
 
 
-public class TinCanDAO {
+public class TinCanDAO implements DAO {
 
     final RemoteLRS lrs = new RemoteLRS();
 
@@ -53,11 +55,13 @@ public class TinCanDAO {
         return new ResultHandler(this.lrs, this.lrs.queryStatements(query));
     }
 
+    @Override
     public JsonArray getSimplifiedActionsPerSession(DateTime since, DateTime until) throws LRSException {
         final SimplifiedStatesFormatter formatter = new SimplifiedStatesFormatter();
         return formatter.toJson( makeRequest(createQuery(since, until)) );
     }
 
+    @Override
     public String getStatements(String registrationUuid) {
         final StatementsQuery query = createQuery( UUID.fromString(registrationUuid) );
         final StatementsResultLRSResponse lrsRes = this.lrs.queryStatements(query);
@@ -68,10 +72,12 @@ public class TinCanDAO {
     }
 
 
+    @Override
     public JsonArray getRegistrations() throws LRSException {
         return getRegistrations(1, null, null);
     }
 
+    @Override
     public JsonArray getRegistrations(int minStatements, DateTime since, DateTime until) throws LRSException {
         return getRegistrationsProcessAll(minStatements, since, until);
     }
@@ -103,6 +109,7 @@ public class TinCanDAO {
         return formatter.toJson( makeRequest(query) );
     }
 
+    @Override
     public JsonObject countActions(int minStatements, DateTime since, DateTime until) throws LRSException {
         final StatementsQuery query = createQuery(since, until);
         query.setFormat(QueryResultFormat.IDS);
@@ -111,6 +118,7 @@ public class TinCanDAO {
         return formatter.toJson( makeRequest(query) );
     }
 
+    @Override
     public JsonArray countSessionsPerNumberOfActions(DateTime since, DateTime until) throws LRSException {
         final StatementsQuery query = createQuery(since, until);
         query.setFormat(QueryResultFormat.IDS);

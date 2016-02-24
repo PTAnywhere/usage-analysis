@@ -1,4 +1,4 @@
-package uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.formatters;
+package uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.tincan.formatters;
 
 import java.util.*;
 import javax.json.Json;

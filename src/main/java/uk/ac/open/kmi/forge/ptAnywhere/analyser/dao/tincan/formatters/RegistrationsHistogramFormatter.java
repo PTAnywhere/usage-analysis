@@ -1,4 +1,4 @@
-package uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.formatters;
+package uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.tincan.formatters;
 
 import com.rusticisoftware.tincan.Statement;
 import org.joda.time.DateTime;

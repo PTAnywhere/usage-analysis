@@ -1,4 +1,4 @@
-package uk.ac.open.kmi.forge.ptAnywhere.analyser.dao;
+package uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.tincan;
 
 import java.util.Iterator;
 import java.util.concurrent.*;

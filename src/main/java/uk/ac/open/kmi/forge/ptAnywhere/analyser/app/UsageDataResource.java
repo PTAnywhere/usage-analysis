@@ -13,7 +13,7 @@ import java.net.MalformedURLException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.TinCanDAO;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.tincan.TinCanDAO;
 
 
 @Path("usage")

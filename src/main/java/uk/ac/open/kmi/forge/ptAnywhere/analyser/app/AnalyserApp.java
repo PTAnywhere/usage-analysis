@@ -6,7 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.TinCanDAO;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.tincan.TinCanDAO;
 
 import javax.annotation.PreDestroy;
 import javax.servlet.ServletContext;
@@ -22,7 +22,12 @@ public class AnalyserApp extends ResourceConfig {
 
     private static final Log LOGGER = LogFactory.getLog(AnalyserApp.class);
 
-    public static final String LRS_ENDPOINT = "endpoint";
+    private static final String LRS_ENDPOINT = "endpoint";
+    private static final String XAPI_PATH = "data/xAPI/";
+    private static final String LLAPI_PATH = "api/v1/";
+
+    public static final String LRS_XAPI = "xapi";
+    public static final String LRS_LLAPI = "llapi";
     public static final String LRS_USERNAME = "username";
     public static final String LRS_PASSWD = "password";
 
@@ -46,7 +51,8 @@ public class AnalyserApp extends ResourceConfig {
             lRSDetails.load(AnalyserApp.class.getClassLoader().getResourceAsStream(propertyFileLRS));
 
             // We use the same properties names as in the property file.
-            servletContext.setAttribute(LRS_ENDPOINT, lRSDetails.getProperty(LRS_ENDPOINT));
+            servletContext.setAttribute(LRS_XAPI, lRSDetails.getProperty(LRS_ENDPOINT + XAPI_PATH));
+            servletContext.setAttribute(LRS_LLAPI, lRSDetails.getProperty(LRS_ENDPOINT + LLAPI_PATH));
             servletContext.setAttribute(LRS_USERNAME, lRSDetails.getProperty(LRS_USERNAME));
             servletContext.setAttribute(LRS_PASSWD, lRSDetails.getProperty(LRS_PASSWD));
         } catch(IOException e) {
@@ -63,15 +69,21 @@ public class AnalyserApp extends ResourceConfig {
         }
     }
 
-
     protected static TinCanDAO getTinCanDAO(ServletContext servletContext) throws MalformedURLException {
         return new TinCanDAO(
-                (String) servletContext.getAttribute(AnalyserApp.LRS_ENDPOINT),
+                (String) servletContext.getAttribute(AnalyserApp.LRS_XAPI),
                 (String) servletContext.getAttribute(AnalyserApp.LRS_USERNAME),
                 (String) servletContext.getAttribute(AnalyserApp.LRS_PASSWD)
         );
     }
 
+    protected static TinCanDAO getLearningLockerDAO(ServletContext servletContext) throws MalformedURLException {
+        return new TinCanDAO(
+                (String) servletContext.getAttribute(AnalyserApp.LRS_LLAPI),
+                (String) servletContext.getAttribute(AnalyserApp.LRS_USERNAME),
+                (String) servletContext.getAttribute(AnalyserApp.LRS_PASSWD)
+        );
+    }
 
     public static DateTime parseDate(DateTimeFormatter fmt, String date) {
         if (date==null) return null;
