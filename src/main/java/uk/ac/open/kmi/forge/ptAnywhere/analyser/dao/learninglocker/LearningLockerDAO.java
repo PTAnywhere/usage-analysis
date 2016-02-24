@@ -3,6 +3,7 @@ package uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker;
 import org.eclipse.jetty.util.URIUtil;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.joda.time.DateTime;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.BaseVocabulary;
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.DAO;
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.exceptions.LRSException;
 
@@ -57,8 +58,11 @@ public class LearningLockerDAO implements DAO {
         final String pipeline = encodeParam("[{" +
                 "  \"$match\": {" +
                 "    \"statement.timestamp\": {" +
-                "      \"$gt\":\"" + since.toDateTimeISO() + "\"," + //since.toDateTimeISO()
+                "      \"$gt\":\"" + since.toDateTimeISO() + "\"," +
                 "      \"$lt\":\"" + until.toDateTimeISO() + "\"" +
+                "    }," +
+                "    \"statement.verb.id\": {" +
+                "      \"$ne\":\"" + BaseVocabulary.READ + "\"" +
                 "    }," +
                 "    \"voided\": false" +
                 "  }" +
