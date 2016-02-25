@@ -1,4 +1,17 @@
 
+
+var errorDialog = (function () {
+  function init(message) {
+      $('#errorDialog div.modal-body p').text(message);
+      $('#errorDialog').modal('show')
+      console.error(message);
+  }
+  return {
+      open: init
+  };
+})();
+
+
 var timeFilter = (function () {
 
     var displayDateFormat = 'MM/DD/YYYY HH:00';

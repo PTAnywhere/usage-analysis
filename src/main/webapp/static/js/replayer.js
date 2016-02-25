@@ -8,12 +8,8 @@ var replayer = (function () {
     var btnPlayPause, btnStop;
     var speeds = [1, 2, 4, 8, 16];
 
-    function init(registrationsUrl, htmlElements) {
-        path = registrationsUrl;
-        var argsPos = registrationsUrl.indexOf("?");
-        if (argsPos!=-1) {  // It might be filtered using args
-            path = path.substring(0, argsPos);
-        }
+    function init(apiUrl, htmlElements) {
+        path = apiUrl;
         cbSession = $('#' + htmlElements.cbSessionId);
         btnPlayPause = $('#' + htmlElements.btnPlayPauseId);
         btnStop = $('#' + htmlElements.btnStopId);
@@ -44,7 +40,6 @@ var replayer = (function () {
         timeline.onStatement(function(statement) {
             eventLog.add(printable(statement));
         });
-        loadRegistrations(registrationsUrl);
     }
 
     function onStop(callback) {
@@ -69,7 +64,7 @@ var replayer = (function () {
     function loadRegistrations(registrationsUrl) {
         $.getJSON(registrationsUrl, function(registrations) {
             if (registrations.length==0) {
-                errorDialog.show('There are not sessions recorded in the requested LRS.');
+                errorDialog.open('There are no sessions recorded for that period in the requested LRS.');
             } else {
                 for (var i=0; i<registrations.length; i++) {
                     cbSession.append('<option value="' + registrations[i] + '">'  + i + '</option>');
@@ -373,38 +368,9 @@ var replayer = (function () {
         unfreeze: unfreeze,
         onStatement: timeline.onStatement,
         onStop: onStop,
+        loadAll: loadRegistrations,
         load: loadRegistration,
         getSpeed: timeline.getSpeed,
     };
 
-})();
-
-
-var errorDialog = (function () {
-
-  function show(message) {
-      $( "#error-dialog p" ).text(message);
-      $( "#error-dialog" ).dialog({
-        modal: true,
-        buttons: {
-          Ok: function() {
-            $( this ).dialog( "close" );
-          }
-        }
-      });
-      console.error(message);
-  }
-
-  function handleRequestFailure(xhr, textStatus, errorThrown) {
-      if (textStatus == 'timeout') {
-          show("The topology could not be loaded: timeout.");
-      } else {
-          show("The topology could not be loaded: " + errorThrown + ".");
-      }
-  }
-
-  return {
-      show: show,
-      handle: handleRequestFailure,
-  };
 })();
