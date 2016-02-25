@@ -1,35 +1,23 @@
-package uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker;
+package uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker.responses;
 
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.exceptions.LRSException;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
-import java.util.*;
+import java.util.List;
+
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker.ResultItem;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.exceptions.LRSException;
 
 
-public class CountingResponse {
-    int ok;
-    List<ResultEl> result;
+public class CountingResponse extends AbstractGenericResponse<CountingResponse.ResultEl> {
 
     public CountingResponse() {}
-
-    public int getOk() {
-        return ok;
-    }
-
-    public void setOk(int ok) {
-        this.ok = ok;
-    }
 
     public List<ResultEl> getResult() {
         return result;
     }
 
-    public void setResult(List<ResultEl> result) {
-        this.result = result;
-    }
-
-    static public class ResultEl {
+    static public class ResultEl implements ResultItem {
         int _id;
         int count;
 
@@ -52,15 +40,16 @@ public class CountingResponse {
         }
     }
 
+    @Override
     public JsonArray toJson() throws LRSException {
         final JsonArrayBuilder ret = Json.createArrayBuilder();
         int index = 1;
-        for (ResultEl el: this.result) {
-            while (index < el._id) {
+        for (ResultEl el: getResult()) {
+            while (index < el.get_id()) {
                 ret.add(0);
                 index++;
             }
-            ret.add(el.count);
+            ret.add(el.getCount());
             index++;  // Or index = count;
         }
         return ret.build();
