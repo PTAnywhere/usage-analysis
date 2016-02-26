@@ -13,7 +13,7 @@ import java.net.MalformedURLException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.tincan.TinCanDAO;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker.LearningLockerDAO;
 
 
 @Path("usage")
@@ -28,7 +28,7 @@ public class UsageDataResource {
         final DateTime since = AnalyserApp.parseDate(fmt, start);
         final DateTime until = AnalyserApp.parseDate(fmt, end);
 
-        final TinCanDAO dao = AnalyserApp.getTinCanDAO(servletContext);
+        final LearningLockerDAO dao = AnalyserApp.getLearningLockerDAO(servletContext);
         return Response.ok(dao.getSimplifiedActionsPerSession(since, until).toString()).build();
     }
 }

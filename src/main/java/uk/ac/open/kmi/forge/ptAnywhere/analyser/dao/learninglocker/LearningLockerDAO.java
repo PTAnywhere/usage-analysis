@@ -1,19 +1,22 @@
 package uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker;
 
-import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
-import org.joda.time.DateTime;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.BaseVocabulary;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.DAO;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker.responses.CountingResponse;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker.responses.RegistrationsResponse;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.exceptions.LRSException;
 
 import javax.json.*;
+import java.net.URLEncoder;
+import java.io.UnsupportedEncodingException;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import org.joda.time.DateTime;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.BaseVocabulary;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.DAO;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker.responses.ActionListResponse;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker.responses.CountingResponse;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker.responses.RegistrationsResponse;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker.responses.SessionStartingsResponse;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.exceptions.LRSException;
 
 
 public class LearningLockerDAO implements DAO {
@@ -26,7 +29,35 @@ public class LearningLockerDAO implements DAO {
     }
 
     public JsonArray getSimplifiedActionsPerSession(DateTime since, DateTime until) throws LRSException {
-        return null;
+        final String pipeline = encodeParam("[{",
+                "  \"$match\": {",
+                "    \"statement.timestamp\": {",
+                "      \"$gt\":\"" + since.toDateTimeISO() + "\",",
+                "      \"$lt\":\"" + until.toDateTimeISO() + "\"",
+                "    },",
+                "    \"statement.verb.id\": {",
+                "      \"$ne\":\"" + BaseVocabulary.READ + "\"",
+                "    },",
+                "    \"voided\": false",
+                "  }",
+                "}, {",
+                "  \"$sort\": {",
+                "    \"statement.timestamp\": 1",
+                "  }",
+                "}, {",
+                "  \"$group\": {",
+                "    \"_id\": \"$statement.context.registration\",",
+                "    \"statements\": {",
+                "        \"$push\": {",
+                "           \"verbId\": \"$statement.verb.id\",",
+                "           \"objectId\": \"$statement.object.id\",",
+                "           \"definitionType\": \"$statement.object.definition.type\"",
+                "        }",
+                "    }",
+                "  }",
+                "}]");
+        final ActionListResponse cr = this.target.queryParam("pipeline", pipeline).request().get(ActionListResponse.class);
+        return cr.toJson();
     }
 
     public String getStatements(String registrationUuid) {
@@ -34,7 +65,7 @@ public class LearningLockerDAO implements DAO {
     }
 
     public JsonArray getRegistrations() throws LRSException {
-        return null;
+        return getRegistrations(1, null, null);
     }
 
     private String encodeParam(String... el) {
@@ -81,7 +112,40 @@ public class LearningLockerDAO implements DAO {
     }
 
     public JsonObject countSessionsPerHour(int minStatements, DateTime since, DateTime until) throws LRSException {
-        return null;
+        final String pipeline = encodeParam("[{",
+                "  \"$match\": {",
+                "    \"statement.timestamp\": {",
+                "      \"$gt\":\"" + since.toDateTimeISO() + "\",",
+                "      \"$lt\":\"" + until.toDateTimeISO() + "\"",
+                "    },",
+                "    \"statement.verb.id\": {",
+                "      \"$ne\":\"" + BaseVocabulary.READ + "\"",
+                "    },",
+                "    \"voided\": false",
+                "  }",
+                "}, {",
+                "  \"$group\": {",
+                "    \"_id\": \"$statement.context.registration\",",
+                "    \"timestamp\": { \"$min\": \"$statement.timestamp\" },",
+                "    \"count\": { \"$sum\": 1 }",
+                "  }",
+                "}, {",
+                "  \"$match\": {",
+                "    \"count\": { \"$gte\": " + minStatements + "}",
+                "  }",
+                "}, {",
+                "  \"$sort\": {",
+                "    \"timestamp\": 1",
+                "  }",
+                "}, {",
+                "  \"$project\": {",
+                "    \"_id\": 0,",
+                "    \"timestamp\": 1",
+                "  }",
+                "}]");
+        final SessionStartingsResponse cr = this.target.queryParam("pipeline", pipeline).request().get(SessionStartingsResponse.class);
+        cr.setPeriod(since, until);
+        return cr.toJson();
     }
 
     public JsonArray countSessionsPerNumberOfActions(DateTime since, DateTime until) throws LRSException {
@@ -113,35 +177,5 @@ public class LearningLockerDAO implements DAO {
                 "}]");
         final CountingResponse cr = this.target.queryParam("pipeline", pipeline).request().get(CountingResponse.class);
         return cr.toJson();
-    }
-
-    public Response countSessionsPerNumberOfActions2(DateTime since, DateTime until) throws LRSException {
-        final String pipeline = encodeParam("[{",
-                "  \"$match\": {",
-                "    \"statement.timestamp\": {",
-                "      \"$gt\":\"" + since.toDateTimeISO() + "\",",
-                "      \"$lt\":\"" + until.toDateTimeISO() + "\"",
-                "    },",
-                "    \"statement.verb.id\": {",
-                "      \"$ne\":\"" + BaseVocabulary.READ + "\"",
-                "    },",
-                "    \"voided\": false",
-                "  }",
-                "}, {",
-                "  \"$group\": {",
-                "    \"_id\": \"$statement.context.registration\",",
-                "    \"count\": { \"$sum\": 1 }",
-                "  }",
-                "}, {",
-                "  \"$group\": {",
-                "    \"_id\": \"$count\",",
-                "    \"count\": { \"$sum\": 1 }",
-                "  }",
-                "}, {",
-                "  \"$sort\": {",
-                "    \"_id\": 1",
-                "  }",
-                "}]");
-        return this.target.queryParam("pipeline", pipeline).request().get();
     }
 }

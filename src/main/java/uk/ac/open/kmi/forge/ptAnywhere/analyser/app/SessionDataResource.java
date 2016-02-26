@@ -27,7 +27,7 @@ public class SessionDataResource {
         final DateTime since = AnalyserApp.parseDate(fmt, start);
         final DateTime until = AnalyserApp.parseDate(fmt, end);
 
-        final TinCanDAO dao = AnalyserApp.getTinCanDAO(servletContext);
+        final LearningLockerDAO dao = AnalyserApp.getLearningLockerDAO(servletContext);
         // Filter sessions with less than 'step' statements (/events) registered.
         // This way, sessions where nothing else apart from allocating PT has been done will be filtered.
         return Response.ok(dao.getRegistrations(step, since, until).toString()).build();
@@ -54,7 +54,7 @@ public class SessionDataResource {
         final DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
         final DateTime since = AnalyserApp.parseDate(fmt, start);
         final DateTime until = AnalyserApp.parseDate(fmt, end);
-        final TinCanDAO dao = AnalyserApp.getTinCanDAO(servletContext);
+        final LearningLockerDAO dao = AnalyserApp.getLearningLockerDAO(servletContext);
         return Response.ok(dao.countSessionsPerHour(minStatements, since, until)).build();
     }
 
