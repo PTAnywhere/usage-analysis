@@ -17,11 +17,6 @@ public class RegistrationsResponse extends AbstractGenericResponse<Registrations
         return result;
     }
 
-    @Override
-    public void setResult(List<RegistrationEl> result) {
-        this.result = result;
-    }
-
     static public class RegistrationEl implements ResultItem {
         String _id;
 
