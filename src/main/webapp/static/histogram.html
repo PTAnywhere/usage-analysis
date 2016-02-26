@@ -28,7 +28,8 @@
             function createLabels(beginDate, steps) {
                 var ret = [];
                 for (var i=0; i<steps; i++) {
-                    ret.push(beginDate.add(1, 'hours').format('MM/DD/YYYY HH'));
+                    ret.push(beginDate.format('MM/DD/YYYY HH'));
+                    beginDate.add(1, 'hours');
                 }
                 return ret;
             }

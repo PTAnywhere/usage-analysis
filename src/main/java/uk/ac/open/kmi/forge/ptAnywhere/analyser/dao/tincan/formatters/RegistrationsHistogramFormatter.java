@@ -81,12 +81,12 @@ public class RegistrationsHistogramFormatter implements StatementResultFormatter
         }*/
         DateTime time = this.since;
         while (!time.isAfter(this.until)) {  // time <= until  === !( time > until )
-            time = time.plusHours(1);
             if (sessionCountPerHour.containsKey(time)) {
                 array.add(sessionCountPerHour.get(time));
             } else {
                 array.add(0);
             }
+            time = time.plusHours(1);
         }
         ret.add("values", array);
 
