@@ -51,7 +51,7 @@
                                 for (var i=0; i<registrations.length; i++) {
                                     $('#results').append('<tr><td>' + registrations[i] + '</td><td>' +
                                                          '<a href="usage.html?session=' + registrations[i] + '">Show states</a><br>' +
-                                                         '<a href="replayer.html">Replay</a>' +
+                                                         '<a href="replayer.html?session=' + registrations[i] + '">Replay</a>' +
                                                          '</td></tr>');
                                 }
                             }
@@ -103,8 +103,8 @@
             <div class="row form-group">
                 <div class="col-md-12 text-center">
                     <button type="button" class="btn btn-primary" id="btnStates">Show states diagram</button>
-                    <button type="button" class="btn btn-primary" id="btnTimeHistogram">Show time histogram</button>
-                    <button type="button" class="btn btn-primary" id="btnActionsHistogram">Show histogram with number of actions</button>
+                    <button type="button" class="btn btn-primary" id="btnTimeHistogram">Show sessions per time</button>
+                    <button type="button" class="btn btn-primary" id="btnActionsHistogram">Show sessions per number of activities</button>
                     <button type="button" class="btn btn-primary" id="btnSessions">Show sessions</button>
                 </div>
             </div>
