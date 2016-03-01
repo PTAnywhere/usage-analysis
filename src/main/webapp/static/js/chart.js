@@ -107,15 +107,23 @@ var chart = (function () {
     });
   }
 
+  function countValueForEdge(edgesValues, previousState, currentState) {
+        var edgeKey = previousState + ":" + currentState;
+        if (!(edgeKey in edgesValues)) {
+          edgesValues[edgeKey] = 0;
+        }
+        edgesValues[edgeKey] += 1;
+  }
+
   function drawEdges(numberOfLevels) {
-    var ret = [];
+    var edgesValues = {};
     for (var i=0; i<data.length; i++) {
         if (filter(i)) {
             var action = 1;
             var currentState, previousState = "init";
             for (var j=0; j<data[i].length; j++) {
               currentState = data[i][j] + String(j+1); // Levels + final state
-              ret.push({"from": previousState, "to": currentState});
+              countValueForEdge(edgesValues, previousState, currentState);
               previousState = currentState;
               action++;
               if (action>numberOfLevels) break;
@@ -123,15 +131,28 @@ var chart = (function () {
             // If no enough events were registered, fill them with NOP.
             for (var r=action; r<=numberOfLevels; r++) {
               currentState = "NOOP" + String(r);
-              ret.push({"from": previousState, "to": currentState});
+              countValueForEdge(edgesValues, previousState, currentState);
               previousState = currentState;
             }
             // Select random final state
             currentState = (Math.random()>0.5)? "pass": "fail";
-            ret.push({"from": previousState, "to": currentState});
+            countValueForEdge(edgesValues, previousState, currentState);
         }
     }
+    console.log(edgesValues);
+
+    ret = [];
+    keys = Object.keys(edgesValues);
+    for (var i in keys) {
+        kedge = keys[i];
+        var separatorPos = keys[i].indexOf(':');
+        var previousState = keys[i].substr(0, separatorPos);
+        var currentState = keys[i].substr(separatorPos+1);
+        ret.push({ 'from': previousState, 'to': currentState, 'value': edgesValues[kedge] });
+    }
+    console.log(ret);
     edges.clear();
+    // ret.push({"from": previousState, "to": currentState});
     edges.add(ret);
     network.fit(); // zoom to fit
   }
