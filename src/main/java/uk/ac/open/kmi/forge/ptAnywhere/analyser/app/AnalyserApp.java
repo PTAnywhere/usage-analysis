@@ -1,5 +1,12 @@
 package uk.ac.open.kmi.forge.ptAnywhere.analyser.app;
 
+import java.util.Properties;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import javax.annotation.PreDestroy;
+import javax.servlet.ServletContext;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Context;
 import com.rusticisoftware.tincan.RemoteLRS;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -8,14 +15,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker.LearningLockerDAO;
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.tincan.TinCanDAO;
-
-import javax.annotation.PreDestroy;
-import javax.servlet.ServletContext;
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Context;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.Properties;
 
 
 @ApplicationPath("data")
@@ -35,6 +34,7 @@ public class AnalyserApp extends ResourceConfig {
 
     public AnalyserApp(@Context ServletContext servletContext) throws IOException {
         packages(getClass().getPackage().getName());
+
         final Properties props = new Properties();
         props.load(AnalyserApp.class.getClassLoader().getResourceAsStream("environment.properties"));
 

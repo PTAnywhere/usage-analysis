@@ -1,69 +1,74 @@
 <!DOCTYPE html>
 <html>
 <head>
-      <meta http-equiv="content-type" content="text/html; charset=UTF8">
-      <title>PT Anywhere usage analysis</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <title>PT Anywhere usage analysis</title>
 
-      <!-- JQuery -->
-      <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- JQuery -->
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
 
-      <!-- Bootstrap -->
-      <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-      <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css">
-      <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css">
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
-      <!-- Bootstrap Datetimepicker & Moment.js dependency-->
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+    <!-- Bootstrap Datetimepicker & Moment.js dependency-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
 
-      <script type="text/javascript" src="js/commons.js"></script>
-      <script type="text/javascript">
-            function getParams() {
-                return '?' + timeFilter.getURLParameters() + '&minStatements=' + $('#actionsNum').val();
-            }
+    <script type="text/javascript" src="js/commons.js"></script>
+    <script type="text/javascript">
+        function getParams() {
+            return '?' + timeFilter.getURLParameters() + '&minStatements=' + $('#actionsNum').val();
+        }
 
-            $(function() {
-                timeFilter.configure('startTime', 'endTime');
-                timeFilter.setStartDate( moment('2016-01-27').startOf('day') );
-                timeFilter.setEndDate( moment('2016-01-28').endOf('day') );
+        $(function() {
+            timeFilter.configure('startTime', 'endTime');
+            timeFilter.setStartDate( moment('2016-01-27').startOf('day') );
+            timeFilter.setEndDate( moment('2016-01-28').endOf('day') );
 
 
-                $('#btnStates').click(function() {
-                    window.location.href = 'usage.html' + getParams();
-                });
-
-                $('#btnTimeHistogram').click(function() {
-                    window.location.href = 'histogram.html' + getParams();
-                });
-
-                $('#btnActionsHistogram').click(function() {
-                    window.location.href = 'actions.html' + getParams();
-                });
-
-                $('#btnSessions').click(function() {
-                    $.getJSON('../data/sessions' + getParams())
-                        .done(function(registrations) {
-                            $('#results').empty();
-                            if (registrations.length==0) {
-                                $('#results').append('<tr><td colspan="2">No sessions match the search criteria.</td></tr>' );
-                            } else {
-                                for (var i=0; i<registrations.length; i++) {
-                                    $('#results').append('<tr><td>' + registrations[i] + '</td><td>' +
-                                                         '<a href="usage.html?session=' + registrations[i] + '">Show states</a><br>' +
-                                                         '<a href="replayer.html?session=' + registrations[i] + '">Replay</a>' +
-                                                         '</td></tr>');
-                                }
-                            }
-                        })
-                        .fail(errorDialog.open);
-                });
+            $('#btnStates').click(function() {
+                window.location.href = 'usage.html' + getParams();
             });
-      </script>
+
+            $('#btnTimeHistogram').click(function() {
+                window.location.href = 'histogram.html' + getParams();
+            });
+
+            $('#btnActionsHistogram').click(function() {
+                window.location.href = 'actions.html' + getParams();
+            });
+
+            $('#btnSessions').click(function() {
+                $.getJSON('../data/sessions' + getParams())
+                    .done(function(registrations) {
+                        $('#results').empty();
+                        if (registrations.length==0) {
+                            $('#results').append('<tr><td colspan="2">No sessions match the search criteria.</td></tr>' );
+                        } else {
+                            for (var i=0; i<registrations.length; i++) {
+                                $('#results').append('<tr><td>' + registrations[i] + '</td><td>' +
+                                                     '<a href="usage.html?session=' + registrations[i] + '">Show states</a><br>' +
+                                                     '<a href="replayer.html?session=' + registrations[i] + '">Replay</a>' +
+                                                     '</td></tr>');
+                            }
+                        }
+                    })
+                    .fail(errorDialog.open);
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="container">
+        <ol class="breadcrumb">
+            <li><a href="#">Home</a></li>
+        </ol>
+
         <h1>PT Anywhere usage analysis</h1>
+
         <fieldset>
             <legend>Find sessions</legend>
             <div class="row form-group">
