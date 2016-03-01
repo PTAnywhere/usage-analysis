@@ -73,20 +73,33 @@
 
   <script type="text/javascript">
       $(function() {
-          timeFilter.configure('startTime', 'endTime');
           chart.create(3);
 
-          $('#btnUpdate').click(function() {
-                              chart.load('../data/usage?' + timeFilter.getURLParameters()); //'data/sample_edges.json');
-                              $('#show-last').attr('checked', false);  // Make sure that at the beginning is unchecked.
-                              $('#show-last').change(function() {
-                                if($(this).is(":checked")) {
-                                  chart.filterLast();
-                                } else {
-                                  chart.filterNone();
-                                }
-                              });
-                          });
+          var paramPos = window.location.href.indexOf('?');
+          if (paramPos==-1) {
+              errorDialog.open('Search criteria missing');
+          } else {
+              var sessionParamStart = window.location.href.indexOf('session=');
+              if (sessionParamStart!=-1) {
+                  var sessionId = window.location.href.substr(sessionParamStart + 'session='.length);
+                  var endSessionParam = sessionId.indexOf('&');
+                  if (endSessionParam!=-1) {
+                      sessionId = sessionId.substr(0, endSessionParam);
+                  }
+                  chart.load('../data/usage/' + sessionId);
+              } else {
+                  var params = window.location.href.substr(paramPos + 1);
+                  chart.load('../data/usage' + window.location.href.substr(paramPos));
+                  $('#show-last').attr('checked', false);  // Make sure that at the beginning is unchecked.
+                  $('#show-last').change(function() {
+                      if($(this).is(":checked")) {
+                          chart.filterLast();
+                      } else {
+                          chart.filterNone();
+                      }
+                  });
+              }
+          }
       });
   </script>
 </head>
@@ -94,31 +107,6 @@
 <body>
   <div class="container">
     <h1>PT widget usage</h1>
-
-    <div class="row">
-      <div class="col-md-1">Start: </div>
-      <div class="col-md-3">
-        <div class='input-group date' id='startTime'>
-          <input type='text' class="form-control" />
-                <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-calendar"></span>
-                </span>
-        </div>
-      </div>
-      <div class="col-md-1 col-md-offset-1">Finish: </div>
-      <div class="col-md-3">
-        <div class='input-group date' id='endTime'>
-          <input type='text' class="form-control" />
-                <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-calendar"></span>
-                </span>
-        </div>
-      </div>
-      <div class="col-md-1 col-md-offset-1">
-        <button type="button" class="btn btn-primary" id="btnUpdate">Update</button>
-      </div>
-    </div>
-
 
     <div class="row">
       <div id="show-info" class="col-md-12">

@@ -1,15 +1,13 @@
 package uk.ac.open.kmi.forge.ptAnywhere.analyser.app;
 
 import javax.servlet.ServletContext;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.MalformedURLException;
 
+import org.jboss.logging.Param;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -29,6 +27,15 @@ public class UsageDataResource {
         final DateTime until = AnalyserApp.parseDate(fmt, end);
 
         final LearningLockerDAO dao = AnalyserApp.getLearningLockerDAO(servletContext);
-        return Response.ok(dao.getSimplifiedActionsPerSession(since, until).toString()).build();
+        return Response.ok(dao.getSimplifiedActionsPerSessions(since, until).toString()).build();
+    }
+
+    @Path("{registration}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUsageForSession(@Context ServletContext servletContext,
+                                       @PathParam("registration") String registrationId) throws MalformedURLException {
+        final LearningLockerDAO dao = AnalyserApp.getLearningLockerDAO(servletContext);
+        return Response.ok(dao.getSimplifiedActionsPerSession(registrationId).toString()).build();
     }
 }

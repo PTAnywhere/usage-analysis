@@ -1,16 +1,18 @@
 package uk.ac.open.kmi.forge.ptAnywhere.analyser.dao;
 
+import javax.json.JsonArray;
+import javax.json.JsonObject;
 import org.joda.time.DateTime;
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.exceptions.LRSException;
 
-import javax.json.JsonArray;
-import javax.json.JsonObject;
 
 /**
- * Created by agg96 on 2/24/16.
+ * Data access object for learning record store.
  */
 public interface DAO {
-    JsonArray getSimplifiedActionsPerSession(DateTime since, DateTime until) throws LRSException;
+    JsonArray getSimplifiedActionsPerSessions(DateTime since, DateTime until) throws LRSException;
+
+    JsonArray getSimplifiedActionsPerSession(String registrationId) throws LRSException;
 
     String getStatements(String registrationUuid);
 

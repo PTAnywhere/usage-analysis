@@ -6,16 +6,12 @@ import java.net.URLEncoder;
 import java.io.UnsupportedEncodingException;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
 import org.joda.time.DateTime;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.BaseVocabulary;
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.DAO;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker.responses.ActionListResponse;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker.responses.CountingResponse;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker.responses.RegistrationsResponse;
-import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker.responses.SessionStartingsResponse;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker.responses.*;
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.exceptions.LRSException;
 
 
@@ -28,7 +24,7 @@ public class LearningLockerDAO implements DAO {
                         register(HttpAuthenticationFeature.basic(username, password)).target(endpoint + "statements/aggregate");
     }
 
-    public JsonArray getSimplifiedActionsPerSession(DateTime since, DateTime until) throws LRSException {
+    public JsonArray getSimplifiedActionsPerSessions(DateTime since, DateTime until) throws LRSException {
         final String pipeline = encodeParam("[{",
                 "  \"$match\": {",
                 "    \"statement.timestamp\": {",
@@ -60,7 +56,53 @@ public class LearningLockerDAO implements DAO {
         return cr.toJson();
     }
 
+    public JsonArray getSimplifiedActionsPerSession(String registrationId) throws LRSException {
+        final String pipeline = encodeParam("[{",
+                "  \"$match\": {",
+                "    \"statement.context.registration\": \"" + registrationId + "\",",
+                "    \"voided\": false",
+                "  }",
+                "}, {",
+                "  \"$sort\": {",
+                "    \"statement.timestamp\": 1",
+                "  }",
+                "}, {",
+                "  \"$group\": {",
+                "    \"_id\": \"$statement.context.registration\",",
+                "    \"statements\": {",
+                "        \"$push\": {",
+                "           \"verbId\": \"$statement.verb.id\",",
+                "           \"objectId\": \"$statement.object.id\",",
+                "           \"definitionType\": \"$statement.object.definition.type\"",
+                "        }",
+                "    }",
+                "  }",
+                "}]");
+        final ActionListResponse cr = this.target.queryParam("pipeline", pipeline).request().get(ActionListResponse.class);
+        return cr.toJson();
+    }
+
+
     public String getStatements(String registrationUuid) {
+        /*final String pipeline = encodeParam("[{",
+                "  \"$match\": {",
+                "    \"statement.context.registration\": {",
+                "      \"$eq\":\"" + registrationUuid + "\"",
+                "    },",
+                "    \"voided\": false",
+                "  }",
+                "}, {",
+                "  \"$sort\": {",
+                "    \"statement.timestamp\": 1",
+                "  }",
+                "}, {",
+                "  \"$project\": {",
+                "    \"_id\": 0,",
+                "    \"statement\": 1",
+                "  }",
+                "}]");
+        final StatementsResponse cr = this.target.queryParam("pipeline", pipeline).request().get(StatementsResponse.class);
+        return cr.toJson().toString();*/
         return null;
     }
 
