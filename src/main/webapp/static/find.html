@@ -45,11 +45,15 @@
                     $.getJSON('../data/sessions' + getParams())
                         .done(function(registrations) {
                             $('#results').empty();
-                            for (var i=0; i<registrations.length; i++) {
-                                $('#results').append('<tr><td>' + registrations[i] + '</td><td>' +
-                                                     '<a href="usage.html">Show states</a><br>' +
-                                                     '<a href="replayer.html">Replay</a>' +
-                                                     '</td></tr>');
+                            if (registrations.length==0) {
+                                $('#results').append('<tr><td colspan="2">No sessions match the search criteria.</td></tr>' );
+                            } else {
+                                for (var i=0; i<registrations.length; i++) {
+                                    $('#results').append('<tr><td>' + registrations[i] + '</td><td>' +
+                                                         '<a href="usage.html">Show states</a><br>' +
+                                                         '<a href="replayer.html">Replay</a>' +
+                                                         '</td></tr>');
+                                }
                             }
                         })
                         .fail(errorDialog.open);
@@ -110,7 +114,7 @@
             <div class="col-md-12">
                 <table class="table">
                     <thead>
-                        <th conspan="2">Session<th>
+                        <th colspan="2">Session</th>
                     </thead>
                     <tbody id="results">
                     </tbody>
