@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+      <meta http-equiv="content-type" content="text/html; charset=UTF8">
+      <title>PTAnywhere widget usage histogram</title>
+
+      <!-- JQuery -->
+      <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+
+      <!-- Bootstrap -->
+      <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+      <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css">
+      <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+      <!-- Bootstrap Datetimepicker & Moment.js dependency-->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+
+      <script type="text/javascript" src="js/commons.js"></script>
+      <script type="text/javascript">
+            $(function() {
+                timeFilter.configure('startTime', 'endTime');
+                timeFilter.setStartDate( moment('2016-01-27').startOf('day') );
+                timeFilter.setEndDate( moment('2016-01-28').endOf('day') );
+
+                $('#btnSessions').click(function() {
+                    var url = '../data/sessions?' + timeFilter.getURLParameters() + '&minStatements=' + $('#actionsNum').val();
+                    $.getJSON(url)
+                        .done(function(registrations) {
+                            $('#results').empty();
+                            for (var i=0; i<registrations.length; i++) {
+                                $('#results').append('<tr><td>' + registrations[i] + '</td><td>' +
+                                                     '<button type="button" class="btn btn-default" id="btnStates">Show states</button>' +
+                                                     '<button type="button" class="btn btn-default" id="btnReplay">Replay</button>' +
+                                                     '</td></tr>');
+                            }
+                        })
+                        .fail(errorDialog.open);
+                });
+            });
+      </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Find sessions</h1>
+
+        <div class="row form-group">
+            <div class="col-md-2 text-right">
+                <label for="startTime">Start: </label>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group date" id="startTime">
+                    <input type="text" class="form-control" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-2 text-right">
+                <label for="endTime">Finish: </label>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group date" id="endTime">
+                    <input type="text" class="form-control" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-md-2 text-right">
+                <label for="actionsNum">Minimum number of actions: </label>
+            </div>
+            <div class="col-md-3">
+                <input type="number" id="actionsNum" min="1" step="1" value="1" />
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-md-12 text-center">
+                <button type="button" class="btn btn-primary" id="btnStates">Show states diagram</button>
+                <button type="button" class="btn btn-primary" id="btnTimeHistogram">Show time histogram</button>
+                <button type="button" class="btn btn-primary" id="btnActionsHistogram">Show histogram with number of actions</button>
+                <button type="button" class="btn btn-primary" id="btnSessions">Show sessions</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                        <th conspan="2">Session<th>
+                    </thead>
+                    <tbody id="results">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="errorDialog" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Error loading data</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div>
+</body>
+</html>
