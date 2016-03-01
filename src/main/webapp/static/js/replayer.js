@@ -3,14 +3,11 @@
  */
 var replayer = (function () {
 
-    var path;
     var cbSession;
     var btnPlayPause, btnStop;
     var speeds = [1, 2, 4, 8, 16];
 
-    function init(apiUrl, htmlElements) {
-        path = apiUrl;
-        cbSession = $('#' + htmlElements.cbSessionId);
+    function init(registrationUrl, htmlElements) {
         btnPlayPause = $('#' + htmlElements.btnPlayPauseId);
         btnStop = $('#' + htmlElements.btnStopId);
 
@@ -18,10 +15,7 @@ var replayer = (function () {
         eventLog.init(htmlElements.eventLogId, 4);
         btnSpeed.init(htmlElements.btnSpeedId);
 
-        cbSession.change(function() {
-            btnStop.click();  // Let's imagine that stop button was pressed.
-            loadRegistration(cbSession.val());
-        });
+        loadRegistration(registrationUrl);
         btnSpeed.click(function() {
             timeline.setSpeed(btnSpeed.get());
         });
@@ -61,19 +55,6 @@ var replayer = (function () {
         span.addClass(classToSet);
     }
 
-    function loadRegistrations(registrationsUrl) {
-        $.getJSON(registrationsUrl, function(registrations) {
-            if (registrations.length==0) {
-                errorDialog.open('There are no sessions recorded for that period in the requested LRS.');
-            } else {
-                for (var i=0; i<registrations.length; i++) {
-                    cbSession.append('<option value="' + registrations[i] + '">'  + i + '</option>');
-                }
-                cbSession.change();  // Forcing the first registration load (which only happens on combobox change).
-            }
-        }).fail(errorDialog.open);
-    }
-
     function printable(statement) {
         var pieces = statement.verb.id.split('/');
         var verb = pieces[pieces.length-1];
@@ -86,8 +67,8 @@ var replayer = (function () {
         return verb + ' ' + object;
     }
 
-    function loadRegistration(regId) {
-        $.getJSON(path + '/' + regId, function(registration) {
+    function loadRegistration(registrationUrl) {
+        $.getJSON(registrationUrl, function(registration) {
             timeline.set(registration.statements);
             timeline.stop();
             /*timeline.play(btnSpeed.get(), function(statement) {
@@ -98,14 +79,12 @@ var replayer = (function () {
     }
 
     function disableControls() {
-        cbSession.attr('disabled', 'disabled');
         btnPlayPause.attr('disabled', 'disabled');
         btnStop.attr('disabled', 'disabled');
         btnSpeed.disable();
     }
 
     function enableControls() {
-        cbSession.removeAttr('disabled');
         btnPlayPause.removeAttr('disabled');
         btnStop.removeAttr('disabled');
         btnSpeed.enable();
@@ -368,8 +347,6 @@ var replayer = (function () {
         unfreeze: unfreeze,
         onStatement: timeline.onStatement,
         onStop: onStop,
-        loadAll: loadRegistrations,
-        load: loadRegistration,
         getSpeed: timeline.getSpeed,
     };
 
