@@ -74,32 +74,20 @@
   <script type="text/javascript">
       $(function() {
           chart.create(3);
-
-          var paramPos = window.location.href.indexOf('?');
-          if (paramPos==-1) {
-              errorDialog.open('Search criteria missing');
+          var sessionId = queryParameter.get('session');
+          if (sessionId!=null) {
+              chart.load('../data/usage/' + sessionId);
           } else {
-              var sessionParamStart = window.location.href.indexOf('session=');
-              if (sessionParamStart!=-1) {
-                  var sessionId = window.location.href.substr(sessionParamStart + 'session='.length);
-                  var endSessionParam = sessionId.indexOf('&');
-                  if (endSessionParam!=-1) {
-                      sessionId = sessionId.substr(0, endSessionParam);
-                  }
-                  chart.load('../data/usage/' + sessionId);
-              } else {
-                  var params = window.location.href.substr(paramPos + 1);
-                  chart.load('../data/usage' + window.location.href.substr(paramPos));
-                  $('#show-last').attr('checked', false);  // Make sure that at the beginning is unchecked.
-                  $('#show-last').change(function() {
-                      if($(this).is(":checked")) {
-                          chart.filterLast();
-                      } else {
-                          chart.filterNone();
-                      }
-                  });
-              }
+              chart.load('../data/usage?' + queryParameter.all());
           }
+          $('#show-last').attr('checked', false);  // Make sure that at the beginning is unchecked.
+          $('#show-last').change(function() {
+              if($(this).is(":checked")) {
+                  chart.filterLast();
+              } else {
+                  chart.filterNone();
+              }
+          });
       });
   </script>
 </head>

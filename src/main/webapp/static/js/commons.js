@@ -1,5 +1,33 @@
 
 
+var queryParameter = (function () {
+  function getParameter(name) {
+    var lookFor = name + '=';
+    var sessionParamStart = window.location.href.indexOf(lookFor);
+    var ret = null;
+    if (sessionParamStart!=-1) {
+        var ret = window.location.href.substr(sessionParamStart + lookFor.length);
+        var endSessionParam = ret.indexOf('&');
+        if (endSessionParam!=-1) {
+            ret = ret.substr(0, endSessionParam);
+        }
+    }
+    return ret;
+  }
+
+  function getAllParameters() {
+      var paramPos = window.location.href.indexOf('?');
+      if (paramPos==-1) return null;
+      return window.location.href.substr(paramPos + 1);
+  }
+
+  return {
+      get: getParameter,
+      all: getAllParameters
+  };
+})();
+
+
 var errorDialog = (function () {
   function init(message) {
       $('#errorDialog div.modal-body p').text(message);
