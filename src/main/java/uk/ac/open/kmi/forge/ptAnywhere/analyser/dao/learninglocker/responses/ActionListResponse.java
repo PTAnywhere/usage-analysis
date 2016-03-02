@@ -69,30 +69,30 @@ public class ActionListResponse extends AbstractGenericResponse<ActionListRespon
             public void setDefinitionType(String definitionType) {
                 this.definitionType = definitionType;
             }
-        }
-    }
 
-    private boolean isDevice(String activityId) {
-        return activityId.startsWith(BaseVocabulary.SIMULATED_DEVICE);
-    }
+            private boolean isDevice(String activityId) {
+                return activityId.startsWith(BaseVocabulary.SIMULATED_DEVICE);
+            }
 
-    private String getSimplifiedState(ActionsPerRegistration.SubElement el) {
-        if (el.getDefinitionType().equals(BaseVocabulary.COMMAND_LINE)) {
-            if (el.getVerbId().equals(BaseVocabulary.READ)) return null;  // Ignore read activities.
-            return "CMD";
+            String getSimplifiedState() {
+                if (getDefinitionType().equals(BaseVocabulary.COMMAND_LINE)) {
+                    if (getVerbId().equals(BaseVocabulary.READ)) return null;  // Ignore read activities.
+                    return "CMD";
+                }
+                if (getVerbId().equals(BaseVocabulary.UPDATED)) {
+                    return "UPD";
+                }
+                if (getVerbId().equals(BaseVocabulary.CREATED)) {
+                    if (isDevice(getObjectId())) return "ADD";
+                    return "CONN";
+                }
+                if (getVerbId().equals(BaseVocabulary.DELETED)) {
+                    if (isDevice(getObjectId())) return "DEL";
+                    return "DISCONN";
+                }
+                return null;
+            }
         }
-        if (el.getVerbId().equals(BaseVocabulary.UPDATED)) {
-            return "UPD";
-        }
-        if (el.getVerbId().equals(BaseVocabulary.CREATED)) {
-            if (isDevice(el.getObjectId())) return "ADD";
-            return "CONN";
-        }
-        if (el.getVerbId().equals(BaseVocabulary.DELETED)) {
-            if (isDevice(el.getObjectId())) return "DEL";
-            return "DISCONN";
-        }
-        return null;
     }
 
     @Override
@@ -101,7 +101,7 @@ public class ActionListResponse extends AbstractGenericResponse<ActionListRespon
         for (ActionsPerRegistration el: this.result) {
             final JsonArrayBuilder subret = Json.createArrayBuilder();
             for (ActionsPerRegistration.SubElement sel: el.getStatements()) {
-                final String state = getSimplifiedState(sel);
+                final String state = sel.getSimplifiedState();
                 if (state != null) subret.add(state);
             }
             ret.add(subret);
