@@ -17,7 +17,7 @@ public class UsageDataResource {
     public Response getUsageSummaries(@Context ServletContext servletContext,
                                       @BeanParam FilteringParams filters) throws MalformedURLException {
         final LearningLockerDAO dao = AnalyserApp.getLearningLockerDAO(servletContext);
-        return Response.ok(dao.getSimplifiedActionsPerSessions(filters.getSince(), filters.getUntil()).toString()).build();
+        return Response.ok(dao.getStateTransitions(filters.getSince(), filters.getUntil()).toString()).build();
     }
 
     @Path("{registration}")
@@ -26,6 +26,6 @@ public class UsageDataResource {
     public Response getUsageForSession(@Context ServletContext servletContext,
                                        @PathParam("registration") String registrationId) throws MalformedURLException {
         final LearningLockerDAO dao = AnalyserApp.getLearningLockerDAO(servletContext);
-        return Response.ok(dao.getSimplifiedActionsPerSession(registrationId).toString()).build();
+        return Response.ok(dao.getStateTransitions(registrationId).toString()).build();
     }
 }

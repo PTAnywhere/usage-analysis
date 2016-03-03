@@ -24,7 +24,8 @@ public class LearningLockerDAO implements DAO {
                         register(HttpAuthenticationFeature.basic(username, password)).target(endpoint + "statements/aggregate");
     }
 
-    public JsonArray getSimplifiedActionsPerSessions(DateTime since, DateTime until) throws LRSException {
+    @Override
+    public JsonObject getStateTransitions(DateTime since, DateTime until) throws LRSException {
         final String pipeline = encodeParam("[{",
                 "  \"$match\": {",
                 "    \"statement.timestamp\": {",
@@ -52,11 +53,12 @@ public class LearningLockerDAO implements DAO {
                 "    }",
                 "  }",
                 "}]");
-        final ActionListResponse cr = this.target.queryParam("pipeline", pipeline).request().get(ActionListResponse.class);
+        final TransitionCounterResponse cr = this.target.queryParam("pipeline", pipeline).request().get(TransitionCounterResponse.class);
         return cr.toJson();
     }
 
-    public JsonArray getSimplifiedActionsPerSession(String registrationId) throws LRSException {
+    @Override
+    public JsonObject getStateTransitions(String registrationId) throws LRSException {
         final String pipeline = encodeParam("[{",
                 "  \"$match\": {",
                 "    \"statement.context.registration\": \"" + registrationId + "\",",
@@ -78,11 +80,11 @@ public class LearningLockerDAO implements DAO {
                 "    }",
                 "  }",
                 "}]");
-        final ActionListResponse cr = this.target.queryParam("pipeline", pipeline).request().get(ActionListResponse.class);
+        final TransitionCounterResponse cr = this.target.queryParam("pipeline", pipeline).request().get(TransitionCounterResponse.class);
         return cr.toJson();
     }
 
-
+    @Override
     public String getStatements(String registrationUuid) {
         /*final String pipeline = encodeParam("[{",
                 "  \"$match\": {",
@@ -106,6 +108,7 @@ public class LearningLockerDAO implements DAO {
         return null;
     }
 
+    @Override
     public JsonArray getRegistrations() throws LRSException {
         return getRegistrations(1, null, null);
     }
@@ -122,6 +125,7 @@ public class LearningLockerDAO implements DAO {
         }
     }
 
+    @Override
     public JsonArray getRegistrations(int minStatements, DateTime since, DateTime until) throws LRSException {
         final String pipeline = encodeParam("[{",
                 "  \"$match\": {",
@@ -153,6 +157,7 @@ public class LearningLockerDAO implements DAO {
         return cr.toJson();
     }
 
+    @Override
     public JsonObject countSessionsPerHour(int minStatements, DateTime since, DateTime until) throws LRSException {
         final String pipeline = encodeParam("[{",
                 "  \"$match\": {",
@@ -190,6 +195,7 @@ public class LearningLockerDAO implements DAO {
         return cr.toJson();
     }
 
+    @Override
     public JsonArray countSessionsPerNumberOfActions(DateTime since, DateTime until) throws LRSException {
         final String pipeline = encodeParam("[{",
                 "  \"$match\": {",

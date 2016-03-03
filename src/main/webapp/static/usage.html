@@ -40,7 +40,6 @@
         }
 
         #slider-levels {
-            width: 400px;
             margin: 0 0 30px 20px;
         }
     </style>
@@ -85,7 +84,7 @@
                 <ul>
                     <li>If a session has less than <span class="number-levels"></span> steps, NOOP state will be selected for the remaining levels.</li>
                     <li>If a session has more than <span class="number-levels"></span> steps, the remaining ones will be ignored.</li>
-                    <li>The final state is selected randomly.</li>
+                    <li>There might not be final state if the session was not assessed.</li>
                     <li>The actions have not been divided to consider the type of devices created/deleted/modified to avoid too many states.</li>
                 </ul>
             </div>

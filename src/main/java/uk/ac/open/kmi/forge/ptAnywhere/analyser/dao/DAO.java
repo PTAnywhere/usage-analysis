@@ -10,9 +10,9 @@ import uk.ac.open.kmi.forge.ptAnywhere.analyser.exceptions.LRSException;
  * Data access object for learning record store.
  */
 public interface DAO {
-    JsonArray getSimplifiedActionsPerSessions(DateTime since, DateTime until) throws LRSException;
+    JsonObject getStateTransitions(DateTime since, DateTime until) throws LRSException;
 
-    JsonArray getSimplifiedActionsPerSession(String registrationId) throws LRSException;
+    JsonObject getStateTransitions(String registrationId) throws LRSException;
 
     String getStatements(String registrationUuid);
 

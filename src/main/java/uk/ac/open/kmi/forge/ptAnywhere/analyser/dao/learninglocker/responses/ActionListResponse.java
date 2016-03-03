@@ -74,21 +74,31 @@ public class ActionListResponse extends AbstractGenericResponse<ActionListRespon
                 return activityId.startsWith(BaseVocabulary.SIMULATED_DEVICE);
             }
 
-            String getSimplifiedState() {
+            protected enum State { ADD, DEL, UPD, CONN, DISCONN, CMD, NOOP };
+
+            protected static JsonArrayBuilder getStateJsonArray() {
+                final JsonArrayBuilder ret = Json.createArrayBuilder();
+                for(State s: State.values()) {
+                    ret.add(s.name());
+                }
+                return ret;
+            }
+
+            State getSimplifiedState() {
                 if (getDefinitionType().equals(BaseVocabulary.COMMAND_LINE)) {
                     if (getVerbId().equals(BaseVocabulary.READ)) return null;  // Ignore read activities.
-                    return "CMD";
+                    return State.CMD;
                 }
                 if (getVerbId().equals(BaseVocabulary.UPDATED)) {
-                    return "UPD";
+                    return State.UPD;
                 }
                 if (getVerbId().equals(BaseVocabulary.CREATED)) {
-                    if (isDevice(getObjectId())) return "ADD";
-                    return "CONN";
+                    if (isDevice(getObjectId())) return State.ADD;
+                    return State.CONN;
                 }
                 if (getVerbId().equals(BaseVocabulary.DELETED)) {
-                    if (isDevice(getObjectId())) return "DEL";
-                    return "DISCONN";
+                    if (isDevice(getObjectId())) return State.DEL;
+                    return State.DISCONN;
                 }
                 return null;
             }
@@ -101,8 +111,8 @@ public class ActionListResponse extends AbstractGenericResponse<ActionListRespon
         for (ActionsPerRegistration el: this.result) {
             final JsonArrayBuilder subret = Json.createArrayBuilder();
             for (ActionsPerRegistration.SubElement sel: el.getStatements()) {
-                final String state = sel.getSimplifiedState();
-                if (state != null) subret.add(state);
+                final ActionsPerRegistration.SubElement.State state = sel.getSimplifiedState();
+                if (state != null) subret.add(state.name());
             }
             ret.add(subret);
         }

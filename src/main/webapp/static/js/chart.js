@@ -25,12 +25,14 @@ var chart = (function () {
         }
       },
       edges: {
-        width: 0.15,
+        width: 0.1,
         smooth: {
           type: 'continuous'
         },
         arrows: {
-            to: true,
+            to: {
+                scaleFactor: 0.2
+            },
         },
       },
       interaction: {
@@ -53,46 +55,42 @@ var chart = (function () {
     return color;
   }
 
-  function getMaxLevel() {
-    var max = 0;
-    for (var i=0; i<data.length; i++) {
-      if (data[i].length>max) {
-        max = data[i].length;
-      }
-    }
-    return max;
-  }
-
   function drawSlider() {
-    var maxLevels = getMaxLevel();
-    slider.init(maxLevels, updateMap);
+    var maxLevels = data.levels.length;
+    slider.init(maxLevels, updateLevelsValue, updateMap);
+
+    // Init
+    updateLevelsValue(slider.value());
     updateMap(slider.value());
   }
 
+  function updateLevelsValue(numberOfLevels) {
+    $(".number-levels").text(numberOfLevels);
+  }
+
   function updateMap(numberOfLevels) {
-      $(".number-levels").text(numberOfLevels);
       drawStates(numberOfLevels);
       drawEdges(numberOfLevels);
   }
 
   function drawStates(numberOfLevels) {
-    var states = ['ADD', 'DEL', 'UPD', 'CONN', 'DISCONN', 'CMD', 'NOOP'];
     nodes.clear();
-    for (var i=1; i<=numberOfLevels; i++) {
+    var numberOfStates = data.states.length;
+    for (var i=0; i<numberOfLevels; i++) {
       var color = getRandomColor();
-      for (var j=0; j<states.length; j++) {
+      for (var j=0; j<numberOfStates; j++) {
         nodes.add(
-          {id: states[j] + String(i), label: states[j], color: color, x: 100*j, y: 100*i, size: 10}
+          {id: String(i) + ":" + String(j), label: data.states[j], color: color, x: 100*j, y: 100*(i+1), size: 10}
         );
       }
     }
     nodes.add(
-      {id: 'init', label: 'init', color: getRandomColor(), x: 100*(states.length-1)/2.0, y: 0, size: 10}
+      {id: 'init', label: 'init', color: getRandomColor(), x: 100*(numberOfStates-1)/2.0, y: 0, size: 10}
     );
     var color = getRandomColor();
     nodes.add([
-      {id: 'pass', label: 'pass', color: color, x: 100*(states.length-1)/3.0, y: 100*(numberOfLevels+1), size: 10},
-      {id: 'fail', label: 'fail', color: color, x: 200*(states.length-1)/3.0, y: 100*(numberOfLevels+1), size: 10},
+      {id: 'pass', label: 'pass', color: color, x: 100*(numberOfStates-1)/3.0, y: 100*(numberOfLevels+1), size: 10},
+      {id: 'fail', label: 'fail', color: color, x: 200*(numberOfStates-1)/3.0, y: 100*(numberOfLevels+1), size: 10},
     ]);
     network.fit(); // zoom to fit
   }
@@ -116,44 +114,14 @@ var chart = (function () {
   }
 
   function drawEdges(numberOfLevels) {
-    var edgesValues = {};
-    for (var i=0; i<data.length; i++) {
-        if (filter(i)) {
-            var action = 1;
-            var currentState, previousState = "init";
-            for (var j=0; j<data[i].length; j++) {
-              currentState = data[i][j] + String(j+1); // Levels + final state
-              countValueForEdge(edgesValues, previousState, currentState);
-              previousState = currentState;
-              action++;
-              if (action>numberOfLevels) break;
-            }
-            // If no enough events were registered, fill them with NOP.
-            for (var r=action; r<=numberOfLevels; r++) {
-              currentState = "NOOP" + String(r);
-              countValueForEdge(edgesValues, previousState, currentState);
-              previousState = currentState;
-            }
-            // Select random final state
-            currentState = (Math.random()>0.5)? "pass": "fail";
-            countValueForEdge(edgesValues, previousState, currentState);
+    edges.clear();
+    for (var i=0; i<data.levels.length && i<numberOfLevels; i++) {
+        for (var j=0; j<data.levels[i].length; j++) {
+            edges.add(data.levels[i][j]);
         }
     }
-    console.log(edgesValues);
-
-    ret = [];
-    keys = Object.keys(edgesValues);
-    for (var i in keys) {
-        kedge = keys[i];
-        var separatorPos = keys[i].indexOf(':');
-        var previousState = keys[i].substr(0, separatorPos);
-        var currentState = keys[i].substr(separatorPos+1);
-        ret.push({ 'from': previousState, 'to': currentState, 'value': edgesValues[kedge] });
-    }
-    console.log(ret);
-    edges.clear();
-    // ret.push({"from": previousState, "to": currentState});
-    edges.add(ret);
+    //currentState = (Math.random()>0.5)? "pass": "fail";
+    //edges.add({ 'from': previousState, 'to': currentState });
     network.fit(); // zoom to fit
   }
 
@@ -198,7 +166,7 @@ var chart = (function () {
 var slider = (function () {
     var elId = "#slider-levels";
 
-  function init(maxLevels, callback) {
+  function init(maxLevels, slideCallback, stopCallback) {
     var defaultSelection = (maxLevels>=3)? 3: maxLevels;
     $( elId ).slider({
       range: "min",
@@ -206,7 +174,10 @@ var slider = (function () {
       min: 1,
       max: maxLevels,
       slide: function( event, ui ) {
-        callback(ui.value);
+        slideCallback(ui.value);
+      },
+      stop: function( event, ui ) {
+        stopCallback(ui.value);
       }
     });
   }

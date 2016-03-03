@@ -56,13 +56,12 @@ public class TinCanDAO implements DAO {
     }
 
     @Override
-    public JsonArray getSimplifiedActionsPerSessions(DateTime since, DateTime until) throws LRSException {
-        final SimplifiedStatesFormatter formatter = new SimplifiedStatesFormatter();
-        return formatter.toJson( makeRequest(createQuery(since, until)) );
+    public JsonObject getStateTransitions(DateTime since, DateTime until) throws LRSException {
+        return null;
     }
 
     @Override
-    public JsonArray getSimplifiedActionsPerSession(String registrationId) throws LRSException {
+    public JsonObject getStateTransitions(String registrationId) throws LRSException {
         return null;
     }
 
