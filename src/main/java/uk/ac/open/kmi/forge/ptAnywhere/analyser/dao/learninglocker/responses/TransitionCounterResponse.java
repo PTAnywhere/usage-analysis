@@ -44,6 +44,11 @@ public class TransitionCounterResponse extends AbstractGenericResponse<ActionLis
         counters.get(step)[previousPos][current.ordinal()]++;
     }
 
+    private String getEdgeTitle(int value) {
+        final String ret = String.valueOf(value) + " session";
+        return (value==1)? ret: ret + "s";
+    }
+
     private void getFirstTransition(JsonArrayBuilder ret, int[][] firstTransition) {
         final JsonArrayBuilder firstLevelTransitions = Json.createArrayBuilder();
         for (int i=0; i<firstTransition[0].length; i++) {
@@ -52,10 +57,20 @@ public class TransitionCounterResponse extends AbstractGenericResponse<ActionLis
                 obj.add("from", "init");
                 obj.add("to", "0:" + i);
                 obj.add("value", firstTransition[0][i]);
+                obj.add("title", getEdgeTitle(firstTransition[0][i]));
                 firstLevelTransitions.add(obj);
             }
         }
         ret.add(firstLevelTransitions);
+    }
+
+    private JsonObjectBuilder getEdgeObject(int level, int previousStateOrdinal, int nextStateOrdinal, int value) {
+        final JsonObjectBuilder ret = Json.createObjectBuilder();
+        ret.add("from", (level-1) + ":" + previousStateOrdinal);
+        ret.add("to", level + ":" + nextStateOrdinal);
+        ret.add("value", value);
+        ret.add("title", getEdgeTitle(value));
+        return ret;
     }
 
     private JsonArrayBuilder getStateTransitionsJson(List<int[][]> transitions) {
@@ -72,11 +87,7 @@ public class TransitionCounterResponse extends AbstractGenericResponse<ActionLis
                     int nextStateOrdinal=0;
                     for (int value: transitionFromPreviousState) {
                         if (value>0) {
-                            final JsonObjectBuilder obj = Json.createObjectBuilder();
-                            obj.add("from", (level-1) + ":" + previousStateOrdinal);
-                            obj.add("to", level + ":" + nextStateOrdinal);
-                            obj.add("value", value);
-                            levelTransitions.add(obj);
+                            levelTransitions.add( getEdgeObject(level, previousStateOrdinal, nextStateOrdinal, value) );
                         }
                         nextStateOrdinal++;
                     }
