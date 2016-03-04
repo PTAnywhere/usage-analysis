@@ -9,7 +9,6 @@ var chart = (function () {
 
   var nodes = new vis.DataSet();
   var edges = new vis.DataSet();
-  var filter = function(sessionNum) { return true; };
 
   function init() {
     var container = document.getElementById('networkMap');
@@ -139,23 +138,10 @@ var chart = (function () {
     }, showLoadingError);
   }
 
-  function filterLastSession() {
-     filter = function(sessionNum) {
-        return sessionNum==data.length-1;
-     };
-     drawEdges(slider.value());
-  }
-
-  function filterNone() {
-     filter = function(sessionNum) { return true; };
-     drawEdges(slider.value());
-  }
 
   return {
       create: init,
-      load: loadEdges,
-      filterLast: filterLastSession,
-      filterNone: filterNone,
+      load: loadEdges
   };
 
 })();
