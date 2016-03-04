@@ -118,7 +118,8 @@ public class TransitionCounterResponse extends AbstractGenericResponse<ActionLis
             if (previous!=null)
                 count(counters, level, previous, ActionListResponse.ActionsPerRegistration.SubElement.State.NOOP);
         }
-        counters.remove(counters.size()-1);  // Remove last level with only NOOP transitions
+        if (!counters.isEmpty())
+            counters.remove(counters.size()-1);  // Remove last level with only NOOP transitions
 
         final JsonObjectBuilder ret = Json.createObjectBuilder();
         ret.add("states", ActionListResponse.ActionsPerRegistration.SubElement.getStateJsonArray());

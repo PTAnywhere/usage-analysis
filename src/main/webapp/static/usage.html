@@ -53,14 +53,6 @@
             } else {
                 chart.load('../data/usage?' + queryParameter.all());
             }
-            $('#show-last').attr('checked', false);  // Make sure that at the beginning is unchecked.
-            $('#show-last').change(function() {
-                if($(this).is(":checked")) {
-                    chart.filterLast();
-                } else {
-                    chart.filterNone();
-                }
-            });
         });
     </script>
 </head>

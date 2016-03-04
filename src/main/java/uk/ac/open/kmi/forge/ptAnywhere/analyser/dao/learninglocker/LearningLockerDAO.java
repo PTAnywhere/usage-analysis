@@ -1,6 +1,5 @@
 package uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker;
 
-
 import javax.json.*;
 import java.net.URLEncoder;
 import java.io.UnsupportedEncodingException;
@@ -227,6 +226,39 @@ public class LearningLockerDAO implements DAO {
                 "  }",
                 "}]");
         final CountingResponse cr = this.target.queryParam("pipeline", pipeline).request().get(CountingResponse.class);
+        return cr.toJson();
+    }
+
+    public JsonArray getSessionsCountingStatements(DateTime since, DateTime until) throws LRSException {
+        final String pipeline = encodeParam("[{",
+                "  \"$match\": {",
+                "    \"statement.timestamp\": {",
+                "      \"$gt\":\"" + since.toDateTimeISO() + "\",",
+                "      \"$lt\":\"" + until.toDateTimeISO() + "\"",
+                "    },",
+                "    \"statement.verb.id\": {",
+                "      \"$ne\":\"" + BaseVocabulary.READ + "\"",
+                "    },",
+                "    \"voided\": false",
+                "  }",
+                "}, {",
+                "  \"$group\": {",
+                "    \"_id\": \"$statement.context.registration\",",
+                "    \"timestamp\": { \"$min\": \"$statement.timestamp\" },",
+                "    \"count\": { \"$sum\": 1 }",
+                "  }",
+                "}, {",
+                "  \"$sort\": {",
+                "    \"timestamp\": 1",
+                "  }",
+                "}, {",
+                "  \"$project\": {",
+                "    \"_id\": 1,",
+                "    \"count\": 1,",
+                "    \"timestamp\": 1",
+                "  }",
+                "}]");
+        final StatementsInSessionsResponse cr = this.target.queryParam("pipeline", pipeline).request().get(StatementsInSessionsResponse.class);
         return cr.toJson();
     }
 }

@@ -44,7 +44,7 @@ public class SessionDataResource {
         return Response.ok(dao.countSessionsPerHour(filters.minStatements, filters.getSince(), filters.getUntil())).build();
     }
 
-    @Path("actions")
+    @Path("perStatements")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     // Order by hour
@@ -52,5 +52,15 @@ public class SessionDataResource {
                                               @BeanParam FilteringParams filters) throws MalformedURLException {
         final LearningLockerDAO dao = AnalyserApp.getLearningLockerDAO(servletContext);
         return Response.ok(dao.countSessionsPerNumberOfActions(filters.getSince(), filters.getUntil())).build();
+    }
+
+    @Path("scatterplot")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    // Order by hour
+    public Response getSessionStartingTimeCountingStatements(@Context ServletContext servletContext,
+                                              @BeanParam FilteringParams filters) throws MalformedURLException {
+        final LearningLockerDAO dao = AnalyserApp.getLearningLockerDAO(servletContext);
+        return Response.ok(dao.getSessionsCountingStatements(filters.getSince(), filters.getUntil())).build();
     }
 }

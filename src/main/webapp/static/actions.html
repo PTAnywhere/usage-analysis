@@ -58,7 +58,7 @@
 
 
         $(function() {
-            $.getJSON('../data/sessions/actions?' + queryParameter.all())
+            $.getJSON('../data/sessions/perStatements?' + queryParameter.all())
                 .done(function(values) {
                     myBarChart.destroy();
                     myBarChart = createChart('myChart', values);
@@ -75,7 +75,7 @@
         <li><a href="javascript:history.back()">Home</a></li>
     </ol>
 
-    <h1>Sessions per number of activities</h1>
+    <h1>Number of statements per session</h1>
 
     <div class="row" style="margin-top: 5%;">
       <canvas id="myChart" style="width: 100%; height: 400px;"></canvas>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sessions Scatterplot</title>
+
+
+    <!-- JQuery -->
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <!-- For the slider -->
+    <link rel="stylesheet" href="bower_components/jquery-ui/themes/base/jquery-ui.min.css">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css">
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- Vis.js -->
+    <script type="text/javascript" src="bower_components/vis/dist/vis.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="bower_components/vis/dist/vis.min.css">
+
+    <!-- moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+
+    <script type="text/javascript" src="js/commons.js"></script>
+
+    <script type="text/javascript">
+        $(function() {
+            $.getJSON('../data/sessions/scatterplot?' + queryParameter.all())
+                            .done(function(items) {
+                                if (items.length==0) {
+                                    $('#results').append('<tr><td colspan="3">No sessions recorded during the specified period.</td></tr>' );
+                                } else {
+                                    for (var i=0; i<items.length; i++) {
+                                        $('#results').append('<tr><td>' + items[i].label + '</td>' +
+                                                             '<td>' + items[i].x + '</td>' +
+                                                             '<td>' + items[i].y + '</td></tr>');
+                                    }
+
+                                    for(var i=0; i<items.length; i++) {
+                                        items[i].x = moment(items[i].x);
+                                        // I don't like the way they look inline.
+                                        // items[i].label = { content: items[i].label };
+                                    }
+
+                                    var container = document.getElementById('visualization');
+                                    var dataset = new vis.DataSet(items);
+                                    var options = {
+                                          sort: false,
+                                          sampling:false,
+                                          style:'points',
+                                          dataAxis: {
+                                              showMinorLabels: false,
+                                              left: {
+                                                    title: { text: 'Number of interactions' }
+                                              },
+                                              right: {
+                                                    title: { text: 'Session starting time' }
+                                              }
+                                          },
+                                          drawPoints: {
+                                              enabled: true,
+                                              size: 6,
+                                              style: 'circle' // square, circle
+                                          },
+                                          defaultGroup: 'Scatterplot'
+                                    };
+                                    var graph2d = new vis.Graph2d(container, dataset, options);
+                                }
+                            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <ol class="breadcrumb">
+            <li><a href="javascript:history.back()">Home</a></li>
+        </ol>
+
+        <h1>Sessions per number of activities and time</h1>
+
+        <div class="row" style="margin-top: 5%;">
+            <div id="visualization"></div>
+        </div>
+
+        <div class="row" style="margin-top: 30px;">
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                    <th>Session</th><th>Started at</th><th>Number of interactions</th>
+                    </thead>
+                    <tbody id="results">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

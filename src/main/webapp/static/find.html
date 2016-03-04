@@ -37,9 +37,14 @@
                 window.location.href = 'histogram.html' + getParams();
             });
 
-            $('#btnActionsHistogram').click(function() {
+            $('#btnInteractionCountingHistogram').click(function() {
                 window.location.href = 'actions.html' + getParams();
             });
+
+            $('#btnInteractionCountingScatterplot').click(function() {
+                window.location.href = 'scatterplot.html' + getParams();
+            });
+
 
             $('#btnSessions').click(function() {
                 $.getJSON('../data/sessions' + getParams())
@@ -109,7 +114,8 @@
                 <div class="col-md-12 text-center">
                     <button type="button" class="btn btn-default" id="btnStates">Show state chart</button>
                     <button type="button" class="btn btn-default" id="btnTimeHistogram">Show sessions per hour</button>
-                    <button type="button" class="btn btn-default" id="btnActionsHistogram">Show sessions per number of activities</button>
+                    <button type="button" class="btn btn-default" id="btnInteractionCountingHistogram">Interaction counting histogram</button>
+                    <button type="button" class="btn btn-default" id="btnInteractionCountingScatterplot">Interaction counting scatterplot</button>
                     <button type="button" class="btn btn-primary" id="btnSessions">List sessions</button>
                 </div>
             </div>
