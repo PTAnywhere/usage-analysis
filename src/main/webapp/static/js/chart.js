@@ -33,7 +33,7 @@ var chart = (function () {
             to: {
                 scaleFactor: 0.2
             },
-        },
+        }
       },
       interaction: {
         dragNodes: false
@@ -116,9 +116,7 @@ var chart = (function () {
   function drawEdges(numberOfLevels) {
     edges.clear();
     for (var i=0; i<data.levels.length && i<numberOfLevels; i++) {
-        for (var j=0; j<data.levels[i].length; j++) {
-            edges.add(data.levels[i][j]);
-        }
+        edges.add(data.levels[i]);
     }
     //currentState = (Math.random()>0.5)? "pass": "fail";
     //edges.add({ 'from': previousState, 'to': currentState });
