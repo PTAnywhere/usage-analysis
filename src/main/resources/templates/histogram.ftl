@@ -4,24 +4,11 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <title>PTAnywhere widget usage histogram</title>
 
-    <!-- JQuery -->
-    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+    <#include "includes/libraries/commons.ftl">
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css">
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <#include "includes/libraries/moment.ftl">
 
-    <!-- Bootstrap Datetimepicker & Moment.js dependency-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
-
-    <script type="text/javascript" src="js/commons.js"></script>
-
-    <!-- Chart.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
-
+    <#include "includes/libraries/chart.ftl">
 
     <script type="text/javascript">
 
@@ -61,7 +48,7 @@
 
 
         $(function() {
-            $.getJSON('../data/sessions/counter?' + queryParameter.all())
+            $.getJSON('${base}/a/data/sessions/counter?' + queryParameter.all())
                         .done(function(histogram) {
                             myBarChart.destroy();
                             var startTime = moment(histogram.start);
@@ -75,9 +62,7 @@
 </head>
 <body>
 <div class="container">
-    <ol class="breadcrumb">
-        <li><a href="javascript:history.back()">Home</a></li>
-    </ol>
+    <#include "includes/breadcrumb.ftl">
 
     <h1>Sessions started</h1>
 

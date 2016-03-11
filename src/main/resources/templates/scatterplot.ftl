@@ -4,36 +4,23 @@
     <meta charset="UTF-8">
     <title>Sessions Scatterplot</title>
 
+    <#include "includes/libraries/commons.ftl">
 
-    <!-- JQuery -->
-    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script type="text/javascript" src="bower_components/jquery-ui/jquery-ui.min.js"></script>
-    <!-- For the slider -->
-    <link rel="stylesheet" href="bower_components/jquery-ui/themes/base/jquery-ui.min.css">
+    <#include "includes/libraries/vis.ftl">
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css">
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <#include "includes/libraries/moment.ftl">
 
-    <!-- Vis.js -->
-    <script type="text/javascript" src="bower_components/vis/dist/vis.min.js"></script>
-    <link type="text/css" rel="stylesheet" href="bower_components/vis/dist/vis.min.css">
-
-    <!-- moment.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
-
-    <script type="text/javascript" src="js/commons.js"></script>
+    <#include "includes/libraries/vocabulary.ftl">
 
     <script type="text/javascript">
         $(function() {
-            $.getJSON('../data/sessions/scatterplot?' + queryParameter.all())
+            $.getJSON('${base}/a/data/sessions/scatterplot?' + queryParameter.all())
                             .done(function(items) {
                                 if (items.length==0) {
                                     $('#results').append('<tr><td colspan="3">No sessions recorded during the specified period.</td></tr>' );
                                 } else {
                                     for (var i=0; i<items.length; i++) {
-                                        $('#results').append('<tr><td><a href="session.html?session=' + items[i].label + '">' + items[i].label + '</a></td>' +
+                                        $('#results').append('<tr><td><a href="${base}/a/sessions/' + items[i].label + '">' + items[i].label + '</a></td>' +
                                                              '<td>' + items[i].x + '</td>' +
                                                              '<td>' + items[i].y + '</td></tr>');
                                     }
@@ -74,9 +61,7 @@
 </head>
 <body>
     <div class="container">
-        <ol class="breadcrumb">
-            <li><a href="javascript:history.back()">Home</a></li>
-        </ol>
+        <#include "includes/breadcrumb.ftl">
 
         <h1>Sessions per number of activities and time</h1>
 

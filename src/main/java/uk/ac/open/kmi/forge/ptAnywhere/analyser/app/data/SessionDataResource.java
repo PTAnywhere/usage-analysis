@@ -1,4 +1,4 @@
-package uk.ac.open.kmi.forge.ptAnywhere.analyser.app;
+package uk.ac.open.kmi.forge.ptAnywhere.analyser.app.data;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.*;
@@ -7,11 +7,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.MalformedURLException;
 
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.app.AnalyserApp;
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker.LearningLockerDAO;
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.tincan.TinCanDAO;
 
 
-@Path("sessions")
+@Path("/data/sessions")
 public class SessionDataResource {
 
     @GET

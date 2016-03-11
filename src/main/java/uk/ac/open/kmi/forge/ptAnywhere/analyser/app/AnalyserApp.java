@@ -1,8 +1,8 @@
 package uk.ac.open.kmi.forge.ptAnywhere.analyser.app;
 
+import java.net.MalformedURLException;
 import java.util.Properties;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import javax.annotation.PreDestroy;
 import javax.servlet.ServletContext;
 import javax.ws.rs.ApplicationPath;
@@ -11,13 +11,15 @@ import com.rusticisoftware.tincan.RemoteLRS;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
+import org.glassfish.jersey.server.mvc.MvcFeature;
+import org.glassfish.jersey.server.mvc.freemarker.FreemarkerMvcFeature;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.app.data.SessionDataResource;
+import uk.ac.open.kmi.forge.ptAnywhere.analyser.app.gui.GuiResource;
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.learninglocker.LearningLockerDAO;
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.tincan.TinCanDAO;
 
 
-@ApplicationPath("data")
+@ApplicationPath("a")
 public class AnalyserApp extends ResourceConfig {
 
     private static final Log LOGGER = LogFactory.getLog(AnalyserApp.class);
@@ -26,6 +28,7 @@ public class AnalyserApp extends ResourceConfig {
     private static final String XAPI_PATH = "data/xAPI/";
     private static final String LLAPI_PATH = "api/v1/";
 
+    public static final String APP_ROOT = "path";
     public static final String LRS_XAPI = "xapi";
     public static final String LRS_LLAPI = "llapi";
     public static final String LRS_USERNAME = "username";
@@ -33,10 +36,17 @@ public class AnalyserApp extends ResourceConfig {
 
 
     public AnalyserApp(@Context ServletContext servletContext) throws IOException {
-        packages(getClass().getPackage().getName());
+        super(new ResourceConfig().
+                  register(FreemarkerMvcFeature.class).
+                  property(MvcFeature.TEMPLATE_BASE_PATH, "templates").
+                  property(FreemarkerMvcFeature.CACHE_TEMPLATES, true).
+                  packages(SessionDataResource.class.getPackage().getName(),
+                           GuiResource.class.getPackage().getName())
+        );
 
         final Properties props = new Properties();
         props.load(AnalyserApp.class.getClassLoader().getResourceAsStream("environment.properties"));
+        servletContext.setAttribute(APP_ROOT, props.getProperty("tomcat.path", "/"));
 
         final String filePath = props.getProperty("la-property-file", "False");
         if (filePath.toLowerCase().equals("false")) {
@@ -70,7 +80,8 @@ public class AnalyserApp extends ResourceConfig {
         }
     }
 
-    protected static TinCanDAO getTinCanDAO(ServletContext servletContext) throws MalformedURLException {
+
+    public static TinCanDAO getTinCanDAO(ServletContext servletContext) throws MalformedURLException {
         return new TinCanDAO(
                 (String) servletContext.getAttribute(AnalyserApp.LRS_XAPI),
                 (String) servletContext.getAttribute(AnalyserApp.LRS_USERNAME),
@@ -78,16 +89,11 @@ public class AnalyserApp extends ResourceConfig {
         );
     }
 
-    protected static LearningLockerDAO getLearningLockerDAO(ServletContext servletContext) throws MalformedURLException {
+    public static LearningLockerDAO getLearningLockerDAO(ServletContext servletContext) throws MalformedURLException {
         return new LearningLockerDAO(
                 (String) servletContext.getAttribute(AnalyserApp.LRS_LLAPI),
                 (String) servletContext.getAttribute(AnalyserApp.LRS_USERNAME),
                 (String) servletContext.getAttribute(AnalyserApp.LRS_PASSWD)
         );
-    }
-
-    public static DateTime parseDate(DateTimeFormatter fmt, String date) {
-        if (date==null) return null;
-        return fmt.parseDateTime(date);
     }
 }

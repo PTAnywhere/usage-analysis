@@ -1,11 +1,11 @@
-package uk.ac.open.kmi.forge.ptAnywhere.analyser.app;
+package uk.ac.open.kmi.forge.ptAnywhere.analyser.app.data;
 
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.QueryParam;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.QueryParam;
 
 /**
  * Parameters which allow to filter registrations' search.
@@ -19,11 +19,16 @@ public class FilteringParams {
     @DefaultValue("2") @QueryParam("minStatements") int minStatements;
 
 
+    public DateTime parseDate(String date) {
+        if (date==null) return null;
+        return fmt.parseDateTime(date);
+    }
+
     public DateTime getSince() {
-        return AnalyserApp.parseDate(this.fmt, this.start);
+        return parseDate( this.start);
     }
 
     public DateTime getUntil() {
-        return AnalyserApp.parseDate(this.fmt, this.end);
+        return parseDate(this.end);
     }
 }

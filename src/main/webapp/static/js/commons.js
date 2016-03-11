@@ -1,5 +1,4 @@
 
-
 var queryParameter = (function () {
     function getParameter(name) {
     var lookFor = name + '=';
@@ -37,68 +36,6 @@ var errorDialog = (function () {
   return {
       open: init
   };
-})();
-
-
-var timeFilter = (function () {
-
-    var displayDateFormat = 'MM/DD/YYYY HH:00';
-    var startEl, endEl;
-
-    function getEndDate() {
-        return endEl.data("DateTimePicker").date();
-    }
-
-    function setStartDate(timeMoment) {
-        startEl.data("DateTimePicker").date(timeMoment);
-    }
-
-    function setEndDate(timeMoment) {
-        endEl.data("DateTimePicker").date(timeMoment);
-    }
-
-    function setMinEndDate(timeMoment) {
-        var minMoment = timeMoment.add(1, 'hours');
-
-        endEl.data("DateTimePicker").minDate(minMoment);
-        if (getEndDate() < minMoment) {
-            setEndDate(minMoment);
-        }
-    }
-
-    function configure(startId, endId) {
-        startEl = $('#' + startId);
-        endEl = $('#' + endId);
-
-        startEl.datetimepicker({
-            format: displayDateFormat,
-            useCurrent: false,
-            defaultDate: moment().startOf('day'),
-        });
-
-        endEl.datetimepicker({
-            format: displayDateFormat,
-            useCurrent: false,
-            defaultDate: moment().endOf('day'),
-        });
-
-        startEl.on('dp.change', function(e) {
-            setMinEndDate(e.date);
-        });
-    }
-
-    function getURLParams() {
-        var startISO = $('#startTime').data("DateTimePicker").date().toISOString();
-        var endISO = $('#endTime').data("DateTimePicker").date().toISOString();
-        return 'start=' + startISO +'&end=' + endISO;
-    }
-
-    return {
-        configure: configure,
-        setStartDate: setStartDate,
-        setEndDate: setEndDate,
-        getURLParameters: getURLParams,
-    };
 })();
 
 

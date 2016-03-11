@@ -4,20 +4,12 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <title>PT Anywhere usage analysis</title>
 
-    <!-- JQuery -->
-    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+    <#include "includes/libraries/commons.ftl">
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css">
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <#include "includes/libraries/moment.ftl">
 
-    <!-- Bootstrap Datetimepicker & Moment.js dependency-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+    <#include "includes/libraries/dateTimePicker.ftl">
 
-    <script type="text/javascript" src="js/commons.js"></script>
     <script type="text/javascript">
         function getParams() {
             return '?' + timeFilter.getURLParameters() + '&minStatements=' + $('#actionsNum').val();
@@ -25,38 +17,35 @@
 
         $(function() {
             timeFilter.configure('startTime', 'endTime');
-            timeFilter.setStartDate( moment('2016-01-27').startOf('day') );
-            timeFilter.setEndDate( moment('2016-01-28').endOf('day') );
-
 
             $('#btnStates').click(function() {
-                window.location.href = 'usage.html' + getParams();
+                window.location.href = 'summaries/states.html' + getParams();
             });
 
             $('#btnTimeHistogram').click(function() {
-                window.location.href = 'histogram.html' + getParams();
+                window.location.href = 'summaries/sessions_started.html' + getParams();
             });
 
             $('#btnInteractionCountingHistogram').click(function() {
-                window.location.href = 'actions.html' + getParams();
+                window.location.href = 'summaries/activity.html' + getParams();
             });
 
             $('#btnInteractionCountingScatterplot').click(function() {
-                window.location.href = 'scatterplot.html' + getParams();
+                window.location.href = 'summaries/activity_time.html' + getParams();
             });
 
 
             $('#btnSessions').click(function() {
-                $.getJSON('../data/sessions' + getParams())
+                $.getJSON('${base}/a/data/sessions' + getParams())
                     .done(function(registrations) {
                         $('#results').empty();
                         if (registrations.length==0) {
                             $('#results').append('<tr><td colspan="2">No sessions match the search criteria.</td></tr>' );
                         } else {
                             for (var i=0; i<registrations.length; i++) {
-                                $('#results').append('<tr><td><a href="session.html?session=' + registrations[i] + '">' + registrations[i] + '</td><td>' +
-                                                     '<a href="usage.html?session=' + registrations[i] + '">Show states</a><br>' +
-                                                     '<a href="replayer.html?session=' + registrations[i] + '">Replay</a>' +
+                                $('#results').append('<tr><td><a href="sessions/' + registrations[i] + '">' + registrations[i] + '</td><td>' +
+                                                     '<a href="sessions/' + registrations[i] + '/usage.html">Show states</a><br>' +
+                                                     '<a href="sessions/' + registrations[i] + '/replayer.html">Replay</a>' +
                                                      '</td></tr>');
                             }
                         }
@@ -68,9 +57,7 @@
 </head>
 <body>
     <div class="container">
-        <ol class="breadcrumb">
-            <li><a href="#">Home</a></li>
-        </ol>
+        <#include "includes/breadcrumb.ftl">
 
         <h1>PT Anywhere usage analysis</h1>
 
@@ -112,10 +99,17 @@
 
             <div class="row form-group">
                 <div class="col-md-12 text-center">
-                    <button type="button" class="btn btn-default" id="btnStates">Show state chart</button>
-                    <button type="button" class="btn btn-default" id="btnTimeHistogram">Show sessions per hour</button>
-                    <button type="button" class="btn btn-default" id="btnInteractionCountingHistogram">Interaction counting histogram</button>
-                    <button type="button" class="btn btn-default" id="btnInteractionCountingScatterplot">Interaction counting scatterplot</button>
+                    <span class="dropdown">
+                        <button id="dLabel" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Summarize <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dLabel">
+                            <li id="btnStates"><a href="#">Usage steps</a></li>
+                            <li id="btnTimeHistogram"><a href="#">Sessions started</a></li>
+                            <li id="btnInteractionCountingHistogram"><a href="#">Activity volume</a></li>
+                            <li id="btnInteractionCountingScatterplot"><a href="#">Activity volume over time</a></li>
+                        </ul>
+                    </span>
                     <button type="button" class="btn btn-primary" id="btnSessions">List sessions</button>
                 </div>
             </div>
@@ -133,22 +127,7 @@
             </div>
         </div>
 
-        <div id="errorDialog" class="modal fade" tabindex="-1" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Error loading data</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p></p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
+        <#include "includes/error_dialog.ftl">
     </div>
 </body>
 </html>
