@@ -54,7 +54,7 @@
                             $('#results').append('<tr><td colspan="2">No sessions match the search criteria.</td></tr>' );
                         } else {
                             for (var i=0; i<registrations.length; i++) {
-                                $('#results').append('<tr><td>' + registrations[i] + '</td><td>' +
+                                $('#results').append('<tr><td><a href="session.html?session=' + registrations[i] + '">' + registrations[i] + '</td><td>' +
                                                      '<a href="usage.html?session=' + registrations[i] + '">Show states</a><br>' +
                                                      '<a href="replayer.html?session=' + registrations[i] + '">Replay</a>' +
                                                      '</td></tr>');
