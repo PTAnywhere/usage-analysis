@@ -78,11 +78,12 @@ public class TinCanDAO implements DAO {
 
     @Override
     public JsonArray getRegistrations() throws LRSException {
-        return getRegistrations(1, null, null);
+        return getRegistrations(1, null, null, null);
     }
 
-    @Override
-    public JsonArray getRegistrations(int minStatements, DateTime since, DateTime until) throws LRSException {
+    @Override @Deprecated
+    public JsonArray getRegistrations(int minStatements, DateTime since, DateTime until, String containsCmd) throws LRSException {
+        // Ignores containsCmd
         return getRegistrationsProcessAll(minStatements, since, until);
     }
 

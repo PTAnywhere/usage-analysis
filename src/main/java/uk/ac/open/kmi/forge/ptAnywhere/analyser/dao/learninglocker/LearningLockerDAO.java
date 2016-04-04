@@ -112,7 +112,7 @@ public class LearningLockerDAO implements DAO {
 
     @Override
     public JsonArray getRegistrations() throws LRSException {
-        return getRegistrations(1, null, null);
+        return getRegistrations(1, null, null, null);
     }
 
     private String encodeParam(String... el) {
@@ -127,7 +127,6 @@ public class LearningLockerDAO implements DAO {
         }
     }
 
-    @Override
     public JsonArray getRegistrations(int minStatements, DateTime since, DateTime until) throws LRSException {
         final String pipeline = encodeParam("[{",
                 "  \"$match\": {",
@@ -137,6 +136,51 @@ public class LearningLockerDAO implements DAO {
                 "    },",
                 "    \"statement.verb.id\": {",
                 "      \"$ne\":\"" + BaseVocabulary.READ + "\"",
+                "    },",
+                "    \"voided\": false",
+                "  }",
+                "}, {",
+                "  \"$group\": {",
+                "    \"_id\": \"$statement.context.registration\",",
+                "    \"timestamp\": { \"$min\": \"$statement.timestamp\" },",
+                "    \"count\": { \"$sum\": 1 }",
+                "  }",
+                "}, {",
+                "  \"$match\": {",
+                "    \"count\": { \"$gt\": " + minStatements + "}",
+                "  }",
+                "}, {",
+                "  \"$sort\": {",
+                "    \"timestamp\": 1",
+                "  }",
+                "}]");
+        final RegistrationsResponse cr = this.target.queryParam("pipeline", pipeline).request().get(RegistrationsResponse.class);
+        return cr.toJson();
+    }
+
+    @Override
+    public JsonArray getRegistrations(int minStatements, DateTime since, DateTime until, String containsCmd) throws LRSException {
+        if (containsCmd==null || containsCmd.equals("*") || containsCmd.equals("")) {
+            return getRegistrations(minStatements, since, until);
+        }
+        else {
+            // The string as it is is probable insecure and allows injection.
+            // Naive way of sanitizing the string: remove quotes.
+            containsCmd = containsCmd.replace("\"", "").replace("'", "");
+            // TODO Find a more general and less limiting way of treating the regex.
+        }
+        final String pipeline = encodeParam("[{",
+                "  \"$match\": {",
+                "    \"statement.timestamp\": {",
+                "      \"$gt\":\"" + since.toDateTimeISO() + "\",",
+                "      \"$lt\":\"" + until.toDateTimeISO() + "\"",
+                "    },",
+                "    \"statement.object.definition.type\": {",
+                "      \"$eq\":\"" + BaseVocabulary.COMMAND_LINE + "\"",
+                "    },",
+                "    \"statement.result.response\": {",
+                "      \"$regex\": \"" + containsCmd + "\"," +
+                "      \"$options\": \"im\"" +
                 "    },",
                 "    \"voided\": false",
                 "  }",

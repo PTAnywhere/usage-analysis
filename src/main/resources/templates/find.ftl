@@ -12,7 +12,8 @@
 
     <script type="text/javascript">
         function getParams() {
-            return '?' + timeFilter.getURLParameters() + '&minStatements=' + $('#actionsNum').val();
+            return '?' + timeFilter.getURLParameters() + '&minStatements=' + $('#actionsNum').val() +
+                    '&containsCommand=' + $('#containsCommand').val();
         }
 
         $(function() {
@@ -94,6 +95,15 @@
                 </div>
                 <div class="col-md-3">
                     <input type="number" id="actionsNum" min="1" step="1" value="1" />
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-md-2 text-right">
+                    <label for="containsCommand">Contains command: </label>
+                </div>
+                <div class="col-md-3">
+                    <input id="containsCommand" placeholder="E.g. hostname *" />
                 </div>
             </div>
 

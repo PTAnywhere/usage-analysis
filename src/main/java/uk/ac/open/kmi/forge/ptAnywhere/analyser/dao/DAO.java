@@ -18,7 +18,7 @@ public interface DAO {
 
     JsonArray getRegistrations() throws LRSException;
 
-    JsonArray getRegistrations(int minStatements, DateTime since, DateTime until) throws LRSException;
+    JsonArray getRegistrations(int minStatements, DateTime since, DateTime until, String containsCmd) throws LRSException;
 
     JsonObject countSessionsPerHour(int minStatements, DateTime since, DateTime until) throws LRSException;
 

@@ -18,11 +18,12 @@ public class SessionDataResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRegistrations(@Context ServletContext servletContext,
-                                     @BeanParam FilteringParams filters) throws MalformedURLException {
+                                     @BeanParam FilteringParams filters,
+                                     @DefaultValue("") @QueryParam("containsCommand") String containsCmd) throws MalformedURLException {
         final LearningLockerDAO dao = AnalyserApp.getLearningLockerDAO(servletContext);
         // Filter sessions with less than 'step' statements (/events) registered.
         // This way, sessions where nothing else apart from allocating PT has been done will be filtered.
-        return Response.ok(dao.getRegistrations(filters.minStatements, filters.getSince(), filters.getUntil()).toString()).build();
+        return Response.ok(dao.getRegistrations(filters.minStatements, filters.getSince(), filters.getUntil(), containsCmd).toString()).build();
     }
 
     @Path("{registration}")
@@ -33,7 +34,6 @@ public class SessionDataResource {
         final TinCanDAO dao = AnalyserApp.getTinCanDAO(servletContext);
         return Response.ok(dao.getStatements(registrationId)).build();
     }
-
 
     @Path("counter")
     @GET
