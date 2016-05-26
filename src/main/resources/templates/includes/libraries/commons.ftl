@@ -1,4 +1,7 @@
 
+    <link rel="icon" type="image/png" href="${base}/static/images/icon.png">
+
+
     <!-- JQuery -->
     <script type="text/javascript" src="${base}/static/bower_components/jquery/dist/jquery.min.js"></script>
 
