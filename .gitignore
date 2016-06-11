@@ -34,6 +34,7 @@ src/main/resources/private
 src/main/webapp/static/bower_components/*
 ## AngularJS
 !src/main/webapp/static/bower_components/angular/angular.min.js
+!src/main/webapp/static/bower_components/angular-route/angular-route.min.js
 ## Bootstrap
 !src/main/webapp/static/bower_components/bootstrap/dist/
 ## JQuery

@@ -8,5 +8,4 @@
     <script type="text/javascript" src="${base}/static/bower_components/angular-eonasdan-datetimepicker/dist/angular-eonasdan-datetimepicker.min.js"></script>
 
     <!-- PT Analyser commons -->
-    <script src="${base}/static/js/analytics.js"></script>
     <script src="${base}/static/js/commons.js"></script>

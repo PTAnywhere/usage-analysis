@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="dashboardApp">
+<html ng-app="dashboardApp.search">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <title>PT Anywhere usage analysis</title>
@@ -10,7 +10,8 @@
 
     <#include "includes/libraries/datetimepicker.ftl">
 
-    <script src="${base}/static/js/dashboard.js"></script>
+    <script src="${base}/static/js/dashboard/search.js"></script>
+    <script src="${base}/static/js/dashboard/data-services.js"></script>
 </head>
 <body ng-controller="SearchController as find">
 

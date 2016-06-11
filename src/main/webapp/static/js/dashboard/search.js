@@ -1,4 +1,4 @@
-angular.module('dashboardApp', ['ae-datetimepicker'])
+angular.module('dashboardApp.search', ['ae-datetimepicker', 'dashboardApp.data'])
   .controller('SearchController', ['$window', 'TimeCache', 'SessionsService', function($window, TimeCache, SessionsService) {
     var self = this;
     var dateFormat = 'YYYY/MM/DD HH:mm';
@@ -92,11 +92,4 @@ angular.module('dashboardApp', ['ae-datetimepicker'])
             localStorage.setItem('endISO', endDateISO);
         }
       };
-   }])
-  .factory('SessionsService', ['$http', function($http) {
-    return {
-        list: function(params) {
-          return $http.get('a/data/sessions', {params: params});
-        }
-    };
-  }]);
+   }]);

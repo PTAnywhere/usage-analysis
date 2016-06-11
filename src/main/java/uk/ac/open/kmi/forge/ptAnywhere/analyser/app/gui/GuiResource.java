@@ -18,8 +18,13 @@ public class GuiResource extends AbstractViewableResource {
     @GET @Path("find.html")
     @Produces(MediaType.TEXT_HTML)
     public Response getFindPage() {
-        final Map<String, Object> map = new HashMap<String, Object>();
         return buildResponse("/find.ftl");
+    }
+
+    @GET @Path("summary.html")
+    @Produces(MediaType.TEXT_HTML)
+    public Response getSummaryCharts() {
+        return buildResponse("/summary.ftl");
     }
 
     @GET @Path("summaries/states.html")
