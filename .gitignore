@@ -31,17 +31,18 @@ src/main/resources/private
 
 
 # JavaScript dependencies with Bower
+src/main/webapp/static/bower_components/*
+## AngularJS
+!src/main/webapp/static/bower_components/angular/angular.min.js
 ## Bootstrap
-src/main/webapp/static/bower_components/bootstrap/*
 !src/main/webapp/static/bower_components/bootstrap/dist/
 ## JQuery
-src/main/webapp/static/bower_components/jquery/*
 !src/main/webapp/static/bower_components/jquery/dist/jquery.min.js
 ## jQuery UI
-src/main/webapp/static/bower_components/jquery-ui/*
 # We do not care so much about performance here, so we include all files to ease development.
 !src/main/webapp/static/bower_components/jquery-ui/jquery-ui.min.js
 !src/main/webapp/static/bower_components/jquery-ui/themes/base/jquery-ui.min.css
 ## vis.js
-src/main/webapp/static/bower_components/vis/*
 !src/main/webapp/static/bower_components/vis/dist/
+## Datetimepicker
+!src/main/webapp/static/bower_components/angular-eonasdan-datetimepicker/dist/angular-eonasdan-datetimepicker.min.js
