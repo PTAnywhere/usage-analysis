@@ -55,19 +55,19 @@ angular.module('dashboardApp.search', ['ae-datetimepicker', 'dashboardApp.data']
     };
 
     self.showStatesChart = function() {
-        $window.location.href = 'a/summaries/states.html' + getUrlParams();
+        $window.location.href = 'summaries/states.html' + getUrlParams();
     };
 
     self.showSessionsStartedHistogram = function() {
-        $window.location.href = 'a/summaries/sessions_started.html' + getUrlParams();
+        $window.location.href = 'summary.html#/started' + getUrlParams();
     };
 
     self.showInteractionCountingHistogram = function() {
-        $window.location.href = 'a/summaries/activity.html' + getUrlParams();
+        $window.location.href = 'summary.html#/activity_count' + getUrlParams();
     };
 
     self.showInteractionCountingScatterplot = function() {
-        $window.location.href = 'a/summaries/activity_time.html' + getUrlParams();
+        $window.location.href = 'summaries/activity_time.html' + getUrlParams();
     };
   }])
   .factory('TimeCache', [function() {

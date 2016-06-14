@@ -35,22 +35,6 @@ public class GuiResource extends AbstractViewableResource {
                 new PathElement("summaries/states.html", "State chart"));
     }
 
-    @GET @Path("summaries/sessions_started.html")
-    @Produces(MediaType.TEXT_HTML)
-    public Response getSessionsStartHistogram() {
-        final Map<String, Object> map = new HashMap<String, Object>();
-        return buildResponse("/histogram.ftl", map, new PathElement("Summaries"),
-                new PathElement("summaries/sessions_started.html", "Sessions started"));
-    }
-
-    @GET @Path("summaries/activity.html")
-    @Produces(MediaType.TEXT_HTML)
-    public Response getActivityHistogram() {
-        final Map<String, Object> map = new HashMap<String, Object>();
-        return buildResponse("/activity_count.ftl", map, new PathElement("Summaries"),
-                new PathElement("summaries/activity.html", "Activity histogram"));
-    }
-
     @GET @Path("summaries/activity_time.html")
     @Produces(MediaType.TEXT_HTML)
     public Response getActivityScatterplot() {

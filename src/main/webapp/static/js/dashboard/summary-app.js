@@ -1,4 +1,8 @@
 angular.module('dashboardApp.summary', ['ngRoute', 'dashboardApp.data'])
+  .constant('ROUTES', {
+    started: {name: 'Sessions started', path: '/started'},
+    activity_count: {name: 'Activity count', path: '/activity'}
+  })
   .config(['$injector', '$provide', function($injector, $provide) {
     // Let's make sure that the following config sections have the constants available even
     // when they have not been defined by the user.
@@ -7,7 +11,7 @@ angular.module('dashboardApp.summary', ['ngRoute', 'dashboardApp.data'])
     };
 
     for (var constantName in constants) {
-      try{
+      try {
         $injector.get(constantName);
          //constant exists
       } catch(e){
@@ -16,17 +20,17 @@ angular.module('dashboardApp.summary', ['ngRoute', 'dashboardApp.data'])
       }
     }
   }])
-  .config(['$routeProvider', 'baseUrl', function($routeProvider, baseUrl) {
-    // baseUrl should be a "constant", "value" is not available in config phase.
+  .config(['$routeProvider', 'baseUrl', 'ROUTES', function($routeProvider, baseUrl, ROUTES) {
+    // 'baseUrl' should be a 'constant', 'value' is not available in config phase.
     //   http://stackoverflow.com/questions/30327651/angularjs-constants-vs-values
 
-    $routeProvider.when('/', {
-      template: '<h1>AAEE</h1>'
-    })
-    .when('/started', {
+    $routeProvider.when(ROUTES.started.path, {
       templateUrl: baseUrl + '/static/html/sessions-started.html'
     })
+    .when(ROUTES.activity_count.path, {
+      templateUrl: baseUrl + '/static/html/activities-count.html'
+    })
     .otherwise({
-        redirectTo: '/'
+        redirectTo: ROUTES.started.path
     });
   }]);

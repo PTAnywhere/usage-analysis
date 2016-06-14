@@ -5,7 +5,7 @@
     <title>PT Anywhere widget usage: summary charts</title>
 
     <#include "includes/libraries/commons.ftl">
-
+    <#include "includes/libraries/moment.ftl">
     <#include "includes/libraries/chart.ftl">
 
     <style>
