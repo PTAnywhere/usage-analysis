@@ -10,6 +10,10 @@
 
     <#include "includes/libraries/datetimepicker.ftl">
 
+    <script src="${base}/static/js/dashboard/app.js"></script>
+    <script>
+        angular.module('dashboardApp').constant('baseUrl', '${base}');
+    </script>
     <script src="${base}/static/js/dashboard/search.js"></script>
     <script src="${base}/static/js/dashboard/data-services.js"></script>
 </head>
@@ -96,10 +100,10 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="sessionId in find.sessions">
-                            <td><a href="a/sessions/{{sessionId}}">{{sessionId}}</a></td>
+                            <td><a href="${base}/a/sessions/{{sessionId}}">{{sessionId}}</a></td>
                             <td>
-                                <a href="a/sessions/{{sessionId}}/usage.html">Show states</a><br/>
-                                <a href="a/sessions/{{sessionId}}/replayer.html">Replay</a>
+                                <a href="${base}/a/sessions/{{sessionId}}/usage.html">Show states</a><br/>
+                                <a href="${base}/a/sessions/{{sessionId}}/replayer.html">Replay</a>
                             </td>
                         </tr>
                         <tr ng-if="find.sessions.length == 0">

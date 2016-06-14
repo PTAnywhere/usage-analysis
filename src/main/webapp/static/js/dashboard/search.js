@@ -63,7 +63,7 @@ angular.module('dashboardApp.search', ['ae-datetimepicker', 'dashboardApp.data']
     };
 
     self.showInteractionCountingHistogram = function() {
-        $window.location.href = 'summary.html#/activity_count' + getUrlParams();
+        $window.location.href = 'summary.html#/activity' + getUrlParams();
     };
 
     self.showInteractionCountingScatterplot = function() {
@@ -92,4 +92,4 @@ angular.module('dashboardApp.search', ['ae-datetimepicker', 'dashboardApp.data']
             localStorage.setItem('endISO', endDateISO);
         }
       };
-   }]);
+  }]);

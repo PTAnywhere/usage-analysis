@@ -19,11 +19,11 @@
 
     <script src="${base}/static/bower_components/angular-route/angular-route.min.js"></script>
 
-    <script src="${base}/static/js/dashboard/summary-app.js"></script>
+    <script src="${base}/static/js/dashboard/app.js"></script>
     <script>
-        angular.module('dashboardApp.summary').constant('baseUrl', '${base}');
+        angular.module('dashboardApp').constant('baseUrl', '${base}');
     </script>
-    <script src="${base}/static/js/dashboard/data-services.js"></script>
+    <script src="${base}/static/js/dashboard/summary-app.js"></script>
     <script src="${base}/static/js/dashboard/summary-controller.js"></script>
 </head>
 <body ng-controller="SummaryController as sum">
