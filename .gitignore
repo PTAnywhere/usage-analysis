@@ -30,6 +30,10 @@ release.properties
 src/main/resources/private
 
 
+# Karma dependencies
+src/main/webapp/static/node_modules/*
+
+
 # JavaScript dependencies with Bower
 src/main/webapp/static/bower_components/*
 ## AngularJS

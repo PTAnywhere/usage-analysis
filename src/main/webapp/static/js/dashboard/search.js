@@ -1,4 +1,4 @@
-angular.module('dashboardApp.search', ['ae-datetimepicker', 'dashboardApp.data'])
+angular.module('dashboardApp.search', ['ae-datetimepicker', 'dashboardApp'])
   .controller('SearchController', ['$window', 'TimeCache', 'SessionsService', function($window, TimeCache, SessionsService) {
     var self = this;
     var dateFormat = 'YYYY/MM/DD HH:mm';
@@ -28,7 +28,7 @@ angular.module('dashboardApp.search', ['ae-datetimepicker', 'dashboardApp.data']
         return ret;
     }
 
-    function getUrlParams() {
+    self.getUrlParams = function() {
         var ret = '';
         var params = getParams();
         for (var name in params) {
@@ -55,43 +55,20 @@ angular.module('dashboardApp.search', ['ae-datetimepicker', 'dashboardApp.data']
     };
 
     self.showStatesChart = function() {
-        $window.location.href = 'summaries/states.html' + getUrlParams();
+        $window.location.href = 'summaries/states.html' + self.getUrlParams();
     };
 
     self.showSessionsStartedHistogram = function() {
-        $window.location.href = 'summary.html#/started' + getUrlParams();
+        $window.location.href = 'summary.html#/started' + self.getUrlParams();
     };
 
     self.showInteractionCountingHistogram = function() {
-        $window.location.href = 'summary.html#/activity' + getUrlParams();
+        $window.location.href = 'summary.html#/activity' + self.getUrlParams();
     };
 
     self.showInteractionCountingScatterplot = function() {
-        $window.location.href = 'summaries/activity_time.html' + getUrlParams();
+        $window.location.href = 'summaries/activity_time.html' + self.getUrlParams();
     };
-  }])
-  .factory('TimeCache', [function() {
-      return {
-        getDefaultStart: function() {
-          var date = localStorage.getItem('startISO');
-          if (date==null) {
-            return moment().startOf('day');
-          }
-          return moment(date);
-        },
-        getDefaultEnd: function() {
-          var date = localStorage.getItem('endISO');
-          if (date==null) {
-            return moment().endOf('day');
-          }
-          return moment(date);
-        },
-        store: function(startDateISO, endDateISO) {
-            // For convenience, but it is not really important if it doesn't work.
-            localStorage.setItem('startISO', startDateISO);
-            localStorage.setItem('endISO', endDateISO);
-        }
-      };
   }])
   .filter('simpleUuid', [function() {
     function hex2a(hexx) {
