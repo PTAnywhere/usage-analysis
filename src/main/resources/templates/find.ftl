@@ -14,7 +14,7 @@
     <script>
         angular.module('dashboardApp').constant('baseUrl', '${base}');
     </script>
-    <script src="${base}/static/js/dashboard/search.js"></script>
+    <script src="${base}/static/js/dashboard/search/all.js"></script>
     <script src="${base}/static/js/dashboard/services.js"></script>
 </head>
 <body ng-controller="SearchController as find">

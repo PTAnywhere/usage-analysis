@@ -1,4 +1,4 @@
-describe('dashboardApp search', function() {
+describe('search module', function() {
     beforeEach(module('dashboardApp.search'));
 
     var defaultStartDate = moment('2016-06-15 08:00');
