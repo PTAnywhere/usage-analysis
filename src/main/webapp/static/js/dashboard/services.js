@@ -26,6 +26,12 @@ angular.module('dashboardApp')
     return {
         list: function(params) {
           return $http.get(baseUrl + '/a/data/sessions', {params: params});
+        },
+        getSessionCount: function(params) {
+            return $http.get(baseUrl + '/a/data/sessions/counter', {params: params});
+        },
+        getActivityVolumePerSession: function(params) {
+            return $http.get(baseUrl + '/a/data/sessions/perStatements', {params: params});
         }
     };
   }]);

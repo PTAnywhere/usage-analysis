@@ -23,6 +23,7 @@
     <script>
         angular.module('dashboardApp').constant('baseUrl', '${base}');
     </script>
+    <script src="${base}/static/js/dashboard/services.js"></script>
     <script src="${base}/static/js/dashboard/summary-app.js"></script>
     <script src="${base}/static/js/dashboard/summary-controller.js"></script>
 </head>
