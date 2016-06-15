@@ -1,7 +1,8 @@
 angular.module('dashboardApp.summary', ['ngRoute', 'dashboardApp'])
   .constant('ROUTES', {
     started: {name: 'Sessions started', path: '/started'},
-    activity_count: {name: 'Activity count', path: '/activity'}
+    activity_count: {name: 'Activity count', path: '/activity'},
+    activity_scatterplot: {name: 'Activity volume over time', path: '/scatterplot'}
   })
   .config(['$routeProvider', 'baseUrl', 'ROUTES', function($routeProvider, baseUrl, ROUTES) {
     // 'baseUrl' should be a 'constant', 'value' is not available in config phase.
@@ -13,6 +14,9 @@ angular.module('dashboardApp.summary', ['ngRoute', 'dashboardApp'])
     .when(ROUTES.activity_count.path, {
       templateUrl: baseUrl + '/static/html/activities-count.html'
     })
+    .when(ROUTES.activity_scatterplot.path, {
+          templateUrl: baseUrl + '/static/html/activities-scatterplot.html'
+        })
     .otherwise({
         redirectTo: ROUTES.started.path
     });

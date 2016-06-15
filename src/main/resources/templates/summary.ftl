@@ -7,6 +7,9 @@
     <#include "includes/libraries/commons.ftl">
     <#include "includes/libraries/moment.ftl">
     <#include "includes/libraries/chart.ftl">
+    <!-- Only for scatterplot -->
+    <#include "includes/libraries/vis.ftl">
+    <#include "includes/libraries/vocabulary.ftl">
 
     <style>
     .breadcrumb {
@@ -23,10 +26,11 @@
     <script>
         angular.module('dashboardApp').constant('baseUrl', '${base}');
     </script>
+    <script src="${base}/static/js/dashboard/filters.js"></script>
+    <script src="${base}/static/js/dashboard/directives.js"></script>
     <script src="${base}/static/js/dashboard/services.js"></script>
     <script src="${base}/static/js/dashboard/summary/app.js"></script>
     <script src="${base}/static/js/dashboard/summary/controllers.js"></script>
-    <script src="${base}/static/js/dashboard/directives.js"></script>
 </head>
 <body ng-controller="SummaryController as sum">
     <div class="container" style="margin-top: 20px;">

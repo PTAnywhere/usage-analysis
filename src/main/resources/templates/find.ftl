@@ -5,17 +5,16 @@
     <title>PT Anywhere usage analysis</title>
 
     <#include "includes/libraries/commons.ftl">
-
     <#include "includes/libraries/moment.ftl">
-
     <#include "includes/libraries/datetimepicker.ftl">
 
     <script src="${base}/static/js/dashboard/app.js"></script>
     <script>
         angular.module('dashboardApp').constant('baseUrl', '${base}');
     </script>
-    <script src="${base}/static/js/dashboard/search/all.js"></script>
+    <script src="${base}/static/js/dashboard/filters.js"></script>
     <script src="${base}/static/js/dashboard/services.js"></script>
+    <script src="${base}/static/js/dashboard/search/controller.js"></script>
 </head>
 <body ng-controller="SearchController as find">
 

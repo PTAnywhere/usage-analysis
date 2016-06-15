@@ -1,0 +1,28 @@
+<div ng-controller="ActivityScatterplot as scatter">
+    <h1>Sessions per number of activities and time</h1>
+
+    <div class="row">
+        <div class="scatterplot" chart-data="scatter.sessions" chart-options="scatter.options"></div>
+    </div>
+
+    <div class="row" style="margin-top: 30px;">
+        <div class="col-md-12">
+            <table class="table">
+                <thead>
+                <th>Session</th><th>Started at</th><th>Number of interactions</th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="session in scatter.sessions">
+                        <td><a href="sessions/{{session.label}}">{{session.label | simpleUuid}}</a></td>
+                        <td>{{session.x | momentDate: 'LLL'}}</td>
+                        <td>{{session.y}}</td>
+                    </tr>
+                    <tr ng-if="scatter.sessions === null">
+                        <td colspan="3">No sessions recorded during the specified period.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>

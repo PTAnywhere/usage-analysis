@@ -32,6 +32,9 @@ angular.module('dashboardApp')
         },
         getActivityVolumePerSession: function(params) {
             return $http.get(baseUrl + '/a/data/sessions/perStatements', {params: params});
+        },
+        getSessionsForScatterplot: function(params) {
+            return $http.get(baseUrl + '/a/data/sessions/scatterplot', {params: params});
         }
     };
   }]);

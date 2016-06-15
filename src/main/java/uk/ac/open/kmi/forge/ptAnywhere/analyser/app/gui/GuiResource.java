@@ -35,14 +35,6 @@ public class GuiResource extends AbstractViewableResource {
                 new PathElement("summaries/states.html", "State chart"));
     }
 
-    @GET @Path("summaries/activity_time.html")
-    @Produces(MediaType.TEXT_HTML)
-    public Response getActivityScatterplot() {
-        final Map<String, Object> map = new HashMap<String, Object>();
-        return buildResponse("/scatterplot.ftl", map, new PathElement("Summaries"),
-                new PathElement("summaries/activity_time.html", "Activity volume over time"));
-    }
-
     @GET @Path("sessions/{session}")
     @Produces(MediaType.TEXT_HTML)
     public Response getSessionLandingPage(@PathParam("session") String sessionId) throws URISyntaxException {
