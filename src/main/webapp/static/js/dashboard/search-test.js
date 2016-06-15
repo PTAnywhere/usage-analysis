@@ -1,14 +1,10 @@
 describe('dashboardApp search', function() {
-    var ctrl, mockBackend;
+    beforeEach(module('dashboardApp.search'));
 
     var defaultStartDate = moment('2016-06-15 08:00');
     var defaultEndDate = moment('2016-06-15 20:40');
 
-    beforeEach(function() {
-        //module('dashboardApp');
-        module('dashboardApp.search');
-    });
-
+    var ctrl, mockBackend;
     beforeEach(inject(function($controller, $httpBackend) {
         // Prepare local storage
         localStorage.setItem('startISO', defaultStartDate.toISOString());
@@ -41,5 +37,20 @@ describe('dashboardApp search', function() {
         ctrl.list();
         mockBackend.flush();
         expect(ctrl.sessions).toEqual(['id1', 'id2', 'id3']);
+    });
+});
+
+
+describe('simpleUuid filter', function() {
+    beforeEach(module('dashboardApp.search'));
+
+    var filter;
+    beforeEach(inject(function(simpleUuidFilter) {
+        filter = simpleUuidFilter;
+    }));
+
+    it('shows the expected abreviated UUID', function() {
+        expect(filter('6fc7797b-1a33-4fd7-8db1-1d6e7468db65')).toBe('b8d5exozT9eNsR1udGjbZQ--');
+        expect(filter('a9101f6b-ef7c-4372-91c2-9391e94ee233')).toBe('qRAfa.98Q3KRwpOR6U7iMw--');
     });
 });
