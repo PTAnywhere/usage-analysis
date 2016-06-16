@@ -57,4 +57,43 @@ angular.module('dashboardApp')
             });
         }
     };
+  }])
+  .directive('slider', ['baseUrl', function(baseUrl) {
+      function createSlider(container, max, val, onSlide, onStop) {
+          return container.slider({
+                    range: "min",
+                    value: val,
+                    min: 1,
+                    max: max,
+                    slide: onSlide,
+                    stop: onStop
+                  });
+      }
+
+      function getValue(container) {
+          return container.slider('value');
+      }
+
+      return {
+          restrict: 'C',
+          templateUrl: baseUrl + '/static/html/directives/slider.html',
+          scope: {
+              onSlide: '&',
+              onChange: '&',
+              sliderMax: '='
+          },
+          link: function($scope, $element, $attrs) {
+              $scope.container = $($element.find('div')[0]);
+              $scope.sliderVal = ($scope.sliderMax>=3)? 3: $scope.sliderMax;
+              createSlider($scope.container, $scope.sliderMax, $scope.sliderVal,
+                  function(event, ui) {
+                      $scope.onSlide({value: ui.value});
+                  },
+                  function(event, ui) {
+                      $scope.onChange({value: ui.value});
+                  }
+              );
+              $scope.onSlide({value: getValue($scope.container)});
+          }
+      };
   }]);

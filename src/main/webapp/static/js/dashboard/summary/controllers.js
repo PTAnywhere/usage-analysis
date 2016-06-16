@@ -118,4 +118,20 @@ angular.module('dashboardApp.summary')
       }, function(error) {
           console.error(error);
       });
+  }])
+  .controller('UsageStatesController', ['$scope', '$routeParams', 'SessionsService', function($scope, $routeParams, SessionsService) {
+      var self = this;
+      self.maxLevels = 6;
+      self.levels = 0;
+      self.onSlide = function(val) {
+          self.levels = val;
+          // During controller init, $scope.$apply does not exist yet.
+          if (typeof $scope.$apply === 'undefined') {
+              $scope.$apply();
+          }
+      };
+      self.onChange = function(val) {
+          // TODO
+          console.log('Update chart');
+      };
   }]);

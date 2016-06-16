@@ -10,14 +10,22 @@
     <!-- Only for scatterplot -->
     <#include "includes/libraries/vis.ftl">
     <#include "includes/libraries/vocabulary.ftl">
+    <!-- Only for state diagram -->
+    <#include "includes/libraries/slider.ftl">
 
     <style>
-    .breadcrumb {
-        margin-bottom: 0;
-        background-color: transparent;
-        border-radius: 0;
-        padding: 0;
-    }
+        .breadcrumb {
+            margin-bottom: 0;
+            background-color: transparent;
+            border-radius: 0;
+            padding: 0;
+        }
+        /* State diagram */
+        #networkMap {
+            /*width: 800px;*/
+            height: 500px;
+            border: 1px solid lightgray;
+        }
     </style>
 
     <script src="${base}/static/bower_components/angular-route/angular-route.min.js"></script>
