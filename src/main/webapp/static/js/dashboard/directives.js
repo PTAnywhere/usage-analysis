@@ -118,7 +118,7 @@ angular.module('dashboardApp')
       link: function($scope, $element, $attrs) {
           StateDiagramHelper.init($element.find('div')[0]);
           $scope.$watchGroup(['data', 'levelsToShow'], function(newValues, oldValues) {
-              StateDiagramHelper.updateChart(newValues[0], newValues[1]);
+              StateDiagramHelper.update(newValues[0], newValues[1]);
           });
       }
     };
