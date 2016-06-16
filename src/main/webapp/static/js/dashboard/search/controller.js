@@ -55,7 +55,7 @@ angular.module('dashboardApp.search', ['ae-datetimepicker', 'dashboardApp'])
     };
 
     self.showStatesChart = function() {
-        $window.location.href = 'summaries/states.html' + self.getUrlParams();
+        $window.location.href = 'summary.html#/usage' + self.getUrlParams();
     };
 
     self.showSessionsStartedHistogram = function() {

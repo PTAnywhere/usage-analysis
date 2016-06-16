@@ -27,14 +27,6 @@ public class GuiResource extends AbstractViewableResource {
         return buildResponse("/summary.ftl");
     }
 
-    @GET @Path("summaries/states.html")
-    @Produces(MediaType.TEXT_HTML)
-    public Response getStateChart() {
-        final Map<String, Object> map = new HashMap<String, Object>();
-        return buildResponse("/usage.ftl", map, new PathElement("Summaries"),
-                new PathElement("summaries/states.html", "State chart"));
-    }
-
     @GET @Path("sessions/{session}")
     @Produces(MediaType.TEXT_HTML)
     public Response getSessionLandingPage(@PathParam("session") String sessionId) throws URISyntaxException {

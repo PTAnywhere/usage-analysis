@@ -21,10 +21,16 @@
             padding: 0;
         }
         /* State diagram */
-        #networkMap {
-            /*width: 800px;*/
+        .slider {
+            margin: 0 0 30px 20px;
+        }
+        .stateDiagram {
             height: 500px;
             border: 1px solid lightgray;
+        }
+        .stateDiagram > div {
+            width: 100%;
+            height: 100%;
         }
     </style>
 

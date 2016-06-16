@@ -35,6 +35,12 @@ angular.module('dashboardApp')
         },
         getSessionsForScatterplot: function(params) {
             return $http.get(baseUrl + '/a/data/sessions/scatterplot', {params: params});
-        }
+        },
+        getSessionsUsageStates: function(params) {
+            return $http.get(baseUrl + '/a/data/usage', {params: params});
+        },
+        getSessionUsageStates: function(sessionId) {
+            return $http.get(baseUrl + '/a/data/usage' + sessionId);
+        },
     };
   }]);
