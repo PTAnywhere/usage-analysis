@@ -40,7 +40,7 @@ angular.module('dashboardApp')
             return $http.get(baseUrl + '/a/data/usage', {params: params});
         },
         getSessionUsageStates: function(sessionId) {
-            return $http.get(baseUrl + '/a/data/usage' + sessionId);
+            return $http.get(baseUrl + '/a/data/usage/' + sessionId);
         },
     };
   }])

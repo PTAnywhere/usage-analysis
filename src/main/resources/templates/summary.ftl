@@ -13,7 +13,7 @@
     <!-- Only for state diagram -->
     <#include "includes/libraries/slider.ftl">
 
-    <style>
+    <style type="text/css">
         .breadcrumb {
             margin-bottom: 0;
             background-color: transparent;
