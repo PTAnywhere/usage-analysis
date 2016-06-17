@@ -30,24 +30,26 @@ release.properties
 src/main/resources/private
 
 
-# Karma dependencies
-src/main/webapp/static/node_modules/*
+# Grunt dependencies
+src/main/webapp/static/js/dashboard/scripts/node_modules/*
 
+# Karma dependencies
+src/main/webapp/static/js/dashboard/node_modules/*
 
 # JavaScript dependencies with Bower
-src/main/webapp/static/bower_components/*
+src/main/webapp/static/js/dashboard/dependencies/*
 ## AngularJS
-!src/main/webapp/static/bower_components/angular/angular.min.js
-!src/main/webapp/static/bower_components/angular-route/angular-route.min.js
+!src/main/webapp/static/js/dashboard/dependencies/angular/angular.min.js
+!src/main/webapp/static/js/dashboard/dependencies/angular-route/angular-route.min.js
 ## Bootstrap
-!src/main/webapp/static/bower_components/bootstrap/dist/
+!src/main/webapp/static/js/dashboard/dependencies/bootstrap/dist/
 ## JQuery
-!src/main/webapp/static/bower_components/jquery/dist/jquery.min.js
+!src/main/webapp/static/js/dashboard/dependencies/jquery/dist/jquery.min.js
 ## jQuery UI
 # We do not care so much about performance here, so we include all files to ease development.
-!src/main/webapp/static/bower_components/jquery-ui/jquery-ui.min.js
-!src/main/webapp/static/bower_components/jquery-ui/themes/base/jquery-ui.min.css
+!src/main/webapp/static/js/dashboard/dependencies/jquery-ui/jquery-ui.min.js
+!src/main/webapp/static/js/dashboard/dependencies/jquery-ui/themes/base/jquery-ui.min.css
 ## vis.js
-!src/main/webapp/static/bower_components/vis/dist/
+!src/main/webapp/static/js/dashboard/dependencies/vis/dist/
 ## Datetimepicker
-!src/main/webapp/static/bower_components/angular-eonasdan-datetimepicker/dist/angular-eonasdan-datetimepicker.min.js
+!src/main/webapp/static/js/dashboard/dependencies/angular-eonasdan-datetimepicker/dist/angular-eonasdan-datetimepicker.min.js
