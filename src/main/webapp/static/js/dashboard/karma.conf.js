@@ -15,12 +15,13 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'bower_components/angular/angular.min.js',
-      'bower_components/angular-mocks/angular-mocks.js',
-      'bower_components/angular-eonasdan-datetimepicker/dist/angular-eonasdan-datetimepicker.min.js',
-      'bower_components/moment/moment.js',
-      'bower_components/vis/dist/vis.min.js',
-      'js/dashboard/**',  // The files to be tested and the tests
+      'dependencies/angular/angular.min.js',
+      'dependencies/angular-mocks/angular-mocks.js',
+      'dependencies/angular-eonasdan-datetimepicker/dist/angular-eonasdan-datetimepicker.min.js',
+      'dependencies/moment/moment.js',
+      'dependencies/vis/dist/vis.min.js',
+      'app',  // The files to be tested
+      'test',  // The tests
     ],
 
 

@@ -21,10 +21,8 @@
   "license": "MIT",
   "ignore": [
     "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
+    "dependencies",
+    "scripts"
   ],
   "dependencies": {
     "widget-ui": "git://github.com/PTAnywhere/widget-ui.git",

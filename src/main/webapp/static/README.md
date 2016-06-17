@@ -17,6 +17,7 @@ You can test this library using [Karma](http://karma-runner.github.io) by follow
  * [Install Karma and the needed plugins](http://karma-runner.github.io/0.13/intro/installation.html)
 
 ```
+cd js/dashboard
 npm install karma karma-jasmine karma-chrome-launcher karma-firefox-launcher --save-dev
 ```
 
@@ -27,3 +28,11 @@ npm install karma karma-jasmine karma-chrome-launcher karma-firefox-launcher --s
 ```
 
 Please, note that before running the tests you __need to download the dependencies__.
+
+
+## Build it with Grunt
+
+```
+cd js/dashboard/scripts
+npm install -g grunt-cli
+```

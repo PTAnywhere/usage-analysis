@@ -30,11 +30,11 @@ release.properties
 src/main/resources/private
 
 
-# Grunt dependencies
-src/main/webapp/static/js/dashboard/scripts/node_modules/*
-
 # Karma dependencies
 src/main/webapp/static/js/dashboard/node_modules/*
+
+# Grunt dependencies
+src/main/webapp/static/js/dashboard/scripts/node_modules/*
 
 # JavaScript dependencies with Bower
 src/main/webapp/static/js/dashboard/dependencies/*
