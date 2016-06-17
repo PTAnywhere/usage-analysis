@@ -36,15 +36,15 @@
 
     <script src="${base}/static/bower_components/angular-route/angular-route.min.js"></script>
 
-    <script src="${base}/static/js/dashboard/app.js"></script>
+    <script src="${base}/static/js/dashboard/app/app.js"></script>
     <script>
         angular.module('dashboardApp').constant('baseUrl', '${base}');
     </script>
-    <script src="${base}/static/js/dashboard/filters.js"></script>
-    <script src="${base}/static/js/dashboard/directives.js"></script>
-    <script src="${base}/static/js/dashboard/services.js"></script>
-    <script src="${base}/static/js/dashboard/summary/app.js"></script>
-    <script src="${base}/static/js/dashboard/summary/controllers.js"></script>
+    <script src="${base}/static/js/dashboard/app/filters.js"></script>
+    <script src="${base}/static/js/dashboard/app/directives.js"></script>
+    <script src="${base}/static/js/dashboard/app/services.js"></script>
+    <script src="${base}/static/js/dashboard/app/summary/app.js"></script>
+    <script src="${base}/static/js/dashboard/app/summary/controllers.js"></script>
 </head>
 <body ng-controller="SummaryController as sum">
     <div class="container" style="margin-top: 20px;">

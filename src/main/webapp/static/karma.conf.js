@@ -20,7 +20,7 @@ module.exports = function(config) {
       'bower_components/angular-eonasdan-datetimepicker/dist/angular-eonasdan-datetimepicker.min.js',
       'bower_components/moment/moment.js',
       'bower_components/vis/dist/vis.min.js',
-      'js/dashboard/**',  // The files to be tested
+      'js/dashboard/**',  // The files to be tested and the tests
     ],
 
 

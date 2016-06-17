@@ -8,13 +8,13 @@
     <#include "includes/libraries/moment.ftl">
     <#include "includes/libraries/datetimepicker.ftl">
 
-    <script src="${base}/static/js/dashboard/app.js"></script>
+    <script src="${base}/static/js/dashboard/app/app.js"></script>
     <script>
         angular.module('dashboardApp').constant('baseUrl', '${base}');
     </script>
-    <script src="${base}/static/js/dashboard/filters.js"></script>
-    <script src="${base}/static/js/dashboard/services.js"></script>
-    <script src="${base}/static/js/dashboard/search/controller.js"></script>
+    <script src="${base}/static/js/dashboard/app/filters.js"></script>
+    <script src="${base}/static/js/dashboard/app/services.js"></script>
+    <script src="${base}/static/js/dashboard/app/search/controller.js"></script>
 </head>
 <body ng-controller="SearchController as find">
 
