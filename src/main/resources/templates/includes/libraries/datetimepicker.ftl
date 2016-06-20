@@ -5,7 +5,7 @@
 
     <!-- AngularJS -->
     <script src="https://rawgit.com/atais/angular-eonasdan-datetimepicker/0.3.3/dist/angular-eonasdan-datetimepicker.min.js"></script>
-    <!-- <script type="text/javascript" src="${dependencies}/angular-eonasdan-datetimepicker/dist/angular-eonasdan-datetimepicker.min.js"></script> -->
+    <!-- <script type="text/javascript" src="${dependencies}/angular-eonasdan-datetimepicker.min.js"></script> -->
 
     <!-- PT Analyser commons -->
     <script src="${base}/static/js/commons.js"></script>

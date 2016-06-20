@@ -30,26 +30,13 @@ release.properties
 src/main/resources/private
 
 
-# Karma dependencies
-src/main/webapp/static/js/dashboard/node_modules/*
+# dashboardApp (JS)
+dashboard/scripts/*
+!dashboard/scripts/package.json
 
-# Grunt dependencies
-src/main/webapp/static/js/dashboard/scripts/node_modules/*
+# Gulp  configuration files
+!dashboard/scripts/gulpfile.js
 
-# JavaScript dependencies with Bower
-src/main/webapp/static/js/dashboard/dependencies/*
-## AngularJS
-!src/main/webapp/static/js/dashboard/dependencies/angular/angular.min.js
-!src/main/webapp/static/js/dashboard/dependencies/angular-route/angular-route.min.js
-## Bootstrap
-!src/main/webapp/static/js/dashboard/dependencies/bootstrap/dist/
-## JQuery
-!src/main/webapp/static/js/dashboard/dependencies/jquery/dist/jquery.min.js
-## jQuery UI
-# We do not care so much about performance here, so we include all files to ease development.
-!src/main/webapp/static/js/dashboard/dependencies/jquery-ui/jquery-ui.min.js
-!src/main/webapp/static/js/dashboard/dependencies/jquery-ui/themes/base/jquery-ui.min.css
-## vis.js
-!src/main/webapp/static/js/dashboard/dependencies/vis/dist/
-## Datetimepicker
-!src/main/webapp/static/js/dashboard/dependencies/angular-eonasdan-datetimepicker/dist/angular-eonasdan-datetimepicker.min.js
+# Karma configuration files
+dashboard/karma.conf.js
+dashboard/karma.conf.ci.js

@@ -81,9 +81,67 @@
                                 <delete file="${project.build.outputDirectory}/environment.properties"/>
                                 <copy file="${property-file}"
                                       tofile="${project.build.outputDirectory}/environment.properties"/>
+                                <copy file="dashboard/dist/dashboardApp.min.js"
+                                      tofile="${project.build.directory}/analysis/static/js/dashboardApp.min.js"/>
+                                <copy todir="${project.build.directory}/analysis/static/js/vendors">
+                                    <fileset dir="dashboard/scripts/tmp/vendors" />
+                                </copy>
                             </tasks>
                         </configuration>
                     </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.0</version>
+
+                <configuration>
+                    <workingDirectory>dashboard/scripts</workingDirectory>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>v5.3.0</nodeVersion>
+                            <npmVersion>3.3.12</npmVersion>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <!-- Optional configuration which provides for running any npm command -->
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>bower install</id>
+                        <goals>
+                            <goal>bower</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>gulp build</id>
+                        <goals>
+                            <goal>gulp</goal>
+                        </goals>
+                    </execution>
+
+                    <!-- Karma tests not specified here because they are run by Gulp -->
+
                 </executions>
             </plugin>
         </plugins>
@@ -215,6 +273,13 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-client</artifactId>
             <version>9.3.6.v20151106</version>
+        </dependency>
+
+        <!-- Frontend: Dashboard app -->
+        <dependency>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-plugin-core</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 

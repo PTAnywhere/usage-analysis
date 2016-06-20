@@ -8,7 +8,7 @@
     <#include "includes/libraries/moment.ftl">
     <#include "includes/libraries/datetimepicker.ftl">
 
-    <script src="${base}/static/js/dashboard/dist/dashboardApp.min.js"></script>
+    <script src="${base}/static/js/dashboardApp.min.js"></script>
     <script>
         angular.module('dashboardApp').constant('baseUrl', '${base}');
     </script>

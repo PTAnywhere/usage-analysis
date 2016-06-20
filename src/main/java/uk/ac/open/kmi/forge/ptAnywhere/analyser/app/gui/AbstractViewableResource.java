@@ -30,7 +30,7 @@ public abstract class AbstractViewableResource {
     public Viewable getPreFilled(String path, Map<String, Object> map, PathElement... breadcrumbs) {
         final String appBase = getAppRootURL();
         map.put("base", appBase);
-        map.put("dependencies", appBase + "/static/js/dashboard/dependencies");
+        map.put("dependencies", appBase + "/static/js/vendors");
         final List<PathElement> breadcrumb = getBreadcrumb();
         for (PathElement el: breadcrumbs) breadcrumb.add(el);
         map.put("breadcrumb", breadcrumb);

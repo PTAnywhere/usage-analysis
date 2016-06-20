@@ -15,10 +15,10 @@
     <#include "includes/libraries/vocabulary.ftl">
 
     <!-- PTAnywhere -->
-    <link type="text/css" rel="stylesheet" href="${dependencies}/widget-ui/css/widget.css">
-    <link type="text/css" rel="stylesheet" href="${dependencies}/widget-ui/css/console.css">
-    <script type="text/javascript" src="${dependencies}/widget-ui/js/locale/en.js"></script>
-    <script type="text/javascript" src="${dependencies}/widget-ui/js/widget.js"></script>
+    <link type="text/css" rel="stylesheet" href="${dependencies}/css/widget.css">
+    <link type="text/css" rel="stylesheet" href="${dependencies}/css/console.css">
+    <script type="text/javascript" src="${dependencies}/js/locale/en.js"></script>
+    <script type="text/javascript" src="${dependencies}/js/widget.js"></script>
 
     <!-- Replayer -->
     <link rel="stylesheet" href="${base}/static/css/replayer.css">
@@ -58,7 +58,7 @@
             };
 
             var widget = ptAnywhereWidgets.all.createNonInteractiveWidget('.widget',
-                                                          '${base}/static/bower_components/widget-ui/images/',
+                                                          '${base}/static/js/vendors/images/',
                                                           data,
                                                           { sessionCreation: false,
                                                             backdrop: 'static',
