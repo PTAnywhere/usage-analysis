@@ -1,0 +1,16 @@
+{
+  "name": "dashboardApp",
+  "description": "A dashboard to analyse PT Anywhere usage.",
+  "homepage": "https://github.com/PTAnywhere/usage-analysis",
+  "version": "2.0.1",
+  "devDependencies": {
+    "del": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-load-plugins": "^1.2.4",
+    "gulp-jshint": "^1.5.3",
+    "gulp-concat": "^2.6.0",
+    "gulp-uglify": "^1.2.4",
+    "gulp-rename": "^1.2.2",
+    "gulp-header": "^1.8.3"
+  }
+}

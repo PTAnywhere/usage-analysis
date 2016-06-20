@@ -1,21 +1,22 @@
 angular.module('dashboardApp')
-  .directive('barChart', ['baseUrl', function(baseUrl) {
+  .directive('barChart', [function() {
     function createChart(ctx, data) {
         return new Chart(ctx, {type: 'bar', data: data, options: {barPercentage: 1.0}});
     }
 
     return {
         restrict: 'C',
-        templateUrl: baseUrl + '/static/html/directives/chart.html',
+        template: '<div ng-if="chartData === null">Loading...</div>'+
+                   '<canvas style="width: 100%; height: 400px;"></canvas>',
         scope: {
             chartData: '='
         },
-        controller: function($scope, $element, $attrs) {
+        link: function($scope, $element, $attrs) {
             $scope.chart = null;
             $scope.$watch('chartData', function(newValue, oldValue) {
                 if (newValue!==null) {
+                    var ctx = $element.find('canvas')[0].getContext('2d');
                     if ($scope.chart === null) {
-                        var ctx = $element.find('canvas')[0].getContext('2d');
                         $scope.chart = createChart(ctx, $scope.chartData);
                     } else {
                         $scope.chart.destroy();
@@ -28,22 +29,21 @@ angular.module('dashboardApp')
         }
     };
   }])
-  .directive('scatterplot', ['baseUrl', function(baseUrl) {
-    function createChart($element, data, options) {
-        var container = $element.find('.scatter')[0];
+  .directive('scatterplot', [function() {
+    function createChart(element, data, options) {
+        var container = element.find('.scatter')[0];
         var dataset = new vis.DataSet(data);
-        var options = options;
         return new vis.Graph2d(container, dataset, options);
     }
 
     return {
         restrict: 'C',
-        templateUrl: baseUrl + '/static/html/directives/scatterplot.html',
+        template: '<div ng-if="chartData === null">Loading...</div><div class="scatter"></div>',
         scope: {
             chartData: '=',
             chartOptions: '='
         },
-        controller: function($scope, $element, $attrs) {
+        link: function($scope, $element, $attrs) {
             $scope.chart = null;
             $scope.$watch('chartData', function(newValue, oldValue) {
                 if (newValue!==null) {
@@ -51,7 +51,7 @@ angular.module('dashboardApp')
                         $scope.chart = createChart($element, newValue, $scope.chartOptions);
                     } else {
                         $scope.chart.destroy();  // Not so elegant
-                        $scope.chart = createChart(container, newValue, $scope.chartOptions)
+                        $scope.chart = createChart(container, newValue, $scope.chartOptions);
                     }
                 }
             });
@@ -61,8 +61,8 @@ angular.module('dashboardApp')
   .directive('slider', [function() {
       var container;
 
-      function createSlider($element, onSlide, onStop) {
-          container = $($element.find('div')[0]);
+      function createSlider(element, onSlide, onStop) {
+          container = $(element.find('div')[0]);
           container.slider({range: "min", slide: onSlide, stop: onStop});
       }
 

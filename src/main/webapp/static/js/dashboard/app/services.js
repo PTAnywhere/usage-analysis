@@ -3,14 +3,14 @@ angular.module('dashboardApp')
       return {
         getDefaultStart: function() {
           var date = localStorage.getItem('startISO');
-          if (date==null) {
+          if (date === null) {
             return moment().startOf('day');
           }
           return moment(date);
         },
         getDefaultEnd: function() {
           var date = localStorage.getItem('endISO');
-          if (date==null) {
+          if (date === null) {
             return moment().endOf('day');
           }
           return moment(date);
@@ -59,9 +59,11 @@ angular.module('dashboardApp')
     }
 
     function drawStates(states, levelsToShow) {
+      var color = null;
+
       nodes.clear();
       for (var i = 0; i  < levelsToShow; i++) {
-        var color = getRandomColor();
+        color = getRandomColor();
         for (var j = 0; j < states.length; j++) {
           nodes.add(
             {id: String(i) + ":" + String(j), label: states[j], color: color, size: 10, x: 100 * j, y: 100 * (i + 1)}
@@ -71,7 +73,7 @@ angular.module('dashboardApp')
       nodes.add(
         {id: 'init', label: 'init', color: getRandomColor(), x: 100 * (states.length - 1) / 2.0, y: 0, size: 10}
       );
-      var color = getRandomColor();
+      color = getRandomColor();
       nodes.add([
         {id: 'pass', label: 'pass', color: color, size: 10, x: 100 * (states.length - 1) / 3.0, y: 100 * (levelsToShow +1 )},
         {id: 'fail', label: 'fail', color: color, size: 10, x: 200 * (states.length - 1) / 3.0, y: 100 * (levelsToShow+ 1 )},

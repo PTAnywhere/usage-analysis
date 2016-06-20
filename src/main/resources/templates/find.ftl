@@ -8,13 +8,10 @@
     <#include "includes/libraries/moment.ftl">
     <#include "includes/libraries/datetimepicker.ftl">
 
-    <script src="${base}/static/js/dashboard/app/app.js"></script>
+    <script src="${base}/static/js/dashboard/dist/dashboardApp.min.js"></script>
     <script>
         angular.module('dashboardApp').constant('baseUrl', '${base}');
     </script>
-    <script src="${base}/static/js/dashboard/app/filters.js"></script>
-    <script src="${base}/static/js/dashboard/app/services.js"></script>
-    <script src="${base}/static/js/dashboard/app/search/controller.js"></script>
 </head>
 <body ng-controller="SearchController as find">
 
@@ -31,7 +28,7 @@
                         <label for="startTime">Start: </label>
                     </div>
                     <div class="col-md-3">
-                        <div id="startTime" class="input-group date" datetimepicker date="find.startTime"
+                        <div id="startTime" class="input-group date" datetimepicker ng-model="find.startTime"
                             options="find.startTimeOptions" on-change="find.startTimeUpdate()">
                             <input type="text" class="form-control" />
                             <span class="input-group-addon">
@@ -44,7 +41,7 @@
                         <label for="endTime">End: </label>
                     </div>
                     <div class="col-md-3">
-                        <div id="endTime" class="input-group date" datetimepicker date="find.endTime"
+                        <div id="endTime" class="input-group date" datetimepicker ng-model="find.endTime"
                             options="find.endTimeOptions">
                             <input type="text" class="form-control" />
                             <span class="input-group-addon">

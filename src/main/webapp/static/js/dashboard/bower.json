@@ -12,11 +12,9 @@
     "replayer.css"
   ],
   "keywords": [
-    "chart",
-    "node",
-    "network",
-    "usage",
-    "widget"
+    "PTAnywhere",
+    "widget",
+    "analytics"
   ],
   "license": "MIT",
   "ignore": [
@@ -29,12 +27,7 @@
     "angular": "~1.5.6",
     "angular-mocks": "~1.5.6",
     "angular-route": "~1.5.6",
-    "angular-eonasdan-datetimepicker": "~0.3.2",
+    "angular-eonasdan-datetimepicker": "~0.3.3",
     "angular-utf8-base64": ""
-  },
-  "keywords": [
-    "PTAnywhere",
-    "widget",
-    "analytics"
-  ]
+  }
 }

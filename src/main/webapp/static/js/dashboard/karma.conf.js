@@ -20,8 +20,8 @@ module.exports = function(config) {
       'dependencies/angular-eonasdan-datetimepicker/dist/angular-eonasdan-datetimepicker.min.js',
       'dependencies/moment/moment.js',
       'dependencies/vis/dist/vis.min.js',
-      'app',  // The files to be tested
-      'test',  // The tests
+      'app/**',  // The files to be tested
+      'test/**',  // The tests
     ],
 
 

@@ -23,15 +23,12 @@
         }
     </style>
 
-    <script src="${base}/static/bower_components/angular-route/angular-route.min.js"></script>
+    <script src="${dependencies}/angular-route/angular-route.min.js"></script>
 
-    <script src="${base}/static/js/dashboard/app/app.js"></script>
+    <script src="${base}/static/js/dashboard/dist/dashboardApp.min.js"></script>
     <script>
         angular.module('dashboardApp').constant('baseUrl', '${base}');
     </script>
-    <script src="${base}/static/js/dashboard/app/directives.js"></script>
-    <script src="${base}/static/js/dashboard/app/services.js"></script>
-    <script src="${base}/static/js/dashboard/app/session/controllers.js"></script>
 </head>
 
 <body ng-controller="UsageStatesController as usage">

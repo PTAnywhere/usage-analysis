@@ -37,7 +37,7 @@ angular.module('dashboardApp.search', ['ae-datetimepicker', 'dashboardApp'])
         if (ret !== '')
             ret = '?' + ret.substring(0, ret.length-1);
         return ret;
-    }
+    };
 
     self.startTimeUpdate = function() {
         self.endTimeOptions.minDate = moment(self.startTime).add(1, 'hours');
