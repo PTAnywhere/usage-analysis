@@ -30,4 +30,16 @@ public class UsageDataResource {
         final LearningLockerDAO dao = AnalyserApp.getLearningLockerDAO(servletContext);
         return Response.ok(dao.getStateTransitions(registrationId).toString()).build();
     }
+
+    @Path("{registration}/passed")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    /**
+     * Session has been passed if successful ping was achieved.
+     */
+    public Response getPassedOrNotForSession(@Context ServletContext servletContext,
+                                             @PathParam("registration") String registrationId) throws MalformedURLException {
+        final LearningLockerDAO dao = AnalyserApp.getLearningLockerDAO(servletContext);
+        return Response.ok(dao.getFinalState(registrationId).toString()).build();
+    }
 }

@@ -14,8 +14,7 @@ import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.DAO;
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.dao.tincan.formatters.*;
 import uk.ac.open.kmi.forge.ptAnywhere.analyser.exceptions.LRSException;
 
-
-public class TinCanDAO implements DAO {
+public class TinCanDAO {
 
     final RemoteLRS lrs = new RemoteLRS();
 
@@ -55,17 +54,7 @@ public class TinCanDAO implements DAO {
         return new ResultHandler(this.lrs, this.lrs.queryStatements(query));
     }
 
-    @Override
-    public JsonObject getStateTransitions(DateTime since, DateTime until) throws LRSException {
-        return null;
-    }
-
-    @Override
-    public JsonObject getStateTransitions(String registrationId) throws LRSException {
-        return null;
-    }
-
-    @Override
+    // The only method that we still use.
     public String getStatements(String registrationUuid) {
         final StatementsQuery query = createQuery( UUID.fromString(registrationUuid) );
         final StatementsResultLRSResponse lrsRes = this.lrs.queryStatements(query);
@@ -76,12 +65,22 @@ public class TinCanDAO implements DAO {
     }
 
 
-    @Override
+    /**
+     * @deprecated
+     * This is an inefficient way to query LearningLocker.
+     * Use the much faster and up-to-date LearningLockerDAO instead.
+     */
+    @Deprecated
     public JsonArray getRegistrations() throws LRSException {
         return getRegistrations(1, null, null, null);
     }
 
-    @Override @Deprecated
+    /**
+     * @deprecated
+     * This is an inefficient way to query LearningLocker.
+     * Use the much faster and up-to-date LearningLockerDAO instead.
+     */
+    @Deprecated
     public JsonArray getRegistrations(int minStatements, DateTime since, DateTime until, String containsCmd) throws LRSException {
         // Ignores containsCmd
         return getRegistrationsProcessAll(minStatements, since, until);
@@ -92,6 +91,12 @@ public class TinCanDAO implements DAO {
      *     - It processes all the statements in the LRS.
      *     - The statement limit must be set to the maximum to avoid ignoring latest sessions.
      */
+    /**
+     * @deprecated
+     * This is an inefficient way to query LearningLocker.
+     * Use the much faster and up-to-date LearningLockerDAO instead.
+     */
+    @Deprecated
     protected JsonArray getRegistrationsProcessAll(int minStatements, DateTime since, DateTime until) throws LRSException {
         final StatementsQuery query = createQuery(since, until);
 
@@ -114,7 +119,12 @@ public class TinCanDAO implements DAO {
         return formatter.toJson( makeRequest(query) );
     }
 
-    @Override
+    /**
+     * @deprecated
+     * This is an inefficient way to query LearningLocker.
+     * Use the much faster and up-to-date LearningLockerDAO instead.
+     */
+    @Deprecated
     public JsonObject countSessionsPerHour(int minStatements, DateTime since, DateTime until) throws LRSException {
         final StatementsQuery query = createQuery(since, until);
         query.setFormat(QueryResultFormat.IDS);
@@ -123,7 +133,12 @@ public class TinCanDAO implements DAO {
         return formatter.toJson( makeRequest(query) );
     }
 
-    @Override
+    /**
+     * @deprecated
+     * This is an inefficient way to query LearningLocker.
+     * Use the much faster and up-to-date LearningLockerDAO instead.
+     */
+    @Deprecated
     public JsonArray countSessionsPerNumberOfActions(DateTime since, DateTime until) throws LRSException {
         final StatementsQuery query = createQuery(since, until);
         query.setFormat(QueryResultFormat.IDS);

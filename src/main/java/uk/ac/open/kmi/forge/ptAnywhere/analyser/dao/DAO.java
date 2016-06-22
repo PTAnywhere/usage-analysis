@@ -14,6 +14,8 @@ public interface DAO {
 
     JsonObject getStateTransitions(String registrationId) throws LRSException;
 
+    JsonObject getFinalState(String registrationId) throws LRSException;
+
     String getStatements(String registrationUuid);
 
     JsonArray getRegistrations() throws LRSException;

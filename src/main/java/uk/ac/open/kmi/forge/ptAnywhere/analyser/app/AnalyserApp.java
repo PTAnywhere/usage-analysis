@@ -80,7 +80,6 @@ public class AnalyserApp extends ResourceConfig {
         }
     }
 
-
     public static TinCanDAO getTinCanDAO(ServletContext servletContext) throws MalformedURLException {
         return new TinCanDAO(
                 (String) servletContext.getAttribute(AnalyserApp.LRS_XAPI),

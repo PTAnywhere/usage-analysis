@@ -87,6 +87,32 @@ public class LearningLockerDAO implements DAO {
     }
 
     @Override
+    public JsonObject getFinalState(String registrationId) throws LRSException {
+        final String pipeline = encodeParam("[{",
+                "  \"$match\": {",
+                "    \"statement.context.registration\": \"" + registrationId + "\",",
+                "    \"statement.verb.id\": {",
+                "      \"$eq\":\"" + BaseVocabulary.READ + "\"",
+                "    },",
+                "    \"statement.object.definition.type\": {",
+                "       \"$eq\":\"" + BaseVocabulary.COMMAND_LINE + "\"",
+                "    },",
+                "    \"statement.result.response\": {",
+                "       \"$regex\":\"Reply from 10.0.0.1: bytes=32 time=\",",
+                "       \"$options\":\"im\"",
+                "    },",
+                "    \"voided\": false",
+                "  }",
+                "}, {",
+                "  \"$group\": {",
+                "    \"_id\": \"$statement.context.registration\"",
+                "  }",
+                "}]");
+        final FinalTransitionResponse rr = this.target.queryParam("pipeline", pipeline).request().get(FinalTransitionResponse.class);
+        return rr.toJson();
+    }
+
+    @Override
     public String getStatements(String registrationUuid) {
         /*final String pipeline = encodeParam("[{",
                 "  \"$match\": {",
