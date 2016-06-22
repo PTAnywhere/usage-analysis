@@ -1,10 +1,9 @@
-angular.module('dashboardApp.script', ['dashboardApp'])
-  .controller('ScriptController', ['SessionsService', function(SessionsService) {
+angular.module('dashboardApp.session')
+  .controller('ScriptController', ['SessionsService', '$routeParams', function(SessionsService, $routeParams) {
       var self = this;
       self.statements = [];
 
-      var sessionID = '7ba8361b-e9a2-4e26-8a64-f88c35513e24';
-      SessionsService.getStatements(sessionID).then(function(response) {
+      SessionsService.getStatements($routeParams.id).then(function(response) {
           self.statements = response.data.statements;
       }, function(error) {
           console.error(error);

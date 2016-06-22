@@ -1,4 +1,4 @@
-angular.module('dashboardApp.script')
+angular.module('dashboardApp.session')
   .directive('sessionScript', ['StatementListener', function(StatementListener) {
     return {
       restrict: 'C',
@@ -38,7 +38,7 @@ angular.module('dashboardApp.script')
           onOpenCommandLine(function(cmdName) {
               cmdSessionNumber++;
               var cmdSessionId = "collapsedSession" + cmdSessionNumber;
-              var html = '<li><a href="#' + cmdSessionId + '" data-toggle="collapse" ' +
+              var html = '<li><a data-target="#' + cmdSessionId + '" data-toggle="collapse" ' +
                          'aria-expanded="false" aria-controls="' + cmdSessionId + '">' +
                          'Using ' + cmdName + '</a><div id="' + cmdSessionId + '" class="collapse">' +
                          '<div class="well"></div></div></li>';

@@ -1,5 +1,6 @@
 angular.module('dashboardApp.search', ['ae-datetimepicker', 'dashboardApp'])
-  .controller('SearchController', ['$window', 'TimeCache', 'SessionsService', function($window, TimeCache, SessionsService) {
+  .controller('SearchController', ['$window', 'TimeCache', 'SessionsService', 'UrlUtils',
+                                    function($window, TimeCache, SessionsService, UrlUtils) {
     var self = this;
     var dateFormat = 'YYYY/MM/DD HH:mm';
 
@@ -29,14 +30,7 @@ angular.module('dashboardApp.search', ['ae-datetimepicker', 'dashboardApp'])
     }
 
     self.getUrlParams = function() {
-        var ret = '';
-        var params = getParams();
-        for (var name in params) {
-            ret += name + '=' + params[name] + '&';
-        }
-        if (ret !== '')
-            ret = '?' + ret.substring(0, ret.length-1);
-        return ret;
+        return UrlUtils.serialize(getParams());
     };
 
     self.startTimeUpdate = function() {

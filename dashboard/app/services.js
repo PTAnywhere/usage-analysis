@@ -1,4 +1,17 @@
 angular.module('dashboardApp')
+  .factory('UrlUtils', [function() {
+      return {
+          serialize: function(params) {
+              var ret = '';
+              for (var name in params) {
+                  ret += name + '=' + params[name] + '&';
+              }
+              if (ret !== '')
+                  ret = '?' + ret.substring(0, ret.length-1);
+              return ret;
+          }
+      };
+  }])
   .factory('TimeCache', [function() {
       return {
         getDefaultStart: function() {

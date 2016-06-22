@@ -96,9 +96,9 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="sessionId in find.sessions">
-                            <td><a href="${base}/a/sessions/{{sessionId}}">{{sessionId | simpleUuid}}</a></td>
+                            <td><a href="${base}/a/session.html#/script?id={{sessionId}}">{{sessionId | simpleUuid}}</a></td>
                             <td>
-                                <a href="${base}/a/sessions/{{sessionId}}/usage.html">Show states</a><br/>
+                                <a href="${base}/a/session.html#/steps?id={{sessionId}}">Show states</a><br/>
                                 <a href="${base}/a/sessions/{{sessionId}}/replayer.html">Replay</a>
                             </td>
                         </tr>

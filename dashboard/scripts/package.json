@@ -1,7 +1,8 @@
 {
   "name": "dashboardApp",
   "description": "A dashboard to analyse PT Anywhere usage.",
-  "homepage": "https://github.com/PTAnywhere/usage-analysis",
+  "homepage": "http://pt-anywhere.kmi.open.ac.uk",
+  "repository": "https://github.com/PTAnywhere/usage-analysis",
   "version": "2.0.1",
   "devDependencies": {
     "bower": "~1.7.9",

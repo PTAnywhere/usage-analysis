@@ -33,23 +33,11 @@ public class GuiResource extends AbstractViewableResource {
         return Response.seeOther(new URI("sessions/" + sessionId + "/index.html")).build();
     }
 
-    @GET @Path("sessions/{session}/index.html")
+    @GET @Path("session.html")
     @Produces(MediaType.TEXT_HTML)
     public Response getSessionPage(@PathParam("session") String sessionId) {
         final Map<String, Object> map = new HashMap<String, Object>();
-        map.put("sessionId", sessionId);
-        return buildResponse("/session.ftl", map, new PathElement("Sessions"),
-                                new PathElement("sessions/" + sessionId, sessionId));
-    }
-
-    @GET @Path("sessions/{session}/usage.html")
-    @Produces(MediaType.TEXT_HTML)
-    public Response getUsageDiagram(@PathParam("session") String sessionId) {
-        final Map<String, Object> map = new HashMap<String, Object>();
-        map.put("sessionId", sessionId);
-        return buildResponse("/usage.ftl", map, new PathElement("Sessions"),
-                new PathElement("sessions/" + sessionId, sessionId),
-                new PathElement("sessions/" + sessionId + "/usage.html", "Usage diagram"));
+        return buildResponse("/session.ftl");
     }
 
     @GET @Path("sessions/{session}/replayer.html")

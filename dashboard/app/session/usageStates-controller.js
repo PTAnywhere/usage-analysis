@@ -1,5 +1,6 @@
-angular.module('dashboardApp.session', ['ngRoute', 'dashboardApp'])
-  .controller('UsageStatesController', ['$scope', '$routeParams', 'SessionsService', function($scope, $routeParams, SessionsService) {
+angular.module('dashboardApp.session')
+  .controller('UsageStatesController', ['$scope', '$routeParams', 'SessionsService',
+                                        function($scope, $routeParams, SessionsService) {
       var self = this;
       self.levels = 0;
       self.slidedLevels = 0;  // Temporary, chart is not updated yet.
@@ -13,6 +14,7 @@ angular.module('dashboardApp.session', ['ngRoute', 'dashboardApp'])
               $scope.$apply();
           }
       };
+
       self.onChange = function(val) {
          self.levels = val;
          self.slidedLevels = val;
@@ -21,8 +23,7 @@ angular.module('dashboardApp.session', ['ngRoute', 'dashboardApp'])
          }
       };
 
-      var sessionID = '7ba8361b-e9a2-4e26-8a64-f88c35513e24';
-      SessionsService.getSessionUsageStates(sessionID).then(function(diagramData) {
+      SessionsService.getSessionUsageStates($routeParams.id).then(function(diagramData) {
           self.data = diagramData;
           self.maxLevels = self.data.levels.length - 1;  // Final state has been added in this controller
           if(!$scope.$$phase) {
