@@ -6,6 +6,9 @@
 
     <#include "includes/libraries/commons.ftl">
 
+    <!-- PT Analyser old commons -->
+    <script src="${base}/static/js/commons.js"></script>
+
     <#include "includes/libraries/vis.ftl">
 
     <#include "includes/libraries/slider.ftl">

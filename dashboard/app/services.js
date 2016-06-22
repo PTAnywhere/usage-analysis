@@ -56,6 +56,9 @@ angular.module('dashboardApp')
                                 diagram.levels.push(finalLevel);
                                 return diagram;
                             });
+        },
+        getStatements: function(sessionId) {
+            return $http.get(baseUrl + '/a/data/sessions/' + sessionId);
         }
     };
   }])
