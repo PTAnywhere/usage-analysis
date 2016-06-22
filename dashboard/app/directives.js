@@ -113,10 +113,11 @@ angular.module('dashboardApp')
       template: '<div></div>',
       scope: {
           data: '=',
-          levelsToShow: '='
+          levelsToShow: '=',
+          finalDisplayed: '@'
       },
       link: function($scope, $element, $attrs) {
-          StateDiagramHelper.init($element.find('div')[0]);
+          StateDiagramHelper.init($element.find('div')[0], $scope.finalDisplayed==='true');
           $scope.$watchGroup(['data', 'levelsToShow'], function(newValues, oldValues) {
               StateDiagramHelper.update(newValues[0], newValues[1]);
           });

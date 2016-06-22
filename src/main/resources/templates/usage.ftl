@@ -45,15 +45,18 @@
                 <p>Notes to interpret the chart:</p>
                 <ul>
                     <li>If a session has less than <span ng-bind="usage.slidedLevels"></span> steps, NOOP state will be selected for the remaining levels.</li>
-                    <li>If a session has more than <span ng-bind="usage.slidedLevels"></span> steps, the remaining ones will be ignored.</li>
-                    <li>There might not be final state if the session was not assessed.</li>
+                    <li>If a session has more than <span ng-bind="usage.slidedLevels"></span> steps, the remaining ones are now displayed.</li>
                     <li>The actions have not been divided to consider the type of devices created/deleted/modified to avoid too many states.</li>
+                    <li ng-show="usage.slidedLevels == usage.maxLevels">
+                        The final state is based on the solution for the experimentation session carried out in January.
+                        Note that the user of this session might have been using the widget with other purpose.</li>
+                    <li ng-show="usage.slidedLevels < usage.maxLevels">To avoid confusions, the final state transition is only shown if all the levels are displayed.</li>
                 </ul>
             </div>
         </div>
 
         <div class="row">
-            <div class="stateDiagram" data="usage.data" levels-to-show="usage.levels"></div>
+            <div class="stateDiagram" final-displayed="true" data="usage.data" levels-to-show="usage.levels"></div>
         </div>
     </div>
 </body>

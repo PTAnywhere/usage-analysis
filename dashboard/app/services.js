@@ -40,14 +40,30 @@ angular.module('dashboardApp')
             return $http.get(baseUrl + '/a/data/usage', {params: params});
         },
         getSessionUsageStates: function(sessionId) {
-            return $http.get(baseUrl + '/a/data/usage/' + sessionId);
-        },
+            var arrayOfPromises = [
+                $http.get(baseUrl + '/a/data/usage/' + sessionId + '/passed'),
+                $http.get(baseUrl + '/a/data/usage/' + sessionId)
+            ];
+            return Promise.all(arrayOfPromises)
+                            .then(function(arrayOfResponses) {
+                                var diagram = arrayOfResponses[1].data;
+                                var finalState = (arrayOfResponses[0].data.passed)? 'pass': 'fail';
+
+                                // Only one session, only one transition per level
+                                var lastState = diagram.levels[diagram.levels.length-1][0].to;
+
+                                var finalLevel = [{from: lastState, to: finalState, value: 1, title: "1 session"}];
+                                diagram.levels.push(finalLevel);
+                                return diagram;
+                            });
+        }
     };
   }])
   .factory('StateDiagramHelper', [function() {
     var network;
     var nodes = new vis.DataSet();
     var edges = new vis.DataSet();
+    var finalStateDisplayed = false;
 
     function getRandomColor() {
       var letters = '0123456789ABCDEF'.split('');
@@ -92,7 +108,8 @@ angular.module('dashboardApp')
     }
 
     return {
-        init: function(container) {
+        init: function(container, fsd) {
+          if (typeof finalStateDisplayed !== 'undefined') finalStateDisplayed = fsd;  // Might be undefined.
           var netData = {nodes: nodes, edges: edges};
           var options = {
               nodes: {
@@ -115,7 +132,10 @@ angular.module('dashboardApp')
         _drawEdges: drawEdges,
         update: function(data, levelsToShow) {
             drawStates(data.states, levelsToShow);
-            drawEdges(data.levels, levelsToShow);
+            // If we have final transitions and we are showing "all" levels (levels-1),
+            // draw also the final state transitions.
+            var extraLevel = (finalStateDisplayed && levelsToShow + 1 == data.levels.length)? 1: 0;
+            drawEdges(data.levels, levelsToShow + extraLevel);
             network.fit(); // zoom to fit
         }
     };

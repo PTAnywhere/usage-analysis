@@ -22,9 +22,9 @@ angular.module('dashboardApp.session', ['ngRoute', 'dashboardApp'])
       };
 
       var sessionID = '7ba8361b-e9a2-4e26-8a64-f88c35513e24';
-      SessionsService.getSessionUsageStates(sessionID).then(function(response) {
-          self.data = response.data;
-          self.maxLevels = self.data.levels.length;
+      SessionsService.getSessionUsageStates(sessionID).then(function(diagramData) {
+          self.data = diagramData;
+          self.maxLevels = self.data.levels.length - 1;  // Final state has been added in this controller
           if(!$scope.$$phase) {
               $scope.$apply();
           }
