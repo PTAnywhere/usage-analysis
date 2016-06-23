@@ -33,10 +33,11 @@ src/main/resources/private
 # dashboardApp (JS)
 dashboard/scripts/*
 !dashboard/scripts/package.json
+!dashboard/scripts/bower.json
 
 # Gulp  configuration files
 !dashboard/scripts/gulpfile.js
 
 # Karma configuration files
-dashboard/karma.conf.js
-dashboard/karma.conf.ci.js
+!dashboard/scripts/karma.conf.js
+!dashboard/scripts/karma.conf.ci.js
