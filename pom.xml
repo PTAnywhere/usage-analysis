@@ -18,7 +18,6 @@
     </properties>
 
     <build>
-        <finalName>analysis</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -82,8 +81,8 @@
                                 <copy file="${property-file}"
                                       tofile="${project.build.outputDirectory}/environment.properties"/>
                                 <copy file="dashboard/dist/dashboardApp.min.js"
-                                      tofile="${project.build.directory}/analysis/static/js/dashboardApp.min.js"/>
-                                <copy todir="${project.build.directory}/analysis/static/js/vendors">
+                                      tofile="${project.build.directory}/${project.build.finalName}/static/js/dashboardApp.min.js"/>
+                                <copy todir="${project.build.directory}/${project.build.finalName}/static/js/vendors">
                                     <fileset dir="dashboard/scripts/tmp/vendors" />
                                 </copy>
                             </tasks>
