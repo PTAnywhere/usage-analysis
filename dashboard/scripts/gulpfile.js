@@ -113,7 +113,6 @@ gulp.task('watch', function() {
 });
 
 gulp.task('release', ['bump_parametrized', 'build'], function() {
-    var vType = (argv.version === undefined)?  'minor': argv.version;
     return gulp.src(DIST + '**')
                 .pipe(gulp.dest(RELEASE_DIR));
 });
