@@ -1,6 +1,6 @@
 {
   "name": "ptanywhere-usage-analysis",
-  "version": "2.0.2-13",
+  "version": "2.1.1-0",
   "homepage": "https://github.com/PTAnywhere/usage-analysis",
   "authors": [
     "Aitor Gómez Goiri <aitor.gomez-goiri@open.ac.uk>"
@@ -11,11 +11,6 @@
     "replayer.js",
     "replayer.css"
   ],
-  "keywords": [
-    "PTAnywhere",
-    "widget",
-    "analytics"
-  ],
   "license": "MIT",
   "ignore": [
     "**/.*",
@@ -23,11 +18,21 @@
     "scripts"
   ],
   "dependencies": {
-    "widget-ui": "git://github.com/PTAnywhere/widget-ui.git",
     "angular": "~1.5.6",
     "angular-mocks": "~1.5.6",
     "angular-route": "~1.5.6",
     "angular-eonasdan-datetimepicker": "~0.3.3",
-    "angular-utf8-base64": ""
-  }
+    "angular-utf8-base64": "",
+    "jquery-ui": "~1.11.4",
+    "bootstrap": "3.3.6",
+    "vis": "~4.16.1"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.5.7"
+  },
+  "keywords": [
+    "PTAnywhere",
+    "widget",
+    "analytics"
+  ]
 }

@@ -1,4 +1,5 @@
-angular.module('ptAnywhere.dashboard.summary', ['ngRoute', 'ptAnywhere.dashboard', 'ptAnywhere.dashboard.templates'])
+angular.module('ptAnywhere.dashboard.summary', ['ngRoute', 'ptAnywhere.dashboard', 'ptAnywhere.dashboard.templates',
+                                                'ptAnywhere.dashboard.stateDiagram'])
     .constant('ROUTES', {
         steps: {name: 'Usage steps', path: '/usage'},
         started: {name: 'Sessions started', path: '/started'},

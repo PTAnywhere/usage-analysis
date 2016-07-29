@@ -148,5 +148,4 @@ Listener.prototype.onStatement = function(statement) {
     }
 };
 
-
-angular.module('ptAnywhere.dashboard').service('StatementListener', [Listener]);
+angular.module('ptAnywhere.dashboard.session').service('StatementListener', [Listener]);

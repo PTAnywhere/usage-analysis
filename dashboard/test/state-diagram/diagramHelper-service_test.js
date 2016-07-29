@@ -1,9 +1,9 @@
-describe('StateDiagramHelper factory', function() {
-    beforeEach(module('ptAnywhere.dashboard'));
+describe('DiagramHelperService factory', function() {
+    beforeEach(module('ptAnywhere.dashboard.stateDiagram'));
 
     var factory;
-    beforeEach(inject(function(StateDiagramHelper) {
-        factory = StateDiagramHelper;
+    beforeEach(inject(function(DiagramHelperService) {
+        factory = DiagramHelperService;
     }));
 
     function getStdVal(hexValInt) {

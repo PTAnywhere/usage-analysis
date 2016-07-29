@@ -1,4 +1,5 @@
-angular.module('ptAnywhere.dashboard.session', ['ngRoute', 'ptAnywhere.dashboard', 'ptAnywhere.dashboard.templates'])
+angular.module('ptAnywhere.dashboard.session', ['ngRoute', 'ptAnywhere.dashboard', 'ptAnywhere.dashboard.templates',
+                                                'ptAnywhere.dashboard.stateDiagram'])
     .constant('ROUTES', {
         script: {name: 'Session script', path: '/script'},
         states: {name: 'States diagram', path: '/steps'}
