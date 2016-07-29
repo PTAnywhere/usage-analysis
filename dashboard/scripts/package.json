@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "bower": "~1.7.9",
+    "yargs": "^4.8.1",
     "gulp": "^3.9.1",
     "gulp-load-plugins": "^1.2.4",
     "gulp-bump": "^2.2.0",
