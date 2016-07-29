@@ -13,7 +13,7 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="session in scatter.sessions">
-                        <td><a href="sessions/{{session.label}}">{{session.label | simpleUuid}}</a></td>
+                        <td><a href="session.html#/script?id={{session.label}}">{{session.label | simpleUuid}}</a></td>
                         <td>{{session.x | momentDate: 'LLL'}}</td>
                         <td>{{session.y}}</td>
                     </tr>

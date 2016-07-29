@@ -30,7 +30,7 @@ release.properties
 src/main/resources/private
 
 
-# dashboardApp (JS)
+# ptAnywhere.dashboard (JS)
 dashboard/scripts/*
 !dashboard/scripts/package.json
 !dashboard/scripts/bower.json

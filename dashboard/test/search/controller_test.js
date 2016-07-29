@@ -1,5 +1,5 @@
 describe('search module', function() {
-    beforeEach(module('dashboardApp.search'));
+    beforeEach(module('ptAnywhere.dashboard.search'));
 
     var defaultStartDate = moment('2016-06-15 08:00');
     var defaultEndDate = moment('2016-06-15 20:40');

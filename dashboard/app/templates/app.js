@@ -1,0 +1,1 @@
+angular.module('ptAnywhere.dashboard.templates', []);

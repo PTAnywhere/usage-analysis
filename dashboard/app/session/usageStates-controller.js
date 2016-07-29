@@ -1,4 +1,4 @@
-angular.module('dashboardApp.session')
+angular.module('ptAnywhere.dashboard.session')
   .controller('UsageStatesController', ['$scope', '$routeParams', 'SessionsService',
                                         function($scope, $routeParams, SessionsService) {
       var self = this;

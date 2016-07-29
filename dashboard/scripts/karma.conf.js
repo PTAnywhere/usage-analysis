@@ -21,7 +21,7 @@ module.exports = function(config) {
       'bower_components/moment/moment.js',
       'bower_components/vis/dist/vis.min.js',
       '../app/**',  // The files to be tested
-      '../test/**',  // The tests
+      '../test/**'  // The tests
     ],
 
 

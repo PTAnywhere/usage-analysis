@@ -1,4 +1,4 @@
-angular.module('dashboardApp.session')
+angular.module('ptAnywhere.dashboard.session')
   .directive('sessionScript', ['StatementListener', function(StatementListener) {
     return {
       restrict: 'C',

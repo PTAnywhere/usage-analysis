@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="dashboardApp.summary" ngStrictDi>
+<html ng-app="ptAnywhere.dashboard.summary" ngStrictDi>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <title>PT Anywhere widget usage: summary charts</title>
@@ -37,7 +37,7 @@
     <script src="${dependencies}/angular-route.min.js"></script>
     <script src="${base}/static/js/dashboardApp.min.js"></script>
     <script>
-        angular.module('dashboardApp').constant('baseUrl', '${base}');
+        angular.module('ptAnywhere.dashboard').constant('baseUrl', '${base}');
     </script>
 </head>
 <body ng-controller="SummaryController as sum">

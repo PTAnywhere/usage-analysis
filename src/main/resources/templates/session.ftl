@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="dashboardApp.session">
+<html ng-app="ptAnywhere.dashboard.session">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <title>PTAnywhere session viewer</title>
@@ -43,7 +43,7 @@
     <script src="${dependencies}/angular-route.min.js"></script>
     <script src="${base}/static/js/dashboardApp.min.js"></script>
     <script>
-        angular.module('dashboardApp').constant('baseUrl', '${base}');
+        angular.module('ptAnywhere.dashboard').constant('baseUrl', '${base}');
     </script>
 </head>
 <body ng-controller="SessionController as session">

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="dashboardApp.search">
+<html ng-app="ptAnywhere.dashboard.search">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <title>PT Anywhere usage analysis</title>
@@ -10,7 +10,7 @@
 
     <script src="${base}/static/js/dashboardApp.min.js"></script>
     <script>
-        angular.module('dashboardApp').constant('baseUrl', '${base}');
+        angular.module('ptAnywhere.dashboard').constant('baseUrl', '${base}');
     </script>
 </head>
 <body ng-controller="SearchController as find">

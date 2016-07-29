@@ -1,4 +1,4 @@
-angular.module('dashboardApp.summary')
+angular.module('ptAnywhere.dashboard.summary')
   .controller('SummaryController', ['$routeParams', '$scope', 'ROUTES', 'UrlUtils',
                                     function($routeParams, $scope, ROUTES, UrlUtils) {
     var self = this;
@@ -16,7 +16,7 @@ angular.module('dashboardApp.summary')
 
     // The $routeParams service is populated asynchronously. Therefore, it must be empty in the main controller.
     $scope.$on('$routeChangeSuccess', function() {
-        var urlParams = UrlUtils.getUrlParams($routeParams);
+        var urlParams = UrlUtils.serialize($routeParams);
         self.charts = getChartsStructure(ROUTES, urlParams);
     });
   }])

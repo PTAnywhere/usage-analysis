@@ -1,4 +1,4 @@
-angular.module('dashboardApp.session')
+angular.module('ptAnywhere.dashboard.session')
   .controller('ScriptController', ['SessionsService', '$routeParams', function(SessionsService, $routeParams) {
       var self = this;
       self.statements = [];

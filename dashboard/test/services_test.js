@@ -1,5 +1,5 @@
 describe('StateDiagramHelper factory', function() {
-    beforeEach(module('dashboardApp'));
+    beforeEach(module('ptAnywhere.dashboard'));
 
     var factory;
     beforeEach(inject(function(StateDiagramHelper) {

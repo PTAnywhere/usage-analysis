@@ -1,5 +1,5 @@
 describe('simpleUuid filter', function() {
-    beforeEach(module('dashboardApp'));
+    beforeEach(module('ptAnywhere.dashboard'));
 
     var filter;
     beforeEach(inject(function(simpleUuidFilter) {

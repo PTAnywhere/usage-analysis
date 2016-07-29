@@ -80,8 +80,9 @@
                                 <delete file="${project.build.outputDirectory}/environment.properties"/>
                                 <copy file="${property-file}"
                                       tofile="${project.build.outputDirectory}/environment.properties"/>
-                                <copy file="dashboard/dist/dashboardApp.min.js"
-                                      tofile="${project.build.directory}/${project.build.finalName}/static/js/dashboardApp.min.js"/>
+                                <copy todir="${project.build.directory}/${project.build.finalName}/static/js">
+                                    <fileset dir="dashboard/scripts/tmp/dist" />
+                                </copy>
                                 <copy todir="${project.build.directory}/${project.build.finalName}/static/js/vendors">
                                     <fileset dir="dashboard/scripts/tmp/vendors" />
                                 </copy>
