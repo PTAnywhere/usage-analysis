@@ -34,7 +34,8 @@ gulp.task('extract_dependencies', ['bundle'], function() {
                         d + 'bootstrap/dist/**',
                         d + 'vis/dist/**',
                         d + 'angular-eonasdan-datetimepicker/dist/angular-eonasdan-datetimepicker.min.js',
-                        d + 'widget-ui/**']
+                        d + 'ptAnywhere-widget/dist/**',
+                        d + 'ptAnywhere-widget/app/locale/**']
     return gulp.src(dependencies)
                 .pipe(gulp.dest(TMP + 'vendors'));
 });

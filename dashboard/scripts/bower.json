@@ -1,6 +1,6 @@
 {
   "name": "ptanywhere-usage-analysis",
-  "version": "2.1.1-0",
+  "version": "2.1.1-1",
   "homepage": "https://github.com/PTAnywhere/usage-analysis",
   "authors": [
     "Aitor Gómez Goiri <aitor.gomez-goiri@open.ac.uk>"
@@ -25,7 +25,8 @@
     "angular-utf8-base64": "",
     "jquery-ui": "~1.11.4",
     "bootstrap": "3.3.6",
-    "vis": "~4.16.1"
+    "vis": "~4.16.1",
+    "ptAnywhere-widget": "git://github.com/PTAnywhere/ptAnywhere-widget.git#v1.0.1"
   },
   "devDependencies": {
     "angular-mocks": "~1.5.7"

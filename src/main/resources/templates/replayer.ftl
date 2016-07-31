@@ -18,10 +18,10 @@
     <#include "includes/libraries/vocabulary.ftl">
 
     <!-- PTAnywhere -->
-    <link type="text/css" rel="stylesheet" href="${dependencies}/css/widget.css">
+    <link type="text/css" rel="stylesheet" href="${dependencies}/css/ptAnywhere.css">
     <link type="text/css" rel="stylesheet" href="${dependencies}/css/console.css">
-    <script type="text/javascript" src="${dependencies}/js/locale/en.js"></script>
-    <script type="text/javascript" src="${dependencies}/js/widget.js"></script>
+    <script type="text/javascript" src="${dependencies}/en.js"></script>
+    <script type="text/javascript" src="${dependencies}/ptAnywhere.min.js"></script>
 
     <!-- Replayer -->
     <link rel="stylesheet" href="${base}/static/css/replayer.css">
@@ -61,7 +61,7 @@
             };
 
             var widget = ptAnywhereWidgets.all.createNonInteractiveWidget('.widget',
-                                                          '${base}/static/js/vendors/images/',
+                                                          '${base}/static/js/vendors/img/',
                                                           data,
                                                           { sessionCreation: false,
                                                             backdrop: 'static',
