@@ -1,12 +1,15 @@
 angular.module('ptAnywhere.dashboard.stateDiagram')
-    .factory('DiagramHelperService', [function() {
+    .factory('DiagramHelperService', ['$q', '$timeout', function($q, $timeout) {
+        var SCALE = 100;
         var network;
         var nodes = new vis.DataSet();
         var edges = new vis.DataSet();
+        var maxLevels = 3;
+        var levelsDisplayed = 3;
         var finalStateDisplayed = false;
 
         function getRandomColor() {
-            var letters = '0123456789ABCDEF'.split('');
+            var letters = '0123456789abcdef'.split('');
             var color = '#';
             for (var i = 0; i < 6; i++ ) {
                 color += letters[Math.floor(Math.random() * 16)];
@@ -14,90 +17,146 @@ angular.module('ptAnywhere.dashboard.stateDiagram')
             return color;
         }
 
-        function drawStates(states, levelsToShow) {
-            var color = null;
-
-            nodes.clear();
-            for (var i = 0; i  < levelsToShow; i++) {
-                color = getRandomColor();
-                for (var j = 0; j < states.length; j++) {
-                    nodes.add({
+        function createStates(data) {
+            var finalLevel = data.levels.length + 1;
+            var newNodes = [{
+                    group: 0,
+                    id: 'init',
+                    label: 'init',
+                    x: SCALE * ( data.states.length - 1) / 2.0,
+                    y: 0
+                }, {
+                   group: finalLevel,
+                   id: 'pass',
+                   label: 'pass',
+                   x: SCALE * (data.states.length - 1) / 3.0,
+                   y: SCALE * finalLevel
+                }, {
+                    group: finalLevel,
+                    id: 'fail',
+                    label: 'fail',
+                    x: (2 * SCALE) * (data.states.length - 1) / 3.0,
+                    y: SCALE * finalLevel
+                }
+            ];
+            // Create intermediate levels
+            for (var i = 0; i < data.levels.length; i++) {
+                for (var j = 0; j < data.states.length; j++) {
+                    newNodes.push({
+                        group: i+1,
                         id: String(i) + ":" + String(j),
-                        label: states[j],
-                        color: color,
-                        size: 10,
-                        x: 100 * j,
-                        y: 100 * (i + 1)
+                        label: data.states[j],
+                        x: SCALE * j,
+                        y: SCALE * (i + 1)
                     });
                 }
             }
-            nodes.add({
-                id: 'init',
-                label: 'init',
-                color: getRandomColor(),
-                x: 100 * (states.length - 1) / 2.0,
-                y: 0,
-                size: 10
-            });
-            color = getRandomColor();
-            nodes.add([
-                {
-                    id: 'pass', label: 'pass', color: color,
-                    size: 10,
-                    x: 100 * (states.length - 1) / 3.0,
-                    y: 100 * (levelsToShow +1 )
-                }, {
-                    id: 'fail',
-                    label: 'fail',
-                    color: color,
-                    size: 10,
-                    x: 200 * (states.length - 1) / 3.0,
-                    y: 100 * (levelsToShow+ 1 )
-                }
-            ]);
-            return nodes;
+            return newNodes;
         }
 
-        function drawEdges(levels, levelsToShow) {
-            edges.clear();
-            for (var i = 0; i < levels.length && i < levelsToShow; i++) {
-                edges.add(levels[i]);
+        // Avoid blocking browser in consuming operations.
+        function addEdgeAsync(edge) {
+            return $timeout(function() {
+                edges.add(edge);
+            });
+        }
+
+        function createEdges(levels) {
+            var newEdges = [];
+            for (var i = 0; i < levels.length; i++) {
+                for (var j = 0; j < levels[i].length; j++) {
+                    levels[i][j].group = i;
+                    newEdges.push(levels[i][j]);
+                }
             }
-            //currentState = (Math.random()>0.5)? "pass": "fail";
-            //edges.add({ 'from': previousState, 'to': currentState });
-            return edges;
+            return newEdges;
+        }
+
+        function getGroups(steps) {
+            var ret = {};
+            for (var i=0; i<steps+2; i++) {  // 2 extra levels/steps: init and final state
+                var color = getRandomColor();
+                ret[String(i)] = {
+                    color: {
+                        border: color,
+                        background: color,
+                        highlight: {
+                            border: color,
+                            background: '#ffffff'
+                        }
+                    }
+                };
+            }
+            return ret;
+        }
+
+        function getOptions() {
+            var nodeSize = SCALE / 10;
+            return {
+               nodes: {
+                   shape: 'dot',
+                   size: nodeSize,
+                   font: {face: 'Tahoma'}
+               },
+               edges: {
+                   width: 0.1,
+                   hoverWidth: 0.2,
+                   smooth: {type: 'continuous'},
+                   arrows: {to: {scaleFactor: 0.2}}
+               },
+               interaction: {dragNodes: false},
+               physics: {enabled: false},
+               groups: getGroups(maxLevels)
+           };
+        }
+
+        function filter(item) {
+            // levelsDisplayed+1 => to consider also init state/level
+            return item.group < levelsDisplayed+1 ||
+                    (levelsDisplayed+1 === maxLevels && finalStateDisplayed);  // Show final state
+        }
+
+        function updateDisplayedData() {
+            network.setData({
+                nodes: nodes.get({filter: filter}),
+                edges: edges.get({filter: filter})
+            });
+            network.fit(); // zoom to fit
         }
 
         return {
             init: function(container, fsd) {
                 if (typeof finalStateDisplayed !== 'undefined') finalStateDisplayed = fsd;  // Might be undefined.
-                var netData = {nodes: nodes, edges: edges};
-                var options = {
-                    nodes: {
-                        shape: 'dot',
-                        font: {face: 'Tahoma'}
-                    },
-                    edges: {
-                        width: 0.1,
-                        smooth: {type: 'continuous'},
-                        arrows: {to: {scaleFactor: 0.2}}
-                    },
-                    interaction: {dragNodes: false},
-                    physics:{enabled: false}
-                };
-
-                network = new vis.Network(container, netData, options);
+                maxLevels = 0;
+                levelsDisplayed = maxLevels;
+                var netData = {nodes: [], edges: []};
+                network = new vis.Network(container, netData, getOptions());
             },
             _getRandomColor: getRandomColor,
-            _drawStates: drawStates,
-            _drawEdges: drawEdges,
-            update: function(data, levelsToShow) {
-                drawStates(data.states, levelsToShow);
-                // If we have final transitions and we are showing "all" levels (levels-1),
-                // draw also the final state transitions.
-                var extraLevel = (finalStateDisplayed && levelsToShow + 1 == data.levels.length)? 1: 0;
-                drawEdges(data.levels, levelsToShow + extraLevel);
-                network.fit(); // zoom to fit
+            _createStates: createStates,
+            _createEdges: createEdges,
+            update: function(data) {
+                nodes.clear();
+                edges.clear();
+                maxLevels = data.levels.length;
+                network.setOptions(getOptions());
+
+                // Avoid blocking browser in consuming operations.
+                $timeout(function() {
+                    // apparently DataSet.add is much more computation consuming than Array.push,
+                    // so creating a temporary array makes sense.
+                    nodes.add(createStates(data));
+                }).then(function() {
+                    $timeout(function() {
+                        edges.add(createEdges(data.levels));
+                    }).then(function() {
+                        updateDisplayedData();
+                    });
+                });
+            },
+            display: function(levelsToShow) {
+                levelsDisplayed = levelsToShow;
+                updateDisplayedData();
             }
         };
     }]);

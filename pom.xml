@@ -6,7 +6,7 @@
     <groupId>uk.ac.open.kmi.forge.ptAnywhere.analyse</groupId>
     <artifactId>ptAnywhere-analyser</artifactId>
     <packaging>war</packaging>
-    <version>2.1.1</version>
+    <version>2.2.0</version>
     <name>PTAnywhere analyser</name>
 
 
