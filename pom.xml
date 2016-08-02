@@ -83,6 +83,9 @@
                                 <copy todir="${project.build.directory}/${project.build.finalName}/static/js">
                                     <fileset dir="dashboard/scripts/tmp/dist" />
                                 </copy>
+                                <copy todir="${project.build.directory}/${project.build.finalName}/static/css">
+                                    <fileset dir="dashboard/dist/css" />
+                                </copy>
                                 <copy todir="${project.build.directory}/${project.build.finalName}/static/js/vendors">
                                     <fileset dir="dashboard/scripts/tmp/vendors" />
                                 </copy>

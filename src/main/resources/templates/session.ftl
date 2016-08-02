@@ -16,30 +16,9 @@
         }
     </style>
 
-    <!-- TODO create file -->
-    <style type="text/css">
-        .breadcrumb {
-            margin-bottom: 0;
-            background-color: transparent;
-            border-radius: 0;
-            padding: 0;
-        }
-        /* State diagram */
-        .slider {
-            margin: 0 0 30px 20px;
-        }
-        .stateDiagram {
-            height: 500px;
-            border: 1px solid lightgray;
-        }
-        .stateDiagram > div {
-            width: 100%;
-            height: 100%;
-        }
-    </style>
-
     <#include "includes/libraries/vocabulary.ftl">
 
+    <link type="text/css" rel="stylesheet" href="${base}/static/css/dashboard.css">
     <script src="${dependencies}/angular-route.min.js"></script>
     <script src="${base}/static/js/dashboardApp.min.js"></script>
     <script>
