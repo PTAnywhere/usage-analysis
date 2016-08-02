@@ -12,7 +12,7 @@ angular.module('ptAnywhere.dashboard')
             }
         };
     }])
-    .factory('SessionsService', ['$http', 'baseUrl', function($http, baseUrl) {
+    .factory('SessionsService', ['$q', '$http', 'baseUrl', function($q, $http, baseUrl) {
         return {
             list: function(params) {
                 return $http.get(baseUrl + '/a/data/sessions', {params: params});
@@ -34,7 +34,7 @@ angular.module('ptAnywhere.dashboard')
                     $http.get(baseUrl + '/a/data/usage/' + sessionId + '/passed'),
                     $http.get(baseUrl + '/a/data/usage/' + sessionId)
                 ];
-                return Promise.all(arrayOfPromises)
+                return $q.all(arrayOfPromises)
                                 .then(function(arrayOfResponses) {
                                     var diagram = arrayOfResponses[1].data;
                                     var finalState = (arrayOfResponses[0].data.passed)? 'pass': 'fail';

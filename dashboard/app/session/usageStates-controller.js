@@ -4,7 +4,7 @@ angular.module('ptAnywhere.dashboard.session')
       var self = this;
       self.levels = 0;
       self.slidedLevels = 0;  // Temporary, chart is not updated yet.
-      self.data = {states: [], levels: []};
+      self.data = {states: null, levels: null};
       self.maxLevels = 0;
 
       self.onSlide = function(val) {

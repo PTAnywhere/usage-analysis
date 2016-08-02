@@ -142,12 +142,12 @@ angular.module('ptAnywhere.dashboard.stateDiagram')
                 network.setOptions(getOptions());
 
                 // Avoid blocking browser in consuming operations.
-                $timeout(function() {
+                return $timeout(function() {
                     // apparently DataSet.add is much more computation consuming than Array.push,
                     // so creating a temporary array makes sense.
                     nodes.add(createStates(data));
                 }).then(function() {
-                    $timeout(function() {
+                    return $timeout(function() {
                         edges.add(createEdges(data.levels));
                     }).then(function() {
                         updateDisplayedData();

@@ -1,28 +1,25 @@
 angular.module('ptAnywhere.dashboard')
     .directive('scatterplot', [function() {
-        function createChart(element, data, options) {
-            var container = element.find('.scatter')[0];
-            var dataset = new vis.DataSet(data);
-            return new vis.Graph2d(container, dataset, options);
-        }
-
         return {
             restrict: 'C',
-            template: '<div ng-if="chartData === null">Loading...</div><div class="scatter"></div>',
+            template: '<div class="loader">Loading...</div>',
             scope: {
-                chartData: '=',
-                chartOptions: '='
+                data: '=',
+                options: '='
             },
             link: function($scope, $element, $attrs) {
                 $scope.chart = null;
-                $scope.$watch('chartData', function(newValue, oldValue) {
-                    if (newValue!==null) {
-                        if ($scope.chart === null) {
-                            $scope.chart = createChart($element, newValue, $scope.chartOptions);
-                        } else {
-                            $scope.chart.destroy();  // Not so elegant
-                            $scope.chart = createChart(container, newValue, $scope.chartOptions);
-                        }
+                $scope.$watch('data', function(newValue, oldValue) {
+                    if (newValue !== null) {
+                        var el = angular.element('<div class="scatter"></div>')[0];
+                        var dataSet = new vis.DataSet(newValue);
+                        $scope.chart = new vis.Graph2d(el, dataSet, $scope.options);
+                        $element.replaceWith(el);
+                    }
+                });
+                $scope.$on('$destroy', function() {
+                    if ($scope.chart !== null) {
+                        $scope.chart.destroy();
                     }
                 });
             }

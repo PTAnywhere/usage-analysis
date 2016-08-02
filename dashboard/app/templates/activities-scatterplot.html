@@ -2,10 +2,12 @@
     <h1>Sessions per number of activities and time</h1>
 
     <div class="row">
-        <div class="scatterplot" chart-data="scatter.sessions" chart-options="scatter.options"></div>
+        <div class="col-md-12">
+            <div class="scatterplot" data="scatter.sessions" options="scatter.options"></div>
+        </div>
     </div>
 
-    <div class="row" style="margin-top: 30px;">
+    <div class="row" style="margin-top: 30px;" ng-show="scatter.sessions !== null">
         <div class="col-md-12">
             <table class="table">
                 <thead>
@@ -17,7 +19,7 @@
                         <td>{{session.x | momentDate: 'LLL'}}</td>
                         <td>{{session.y}}</td>
                     </tr>
-                    <tr ng-if="scatter.sessions === null">
+                    <tr ng-if="scatter.sessions.length === 0">
                         <td colspan="3">No sessions recorded during the specified period.</td>
                     </tr>
                 </tbody>
