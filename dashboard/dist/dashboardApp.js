@@ -1,6 +1,6 @@
 /**
  * ptAnywhere.dashboard - A dashboard to analyse PT Anywhere usage.
- * @version v2.3.0
+ * @version v2.4.0
  * @link http://pt-anywhere.kmi.open.ac.uk
  */
 angular.module('ptAnywhere.dashboard', [])

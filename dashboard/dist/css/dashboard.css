@@ -1,9 +1,64 @@
+
 .breadcrumb {
-    margin-bottom: 0;
+    padding: 8px 15px;
+    margin-bottom: 20px;
+    list-style: none;
     background-color: transparent;
-    border-radius: 0;
-    padding: 0;
+    border-radius: 4px;
 }
+
+/** BEGIN: footer */
+
+footer {
+    margin-top: 30px;
+    font-size: 12px;
+    color: #767676;
+}
+
+footer > div {
+    border-top: 2px solid #f5f5f5;
+    position: relative;
+    height: 60px;
+    padding-top: 15px;
+}
+
+.site-footer-links {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.site-footer-links li {
+    display: inline-block;
+    line-height: 16px;
+}
+
+.site-footer-links li + li {
+    margin-left: 10px;
+}
+
+.right, .float-right {
+    float: right !important;
+}
+
+.ptanywhere-logo {
+    fill: currentColor;
+}
+
+.site-footer-mark .ptanywhere-logo {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    margin-left: -12px;
+    font-size: 24px;
+    color: #ccc;
+}
+
+.site-footer-mark .ptanywhere-logo:hover {
+    color: #bbb;
+}
+
+/** END: footer */
 
 
 /** BEGIN: State diagram */

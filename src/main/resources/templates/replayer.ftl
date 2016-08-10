@@ -222,5 +222,7 @@
 
         <#include "includes/error_dialog.ftl">
     </div>
+
+    <#include "includes/footer.ftl">
 </body>
 </html>

@@ -21,6 +21,10 @@ public abstract class AbstractViewableResource {
         return (String) servletContext.getAttribute(AnalyserApp.APP_ROOT);
     }
 
+    protected String getTitle() {
+        return (String) servletContext.getAttribute(AnalyserApp.APP_TITLE);
+    }
+
     protected List<PathElement> getBreadcrumb() {
         final List<PathElement> ret = new ArrayList<PathElement>();
         ret.add(new PathElement("find.html", "Home"));
@@ -31,6 +35,7 @@ public abstract class AbstractViewableResource {
         final String appBase = getAppRootURL();
         map.put("base", appBase);
         map.put("dependencies", appBase + "/static/js/vendors");
+        map.put("title", getTitle());
         final List<PathElement> breadcrumb = getBreadcrumb();
         for (PathElement el: breadcrumbs) breadcrumb.add(el);
         map.put("breadcrumb", breadcrumb);

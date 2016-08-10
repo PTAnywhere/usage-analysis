@@ -8,6 +8,7 @@
     <#include "includes/libraries/moment.ftl">
     <#include "includes/libraries/datetimepicker.ftl">
 
+    <link type="text/css" rel="stylesheet" href="${base}/static/css/dashboard.css">
     <script src="${base}/static/js/dashboardApp.min.js"></script>
     <script>
         angular.module('ptAnywhere.dashboard').constant('baseUrl', '${base}');
@@ -16,7 +17,6 @@
 <body ng-controller="SearchController as find">
 
     <div class="container">
-        <#include "includes/breadcrumb.ftl">
 
         <h1>PT Anywhere usage analysis</h1>
 
@@ -112,5 +112,7 @@
 
         <#include "includes/error_dialog.ftl">
     </div>
+
+    <#include "includes/footer.ftl">
 </body>
 </html>

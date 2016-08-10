@@ -51,5 +51,7 @@
 
         <div ng-view></div>
     </div>
+
+    <#include "includes/footer.ftl">
 </body>
 </html>

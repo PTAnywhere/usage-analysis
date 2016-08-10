@@ -28,12 +28,12 @@ public class AnalyserApp extends ResourceConfig {
     private static final String XAPI_PATH = "data/xAPI/";
     private static final String LLAPI_PATH = "api/v1/";
 
+    public static final String APP_TITLE = "title";
     public static final String APP_ROOT = "path";
     public static final String LRS_XAPI = "xapi";
     public static final String LRS_LLAPI = "llapi";
     public static final String LRS_USERNAME = "username";
     public static final String LRS_PASSWD = "password";
-
 
     public AnalyserApp(@Context ServletContext servletContext) throws IOException {
         super(new ResourceConfig().
@@ -46,6 +46,7 @@ public class AnalyserApp extends ResourceConfig {
 
         final Properties props = new Properties();
         props.load(AnalyserApp.class.getClassLoader().getResourceAsStream("environment.properties"));
+        servletContext.setAttribute(APP_TITLE, props.getProperty("title"));
         servletContext.setAttribute(APP_ROOT, props.getProperty("tomcat.path", "/"));
 
         final String filePath = props.getProperty("la-property-file", "False");
