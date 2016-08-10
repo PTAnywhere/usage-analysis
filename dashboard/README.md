@@ -40,7 +40,7 @@ __Version-type__ can be "major", "minor", "patch" or "prerelease".
 
 (Do not forget to tag the version after committing it)
 
-    $ git tag "v0.0.1"
+    $ git tag "v0.0.1" -m "Description"
     $ git push origin --tags
 
 ## Dependencies
