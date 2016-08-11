@@ -18,29 +18,36 @@ angular.module('ptAnywhere.dashboard.stateDiagram')
         }
 
         function createStates(data) {
-            var finalLevel = data.levels.length + 1;
             var newNodes = [{
                     group: 0,
                     id: 'init',
                     label: 'init',
                     x: SCALE * ( data.states.length - 1) / 2.0,
                     y: 0
-                }, {
-                   group: finalLevel,
-                   id: 'pass',
-                   label: 'pass',
-                   x: SCALE * (data.states.length - 1) / 3.0,
-                   y: SCALE * finalLevel
-                }, {
+                }];
+
+            var levelsToAdd = data.levels.length;
+            if (finalStateDisplayed) {
+                var finalLevel = levelsToAdd;
+                levelsToAdd = finalLevel - 1;
+                newNodes.push({
+                    group: finalLevel,
+                    id: 'pass',
+                    label: 'pass',
+                    x: SCALE * (data.states.length - 1) / 3.0,
+                    y: SCALE * finalLevel
+                });
+                newNodes.push({
                     group: finalLevel,
                     id: 'fail',
                     label: 'fail',
                     x: (2 * SCALE) * (data.states.length - 1) / 3.0,
                     y: SCALE * finalLevel
-                }
-            ];
+                });
+            }
+
             // Create intermediate levels
-            for (var i = 0; i < data.levels.length; i++) {
+            for (var i = 0; i < levelsToAdd; i++) {
                 for (var j = 0; j < data.states.length; j++) {
                     newNodes.push({
                         group: i+1,
@@ -111,9 +118,9 @@ angular.module('ptAnywhere.dashboard.stateDiagram')
         }
 
         function filter(item) {
-            // levelsDisplayed+1 => to consider also init state/level
-            return item.group < levelsDisplayed+1 ||
-                    (levelsDisplayed+1 === maxLevels && finalStateDisplayed);  // Show final state
+            // levelsDisplayed + 1 => to consider also init state/level
+            return item.group < levelsDisplayed + 1 ||
+                    (levelsDisplayed + 1 === maxLevels && finalStateDisplayed);  // Show final state
         }
 
         function updateDisplayedData() {

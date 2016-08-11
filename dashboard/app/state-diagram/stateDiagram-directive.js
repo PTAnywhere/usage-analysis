@@ -1,5 +1,5 @@
 angular.module('ptAnywhere.dashboard.stateDiagram')
-    .directive('stateDiagram', ['DiagramHelperService', function(StateDiagramHelper) {
+    .directive('stateDiagram', ['DiagramHelperService', function(DiagramHelperService) {
         var init = false;
         return {
             restrict: 'C',
@@ -19,17 +19,17 @@ angular.module('ptAnywhere.dashboard.stateDiagram')
                         var temporaryElement = $element.find('div')[0];
                         if (!init) {
                             // Overrides temporary loading message
-                            StateDiagramHelper.init($element.find('div')[0], $scope.finalDisplayed==='true');
+                            DiagramHelperService.init($element.find('div')[0], $scope.finalDisplayed==='true');
                             init = true;
                         }
                         // Normal update
-                        StateDiagramHelper.update(newValue);
+                        DiagramHelperService.update(newValue);
 
                     }
                 });
                 $scope.$watch('levelsToShow', function(newValue, oldValue) {
                     if (newValue > 0) {
-                        StateDiagramHelper.display(newValue);
+                        DiagramHelperService.display(newValue);
                     }
                 });
             }
