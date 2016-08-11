@@ -11,7 +11,7 @@
     <#include "includes/libraries/vis.ftl">
     <#include "includes/libraries/vocabulary.ftl">
     <!-- Only for state diagram -->
-    <#include "includes/libraries/slider.ftl">
+    <#include "includes/libraries/nouislider.ftl">
 
     <link type="text/css" rel="stylesheet" href="${base}/static/css/dashboard.css">
     <script src="${dependencies}/angular-route.min.js"></script>

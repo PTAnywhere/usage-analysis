@@ -1,44 +1,60 @@
 angular.module('ptAnywhere.dashboard.stateDiagram')
     .directive('slider', [function() {
-        var container;
+        var slider;
 
-        function createSlider(element, onSlide, onStop) {
-            container = $(element.find('div')[0]);
-            container.slider({range: "min", slide: onSlide, stop: onStop});
-        }
-
-        function getValue() {
-            return container.slider('value');
+        function getEventValue(value) {
+            return { value: Math.floor(value) };
         }
 
         function updateLimits(newMax, $scope) {
-            // The order is importante: if min changes and the slider is there, it will get the new value
-            var oldSliderVal = getValue();
-            container.slider('option', 'min', (newMax === 0)? 0: 1);
-            container.slider('option', 'max', newMax);
+            if (newMax > 1) {  // Because min and max cannot have the same value
+                var oldSliderVal = Math.floor( slider.noUiSlider.get()[0] );
 
-            if (oldSliderVal === 0 || newMax < oldSliderVal) {
-                container.slider('value', (newMax>=3)? 3: newMax);
-                // Trigger the event (not done automatically when we change the value programmatically)
-                $scope.onChange({value: getValue()});
+                slider.noUiSlider.updateOptions({
+                    range: {
+                        'min': 1,
+                        'max': newMax
+                    }
+                });
+
+                if (oldSliderVal === 0 || newMax < oldSliderVal) {
+                    slider.noUiSlider.set((newMax>=3)? 3: newMax);
+                }
+
+                slider.removeAttribute('disabled');
+            } else {
+                slider.setAttribute('disabled', true);
             }
         }
 
         return {
             restrict: 'C',
-            template: '<div></div>',
             scope: {
                 onSlide: '&',
                 onChange: '&',
                 sliderMax: '='
             },
             link: function($scope, $element, $attrs) {
-                createSlider($element, function(event, ui) {
-                    $scope.onSlide({value: ui.value});
-                },
-                function(event, ui) {
-                    $scope.onChange({value: ui.value});
+                slider = $element[0];
+
+                noUiSlider.create(slider, {
+                    start: 0,
+                    connect: 'lower',
+                    step: 1,
+                    range: {
+                        'min': 0,
+                        'max': 1
+                    }
                 });
+
+                slider.noUiSlider.on('slide', function(values){
+                    $scope.onSlide(getEventValue(values[0]));
+                });
+
+                slider.noUiSlider.on('set', function(values){
+                    $scope.onChange(getEventValue(values[0]));
+                });
+
                 updateLimits($scope.sliderMax, $scope);
 
                 $scope.$watch('sliderMax', function(newMax, oldMax) {

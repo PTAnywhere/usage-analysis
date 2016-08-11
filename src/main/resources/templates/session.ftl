@@ -6,7 +6,8 @@
 
     <#include "includes/libraries/commons.ftl">
     <#include "includes/libraries/vis.ftl">
-    <#include "includes/libraries/slider.ftl">
+    <!-- Only for state diagram -->
+    <#include "includes/libraries/nouislider.ftl">
 
     <style type="text/css">
         .well {

@@ -28,6 +28,7 @@ gulp.task('extract_dependencies', ['bundle'], function() {
     var d = 'bower_components/'
     var dependencies = [d + 'angular/angular.min.js',
                         d + 'angular-route/angular-route.min.js',
+                        d + 'nouislider/distribute/**',
                         d + 'jquery/dist/jquery.min.js',
                         d + 'jquery-ui/jquery-ui.min.js',
                         d + 'jquery-ui/themes/base/**',

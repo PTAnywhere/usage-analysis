@@ -15,6 +15,7 @@ angular.module('ptAnywhere.dashboard.summary')
                 $scope.$apply();
             }
         };
+
         self.onChange = function(val) {
             self.levels = val;
             self.slidedLevels = val;
