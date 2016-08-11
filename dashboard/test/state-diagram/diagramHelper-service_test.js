@@ -25,25 +25,46 @@ describe('DiagramHelperService factory', function() {
     }
 
     it('creates empty states', function() {
+        factory._setFinalStateDisplayed(true);
         var states = factory._createStates({states: ['a', 'b', 'c'], levels: []});
         expect(states.length).toBe(3);  // Init and 2 possible results are always added
         expectContain(states, ['init', 'pass', 'fail'])
     });
 
-    it('creates all states for one level', function() {
+    it('creates all states for one level without final states', function() {
+        factory._setFinalStateDisplayed(false);
         var states = factory._createStates({states: ['a', 'b', 'c'], levels: ['level1']});
-        expect(states.length).toBe(3 + 3);
-        expectContain(states, ['init', 'pass', 'fail', '0:0', '0:1', '0:2']);
+        expect(states.length).toBe(1 + 3);
+        expectContain(states, ['init', '0:0', '0:1', '0:2']);
     });
 
-    it('creates all states for multiple levels', function() {
+    it('creates all states for one level with final states', function() {
+        factory._setFinalStateDisplayed(true);
+        var states = factory._createStates({states: ['a', 'b', 'c'], levels: ['level1']});
+        expect(states.length).toBe(3);
+        // edges in level1 correspond to edges from init to final state
+        expectContain(states, ['init', 'pass', 'fail']);
+    });
+
+    it('creates all states for multiple levels without final states', function() {
+        factory._setFinalStateDisplayed(false);
         var states = factory._createStates({states: ['a', 'b', 'c'], levels: ['level1', 'level2', 'level3']});
-        expect(states.length).toBe(3 * 3 + 3);
-        expectContain(states, ['init', 'pass', 'fail',
+        expect(states.length).toBe(1 + 3 * 3);
+        expectContain(states, ['init',
                                '0:0', '0:1', '0:2',
                                '1:0', '1:1', '1:2',
                                '2:0', '2:1', '2:2']);
     });
+
+    it('creates all states for multiple levels with final states', function() {
+        factory._setFinalStateDisplayed(true);
+        var states = factory._createStates({states: ['a', 'b', 'c'], levels: ['level1', 'level2', 'level3']});
+        expect(states.length).toBe(3 + 3 * 2);
+        expectContain(states, ['init', 'pass', 'fail',
+                               '0:0', '0:1', '0:2',
+                               '1:0', '1:1', '1:2']);
+    });
+
 
     it('draws as many levels as specified', function() {
         var newEdges = [[{id: 0}, {id: 2}], [{id: 5}, {id: 8}], [{id: 3}]];

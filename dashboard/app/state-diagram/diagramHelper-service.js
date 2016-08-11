@@ -139,6 +139,9 @@ angular.module('ptAnywhere.dashboard.stateDiagram')
                 var netData = {nodes: [], edges: []};
                 network = new vis.Network(container, netData, getOptions());
             },
+            _setFinalStateDisplayed: function(fsd) {
+                finalStateDisplayed = fsd;
+            },
             _getRandomColor: getRandomColor,
             _createStates: createStates,
             _createEdges: createEdges,
