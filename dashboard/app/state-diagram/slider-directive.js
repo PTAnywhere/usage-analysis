@@ -2,25 +2,19 @@ angular.module('ptAnywhere.dashboard.stateDiagram')
     .directive('slider', [function() {
         var slider;
 
-        function getEventValue(value) {
-            return { value: Math.floor(value) };
-        }
-
-        function updateLimits(newMax, $scope) {
+        function updateLimits(newMax) {
             if (newMax > 1) {  // Because min and max cannot have the same value
-                var oldSliderVal = Math.floor( slider.noUiSlider.get()[0] );
-
+                var previousValue = slider.noUiSlider.get();
                 slider.noUiSlider.updateOptions({
                     range: {
                         'min': 1,
                         'max': newMax
                     }
                 });
-
-                if (oldSliderVal === 0 || newMax < oldSliderVal) {
-                    slider.noUiSlider.set((newMax>=3)? 3: newMax);
+                // "By default, the sliders values remain unchanged."
+                if (previousValue > newMax) {
+                    slider.noUiSlider.set(newMax);
                 }
-
                 slider.removeAttribute('disabled');
             } else {
                 slider.setAttribute('disabled', true);
@@ -29,12 +23,12 @@ angular.module('ptAnywhere.dashboard.stateDiagram')
 
         return {
             restrict: 'C',
+            require: 'ngModel',
             scope: {
-                onSlide: '&',
-                onChange: '&',
-                sliderMax: '='
+                rangeMax: '=',
+                onSlide: '&'
             },
-            link: function($scope, $element, $attrs) {
+            link: function($scope, $element, $attrs, ngModelCtrl) {
                 slider = $element[0];
 
                 noUiSlider.create(slider, {
@@ -44,22 +38,43 @@ angular.module('ptAnywhere.dashboard.stateDiagram')
                     range: {
                         'min': 0,
                         'max': 1
+                    },
+                    format: {
+                        // No formatting (not event between string and int), just integers
+                        to: function(value) {
+                            return value;
+                        },
+                        from: function(value) {
+                            return value;
+                        }
                     }
+                });
+                slider.removeAttribute('disabled');
+
+
+                $scope.$watch('rangeMax', function(newMax, oldMax) {
+                    updateLimits(newMax);
                 });
 
                 slider.noUiSlider.on('slide', function(values){
-                    $scope.onSlide(getEventValue(values[0]));
+                    // Apparently during the slide event the "step" option is ignored.
+                    $scope.onSlide({ value: Math.round(values[0]) });
                 });
 
-                slider.noUiSlider.on('set', function(values){
-                    $scope.onChange(getEventValue(values[0]));
+                // Data changed outside of AngularJS
+                slider.noUiSlider.on('change', function(values){
+                    // Also tell AngularJS that it needs to update the UI
+                    $scope.$apply(function() {
+                        // Set the data within AngularJS
+                        ngModelCtrl.$setViewValue(values[0]);
+                    });
                 });
 
-                updateLimits($scope.sliderMax, $scope);
-
-                $scope.$watch('sliderMax', function(newMax, oldMax) {
-                    updateLimits(newMax, $scope);
-                });
+                // When data changes inside AngularJS
+                // Notify the third party directive of the change
+                ngModelCtrl.$render = function() {
+                    slider.noUiSlider.set(ngModelCtrl.$viewValue);
+                };
             }
         };
     }]);
