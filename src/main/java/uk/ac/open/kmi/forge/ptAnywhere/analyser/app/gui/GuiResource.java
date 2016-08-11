@@ -27,6 +27,12 @@ public class GuiResource extends AbstractViewableResource {
         return buildResponse("/summary.ftl");
     }
 
+    @GET @Path("ibook.html")
+    @Produces(MediaType.TEXT_HTML)
+    public Response getIbookChart() {
+        return buildResponse("/ibook.ftl");
+    }
+
     @GET @Path("sessions/{session}")
     @Produces(MediaType.TEXT_HTML)
     public Response getSessionLandingPage(@PathParam("session") String sessionId) throws URISyntaxException {
