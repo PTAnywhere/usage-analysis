@@ -1,21 +1,15 @@
 #timeline {
     float: right;
-    width: 90%;
+    width: 95%;
 }
 
-#timeline .start {
+#timeline .time {
     float: left;
     margin-right: 5%;
 }
 
-#timeline .slider {
-    float: left;
-    width: 80%;
-}
-
-#timeline .end {
-    margin-left: 5%;
-    float: left;
+#timeline .progress {
+    overflow: hidden;
 }
 
 .replaying-area {

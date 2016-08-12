@@ -5,6 +5,7 @@
     <title>PT Anywhere widget usage: summary charts</title>
 
     <#include "includes/bundles/commons.ftl">
+    <#include "includes/libraries/angular-route.ftl">
     <#include "includes/bundles/statesdiagram.ftl">
 
     <style>

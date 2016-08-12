@@ -164,7 +164,8 @@ var replayer = (function () {
             firstLine.hide();
             restLines.prepend('<p>' + firstLine.text() + '</p>');
             firstLine.text(line);
-            firstLine.show('slide', {}, 500);
+            //firstLine.show('slide', {}, 500);
+            firstLine.show('slide');
         }
 
         function clearLines() {
@@ -184,23 +185,37 @@ var replayer = (function () {
         /**
          * A module containing a slider and start and ending labels expressed in "mm:ss".
          */
-        var elSlider, elStart, elEnd;
+        var elStart, elEnd, elProgressBar, elSrOnly;
+        var minimum, maximum, currentValue;
+
+        function getPercentageProgress() {
+            var percent = 0.0;
+            if (maximum !== minimum) { // Otherwise division by zero...
+                percent = (currentValue - minimum).toFixed(1) / (maximum - minimum).toFixed(1) * 100.0;
+            }
+            return Math.round(percent * 100)/100 + "%";  // Rounds to two decimals
+        }
+
+        function updateProgress() {
+            var progress = getPercentageProgress();
+            elSrOnly.text(progress + " complete");
+            elProgressBar.width(progress);
+        }
 
         function init(sdrTimelineId) {
+            minimum = 0;
+            maximum = 0;
+            currentValue = 0;
             var sliderDiv = $('#' + sdrTimelineId);  // 1st version: not editable
-            sliderDiv.append('<span class="start">-</span>');
-            sliderDiv.append('<span class="slider">-</span>');
-            sliderDiv.append('<span class="end">-</span>');
-            elSlider = $('.slider', sliderDiv);
+            sliderDiv.append('<div class="time"><span class="start">-</span> / <span class="end">-</span></div>');
+            sliderDiv.append('<div class="progress">' +
+                             '<div class="progress-bar" role="progressbar" aria-valuenow="0"' +
+                             'aria-valuemin="0" aria-valuemax="0" style="width:0%">'+
+                             '<span class="sr-only"></span></div></div>');
             elStart = $('.start', sliderDiv);
             elEnd = $('.end', sliderDiv);
-            elSlider.slider({
-                range: "min",
-                slide: function( event, ui ) {
-                    // do nothing
-                    return false;
-                }
-            });
+            elProgressBar = $('.progress-bar', sliderDiv);
+            elSrOnly = $('.sr-only', sliderDiv);
         }
 
         function printTime(timestamp) {
@@ -210,26 +225,30 @@ var replayer = (function () {
         }
 
         function min(value) {
-            if (typeof value === 'undefined')
-                return elSlider.slider('option', 'min'); // getter
-            else elSlider.slider('option', 'min', value);  // setter
+            if (typeof value === 'undefined') return minimum; // getter
+            else { // setter
+                minimum = value;
+                elProgressBar.attr('aria-valuemin', minimum);
+            }
         }
 
         function max(value) {
-            if (typeof value === 'undefined')
-                return elSlider.slider('option', 'max'); // getter
-            else {
-                elSlider.slider('option', 'max', value);  // setter
+            if (typeof value === 'undefined') return maximum; // getter
+            else { // setter
+                maximum = value;
+                elProgressBar.attr('aria-valuemax', maximum);
                 elEnd.text(printTime(value));
+                updateProgress();
             }
         }
 
         function val(value) {
-            if (typeof value === 'undefined')
-                return elSlider.slider('value'); // getter
-            else {
-                elSlider.slider('value', value);  // setter
+            if (typeof value === 'undefined') return currentValue; // getter
+            else { // setter
+                currentValue = value;
+                elProgressBar.attr('aria-valuenow', currentValue);
                 elStart.text(printTime(value));
+                updateProgress();
             }
         }
 

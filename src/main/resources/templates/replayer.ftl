@@ -6,7 +6,6 @@
 
     <#include "includes/bundles/commons.ftl">
     <#include "includes/libraries/vis.ftl">
-    <#include "includes/libraries/slider-jqueryui.ftl">
     <#include "includes/libraries/moment.ftl">
 
     <!-- PT Analyser old commons -->
