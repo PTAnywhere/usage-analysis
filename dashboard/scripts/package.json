@@ -1,6 +1,6 @@
 {
   "name": "ptAnywhere.dashboard",
-  "version": "2.4.1-7",
+  "version": "2.4.1-8",
   "description": "A dashboard to analyse PT Anywhere usage.",
   "homepage": "http://pt-anywhere.kmi.open.ac.uk",
   "repository": "https://github.com/PTAnywhere/usage-analysis",
