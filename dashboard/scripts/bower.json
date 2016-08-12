@@ -1,6 +1,6 @@
 {
   "name": "ptanywhere-usage-analysis",
-  "version": "2.4.1-8",
+  "version": "2.4.2",
   "homepage": "https://github.com/PTAnywhere/usage-analysis",
   "authors": [
     "Aitor Gómez Goiri <aitor.gomez-goiri@open.ac.uk>"
@@ -18,14 +18,17 @@
     "scripts"
   ],
   "dependencies": {
-    "angular": "~1.5.6",
-    "angular-mocks": "~1.5.6",
-    "angular-route": "~1.5.6",
+    "angular": "~1.5.7",
+    "angular-route": "~1.5.7",
     "angular-eonasdan-datetimepicker": "~0.3.3",
     "angular-utf8-base64": "",
-    "jquery-ui": "~1.11.4",
-    "bootstrap": "3.3.6",
+    "bootstrap": "3.3.7",
     "vis": "~4.16.1",
+    "moment": "~2.14.1",
+    "nouislider": "~8.5.1",
+    "Chart.js": "~2.1.6",
+    "jquery": "~1.12.4",
+    "jquery-ui": "~1.12.0",
     "ptAnywhere-widget": "git://github.com/PTAnywhere/ptAnywhere-widget.git#v1.0.1"
   },
   "devDependencies": {

@@ -28,13 +28,18 @@ gulp.task('extract_dependencies', ['bundle'], function() {
     var d = 'bower_components/'
     var dependencies = [d + 'angular/angular.min.js',
                         d + 'angular-route/angular-route.min.js',
-                        d + 'nouislider/distribute/**',
-                        d + 'jquery/dist/jquery.min.js',
-                        d + 'jquery-ui/jquery-ui.min.js',
-                        d + 'jquery-ui/themes/base/**',
+                        d + 'angular-eonasdan-datetimepicker/dist/angular-eonasdan-datetimepicker.min.js',
+                        d + 'eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
+                        d + 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
                         d + 'bootstrap/dist/**',
                         d + 'vis/dist/**',
-                        d + 'angular-eonasdan-datetimepicker/dist/angular-eonasdan-datetimepicker.min.js',
+                        d + 'moment/min/moment.min.js',
+                        d + 'nouislider/distribute/**',
+                        // Warning: newer versions require a npm resolver
+                        d + 'Chart.js/dist/Chart.min.js',
+                        d + 'jquery/dist/jquery.min.js',
+                        d + 'jquery-ui/jquery-ui.min.js',
+                        d + 'jquery-ui/themes/base/jquery-ui.min.css',
                         d + 'ptAnywhere-widget/dist/**',
                         d + 'ptAnywhere-widget/app/locale/**']
     return gulp.src(dependencies)

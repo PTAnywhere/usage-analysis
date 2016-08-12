@@ -4,16 +4,13 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <title>PTAnywhere widget usage player</title>
 
-    <#include "includes/libraries/commons.ftl">
+    <#include "includes/bundles/commons.ftl">
+    <#include "includes/libraries/vis.ftl">
+    <#include "includes/libraries/slider-jqueryui.ftl">
+    <#include "includes/libraries/moment.ftl">
 
     <!-- PT Analyser old commons -->
     <script src="${base}/static/js/commons.js"></script>
-
-    <#include "includes/libraries/vis.ftl">
-
-    <#include "includes/libraries/slider.ftl">
-
-    <#include "includes/libraries/moment.ftl">
 
     <#include "includes/libraries/vocabulary.ftl">
 

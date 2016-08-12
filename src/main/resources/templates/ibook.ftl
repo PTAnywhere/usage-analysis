@@ -4,16 +4,9 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <title>PT Anywhere widget usage: summary charts</title>
 
-    <#include "includes/libraries/commons.ftl">
-    <#include "includes/libraries/moment.ftl">
-    <#include "includes/libraries/chart.ftl">
-    <!-- Only for scatterplot -->
-    <#include "includes/libraries/vis.ftl">
-    <#include "includes/libraries/vocabulary.ftl">
-    <!-- Only for state diagram -->
-    <#include "includes/libraries/nouislider.ftl">
+    <#include "includes/bundles/commons.ftl">
+    <#include "includes/bundles/statesdiagram.ftl">
 
-    <link type="text/css" rel="stylesheet" href="${base}/static/css/dashboard.css">
     <style>
         html, body {
             height: 100%;
@@ -41,7 +34,6 @@
             height: 100%;
         }
     </style>
-    <script src="${dependencies}/angular-route.min.js"></script>
     <script src="${base}/static/js/dashboardApp.min.js"></script>
     <script>
         angular.module('ptAnywhere.dashboard').constant('baseUrl', '${base}');

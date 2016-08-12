@@ -4,10 +4,9 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <title>PTAnywhere session viewer</title>
 
-    <#include "includes/libraries/commons.ftl">
-    <#include "includes/libraries/vis.ftl">
-    <!-- Only for state diagram -->
-    <#include "includes/libraries/nouislider.ftl">
+    <#include "includes/bundles/commons.ftl">
+    <#include "includes/libraries/angular-route.ftl">
+    <#include "includes/bundles/statesdiagram.ftl">
 
     <style type="text/css">
         .well {
@@ -19,8 +18,6 @@
 
     <#include "includes/libraries/vocabulary.ftl">
 
-    <link type="text/css" rel="stylesheet" href="${base}/static/css/dashboard.css">
-    <script src="${dependencies}/angular-route.min.js"></script>
     <script src="${base}/static/js/dashboardApp.min.js"></script>
     <script>
         angular.module('ptAnywhere.dashboard').constant('baseUrl', '${base}');

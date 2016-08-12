@@ -4,11 +4,9 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <title>PT Anywhere usage analysis</title>
 
-    <#include "includes/libraries/commons.ftl">
-    <#include "includes/libraries/moment.ftl">
+    <#include "includes/bundles/commons.ftl">
     <#include "includes/libraries/datetimepicker.ftl">
 
-    <link type="text/css" rel="stylesheet" href="${base}/static/css/dashboard.css">
     <script src="${base}/static/js/dashboardApp.min.js"></script>
     <script>
         angular.module('ptAnywhere.dashboard').constant('baseUrl', '${base}');
