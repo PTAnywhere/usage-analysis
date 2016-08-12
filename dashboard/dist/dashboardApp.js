@@ -1,6 +1,6 @@
 /**
  * ptAnywhere.dashboard - A dashboard to analyse PT Anywhere usage.
- * @version v2.4.0
+ * @version v2.5.0
  * @link http://pt-anywhere.kmi.open.ac.uk
  */
 angular.module('ptAnywhere.dashboard', [])
@@ -462,36 +462,33 @@ Listener.prototype.onStatement = function(statement) {
 
 angular.module('ptAnywhere.dashboard.session').service('StatementListener', [Listener]);
 angular.module('ptAnywhere.dashboard.session')
-  .controller('UsageStatesController', ['$scope', '$routeParams', 'SessionsService',
-                                        function($scope, $routeParams, SessionsService) {
+  .controller('UsageStatesController', ['$scope', '$timeout', '$routeParams', 'SessionsService',
+                                        function($scope, $timeout, $routeParams, SessionsService) {
       var self = this;
-      self.levels = 0;
+
+      self.selectedLevels = 0;
       self.slidedLevels = 0;  // Temporary, chart is not updated yet.
-      self.data = {states: null, levels: null};
       self.maxLevels = 0;
+
+      self.data = {states: null, levels: null};
 
       self.onSlide = function(val) {
           self.slidedLevels = val;
-          // This function must be called at the directive init
-          if(!$scope.$$phase) {
-              $scope.$apply();
-          }
-      };
-
-      self.onChange = function(val) {
-         self.levels = val;
-         self.slidedLevels = val;
-         if(!$scope.$$phase) {
-             $scope.$apply();
-         }
+          $scope.$apply();
       };
 
       SessionsService.getSessionUsageStates($routeParams.id).then(function(diagramData) {
           self.data = diagramData;
-          self.maxLevels = self.data.levels.length - 1;  // Final state has been added in this controller
-          if(!$scope.$$phase) {
+
+          // Let's make sure that the maximum range is set before the other values are modified.
+          $timeout(function() {
+              self.maxLevels = self.data.levels.length - 1;  // Final state has been added in this controller
+              // Let's make sure that the directive updates the maximum range now (i.e., runs watchers).
               $scope.$apply();
-          }
+          }).then(function() {
+              self.selectedLevels = (self.maxLevels >= 3)? 3: self.maxLevels;
+              self.slidedLevels = self.selectedLevels;
+          });
       }, function(error) {
           console.error(error);
       });
@@ -517,29 +514,36 @@ angular.module('ptAnywhere.dashboard.stateDiagram')
         }
 
         function createStates(data) {
-            var finalLevel = data.levels.length + 1;
             var newNodes = [{
                     group: 0,
                     id: 'init',
                     label: 'init',
                     x: SCALE * ( data.states.length - 1) / 2.0,
                     y: 0
-                }, {
-                   group: finalLevel,
-                   id: 'pass',
-                   label: 'pass',
-                   x: SCALE * (data.states.length - 1) / 3.0,
-                   y: SCALE * finalLevel
-                }, {
+                }];
+
+            var levelsToAdd = data.levels.length;
+            if (finalStateDisplayed) {
+                var finalLevel = levelsToAdd;
+                levelsToAdd = finalLevel - 1;
+                newNodes.push({
+                    group: finalLevel,
+                    id: 'pass',
+                    label: 'pass',
+                    x: SCALE * (data.states.length - 1) / 3.0,
+                    y: SCALE * finalLevel
+                });
+                newNodes.push({
                     group: finalLevel,
                     id: 'fail',
                     label: 'fail',
                     x: (2 * SCALE) * (data.states.length - 1) / 3.0,
                     y: SCALE * finalLevel
-                }
-            ];
+                });
+            }
+
             // Create intermediate levels
-            for (var i = 0; i < data.levels.length; i++) {
+            for (var i = 0; i < levelsToAdd; i++) {
                 for (var j = 0; j < data.states.length; j++) {
                     newNodes.push({
                         group: i+1,
@@ -610,9 +614,9 @@ angular.module('ptAnywhere.dashboard.stateDiagram')
         }
 
         function filter(item) {
-            // levelsDisplayed+1 => to consider also init state/level
-            return item.group < levelsDisplayed+1 ||
-                    (levelsDisplayed+1 === maxLevels && finalStateDisplayed);  // Show final state
+            // levelsDisplayed + 1 => to consider also init state/level
+            return item.group < levelsDisplayed + 1 ||
+                    (levelsDisplayed + 1 === maxLevels && finalStateDisplayed);  // Show final state
         }
 
         function updateDisplayedData() {
@@ -630,6 +634,9 @@ angular.module('ptAnywhere.dashboard.stateDiagram')
                 levelsDisplayed = maxLevels;
                 var netData = {nodes: [], edges: []};
                 network = new vis.Network(container, netData, getOptions());
+            },
+            _setFinalStateDisplayed: function(fsd) {
+                finalStateDisplayed = fsd;
             },
             _getRandomColor: getRandomColor,
             _createStates: createStates,
@@ -661,55 +668,86 @@ angular.module('ptAnywhere.dashboard.stateDiagram')
     }]);
 angular.module('ptAnywhere.dashboard.stateDiagram')
     .directive('slider', [function() {
-        var container;
+        var slider;
 
-        function createSlider(element, onSlide, onStop) {
-            container = $(element.find('div')[0]);
-            container.slider({range: "min", slide: onSlide, stop: onStop});
-        }
-
-        function getValue() {
-            return container.slider('value');
-        }
-
-        function updateLimits(newMax, $scope) {
-            // The order is importante: if min changes and the slider is there, it will get the new value
-            var oldSliderVal = getValue();
-            container.slider('option', 'min', (newMax === 0)? 0: 1);
-            container.slider('option', 'max', newMax);
-
-            if (oldSliderVal === 0 || newMax < oldSliderVal) {
-                container.slider('value', (newMax>=3)? 3: newMax);
-                // Trigger the event (not done automatically when we change the value programmatically)
-                $scope.onChange({value: getValue()});
+        function updateLimits(newMax) {
+            if (newMax > 1) {  // Because min and max cannot have the same value
+                var previousValue = slider.noUiSlider.get();
+                slider.noUiSlider.updateOptions({
+                    range: {
+                        'min': 1,
+                        'max': newMax
+                    }
+                });
+                // "By default, the sliders values remain unchanged."
+                if (previousValue > newMax) {
+                    slider.noUiSlider.set(newMax);
+                }
+                slider.removeAttribute('disabled');
+            } else {
+                slider.setAttribute('disabled', true);
             }
         }
 
         return {
             restrict: 'C',
-            template: '<div></div>',
+            require: 'ngModel',
             scope: {
-                onSlide: '&',
-                onChange: '&',
-                sliderMax: '='
+                rangeMax: '=',
+                onSlide: '&'
             },
-            link: function($scope, $element, $attrs) {
-                createSlider($element, function(event, ui) {
-                    $scope.onSlide({value: ui.value});
-                },
-                function(event, ui) {
-                    $scope.onChange({value: ui.value});
-                });
-                updateLimits($scope.sliderMax, $scope);
+            link: function($scope, $element, $attrs, ngModelCtrl) {
+                slider = $element[0];
 
-                $scope.$watch('sliderMax', function(newMax, oldMax) {
-                    updateLimits(newMax, $scope);
+                noUiSlider.create(slider, {
+                    start: 0,
+                    connect: 'lower',
+                    step: 1,
+                    range: {
+                        'min': 0,
+                        'max': 1
+                    },
+                    format: {
+                        // No formatting (not event between string and int), just integers
+                        to: function(value) {
+                            return value;
+                        },
+                        from: function(value) {
+                            return value;
+                        }
+                    }
                 });
+                slider.removeAttribute('disabled');
+
+
+                $scope.$watch('rangeMax', function(newMax, oldMax) {
+                    updateLimits(newMax);
+                });
+
+                slider.noUiSlider.on('slide', function(values){
+                    // Apparently during the slide event the "step" option is ignored.
+                    $scope.onSlide({ value: Math.round(values[0]) });
+                });
+
+                // Data changed outside of AngularJS
+                slider.noUiSlider.on('change', function(values){
+                    // Also tell AngularJS that it needs to update the UI
+                    $scope.$apply(function() {
+                        // Set the data within AngularJS
+                        ngModelCtrl.$setViewValue(values[0]);
+                    });
+                });
+
+                // When data changes inside AngularJS
+                // Notify the third party directive of the change
+                ngModelCtrl.$render = function() {
+                    slider.noUiSlider.set(ngModelCtrl.$viewValue);
+                };
             }
         };
     }]);
 angular.module('ptAnywhere.dashboard.stateDiagram')
-    .directive('stateDiagram', ['DiagramHelperService', function(StateDiagramHelper) {
+    .directive('stateDiagram', ['DiagramHelperService', function(DiagramHelperService) {
         var init = false;
         return {
             restrict: 'C',
@@ -729,17 +767,17 @@ angular.module('ptAnywhere.dashboard.stateDiagram')
                         var temporaryElement = $element.find('div')[0];
                         if (!init) {
                             // Overrides temporary loading message
-                            StateDiagramHelper.init($element.find('div')[0], $scope.finalDisplayed==='true');
+                            DiagramHelperService.init($element.find('div')[0], $scope.finalDisplayed==='true');
                             init = true;
                         }
                         // Normal update
-                        StateDiagramHelper.update(newValue);
+                        DiagramHelperService.update(newValue);
 
                     }
                 });
                 $scope.$watch('levelsToShow', function(newValue, oldValue) {
                     if (newValue > 0) {
-                        StateDiagramHelper.display(newValue);
+                        DiagramHelperService.display(newValue);
                     }
                 });
             }
@@ -944,44 +982,84 @@ angular.module('ptAnywhere.dashboard.summary')
         });
     }]);
 angular.module('ptAnywhere.dashboard.summary')
-    .controller('UsageStatesController', ['$scope', '$routeParams', 'SessionsService',
-                                            function($scope, $routeParams, SessionsService) {
+    .controller('UsageStatesController', ['$scope', '$timeout', '$routeParams', 'SessionsService',
+                                            function($scope, $timeout, $routeParams, SessionsService) {
         var self = this;
 
-        self.levels = 0;
-        self.slidedLevels = 0;  // Temporary, chart is not updated yet.
-        self.data = {states: null, levels: null};
         self.maxLevels = 0;
+        self.selectedLevels = 0;
+        self.slidedLevels = 0;  // Temporary, chart is not updated yet.
+
+        self.data = {states: null, levels: null};
 
         self.onSlide = function(val) {
             self.slidedLevels = val;
-            // This function must be called at the directive init
-            if(!$scope.$$phase) {
-                $scope.$apply();
-            }
-        };
-        self.onChange = function(val) {
-            self.levels = val;
-            self.slidedLevels = val;
-            if(!$scope.$$phase) {
-                $scope.$apply();
-            }
+            $scope.$apply();
         };
 
         SessionsService.getSessionsUsageStates($routeParams).then(function(response) {
             self.data = response.data;
-            self.maxLevels = self.data.levels.length;
-            if(!$scope.$$phase) {
+
+            // Let's make sure that the maximum range is set before the other values are modified.
+            $timeout(function() {
+                self.maxLevels = self.data.levels.length;
+                // Let's make sure that the directive updates the maximum range now (i.e., runs watchers).
                 $scope.$apply();
-            }
+            }).then(function() {
+                self.selectedLevels = (self.maxLevels >= 3)? 3: self.maxLevels;
+                self.slidedLevels = self.selectedLevels;
+            });
         }, function(error) {
             console.error(error);
         });
     }]);
 angular.module('ptAnywhere.dashboard.templates', []);
+angular.module('ptAnywhere.dashboard.summary.ibook', ['ngRoute', 'ptAnywhere.dashboard',
+                'ptAnywhere.dashboard.templates', 'ptAnywhere.dashboard.stateDiagram']);
+
+angular.module('ptAnywhere.dashboard.summary.ibook')
+    // Controller for usage states diagram with predefined search parameters to be embeded in ibook chapter
+    .controller('StaticUsageStatesController', ['$scope', '$timeout', 'SessionsService',
+                                            function($scope, $timeout, SessionsService) {
+        var self = this;
+
+        self.selectedLevels = 0;
+        self.slidedLevels = 0;  // Temporary, chart is not updated yet.
+        self.maxLevels = 0;
+
+        self.data = {states: null, levels: null};
+
+        self.onSlide = function(val) {
+            self.slidedLevels = val;
+            $scope.$apply();
+        };
+
+        SessionsService.getSessionsUsageStates({
+            start: '2016-01-27T20:00:00.000Z',
+            end: '2016-01-29T23:00:00.000Z',
+            minStatements: 1
+            //&containsCommand=
+        }).then(function(response) {
+            self.data = response.data;
+
+            // Let's make sure that the maximum range is set before the other values are modified.
+            $timeout(function() {
+                self.maxLevels = self.data.levels.length;
+                // We limit the size of the chart so it can be properly visualized in the iBook.
+                if (self.maxLevels>20) self.maxLevels = 20;
+                // Let's make sure that the directive updates the maximum range now (i.e., runs watchers).
+                $scope.$apply();
+            }).then(function() {
+                self.selectedLevels = (self.maxLevels >= 3)? 3: self.maxLevels;
+                self.slidedLevels = self.selectedLevels;
+            });
+        }, function(error) {
+            console.error(error);
+        });
+    }]);
 angular.module("ptAnywhere.dashboard.templates").run(["$templateCache", function($templateCache) {$templateCache.put("activities-count.html","<div ng-controller=\"ActivityCountController as started\">\n    <h1>Number of activities per session</h1>\n\n    <div class=\"row\">\n        <div class=\"col-md-12\">\n            <div class=\"barChart\" chart-data=\"started.data\"></div>\n        </div>\n    </div>\n</div>");
 $templateCache.put("activities-scatterplot.html","<div ng-controller=\"ActivityScatterplotController as scatter\">\n    <h1>Sessions per number of activities and time</h1>\n\n    <div class=\"row\">\n        <div class=\"col-md-12\">\n            <div class=\"scatterplot\" data=\"scatter.sessions\" options=\"scatter.options\"></div>\n        </div>\n    </div>\n\n    <div class=\"row\" style=\"margin-top: 30px;\" ng-show=\"scatter.sessions !== null\">\n        <div class=\"col-md-12\">\n            <table class=\"table\">\n                <thead>\n                <th>Session</th><th>Started at</th><th>Number of interactions</th>\n                </thead>\n                <tbody>\n                    <tr ng-repeat=\"session in scatter.sessions\">\n                        <td><a href=\"session.html#/script?id={{session.label}}\">{{session.label | simpleUuid}}</a></td>\n                        <td>{{session.x | momentDate: \'LLL\'}}</td>\n                        <td>{{session.y}}</td>\n                    </tr>\n                    <tr ng-if=\"scatter.sessions.length === 0\">\n                        <td colspan=\"3\">No sessions recorded during the specified period.</td>\n                    </tr>\n                </tbody>\n            </table>\n        </div>\n    </div>\n</div>\n</div>");
 $templateCache.put("session-script.html","<div ng-controller=\"ScriptController as script\">\n    <div class=\"container\">\n        <h1>Session</h1>\n\n        <div class=\"row\" style=\"margin: 20px 0;\">\n            <div class=\"col-md-12\">\n                <div class=\"sessionScript\" statements=\"script.statements\"></div>\n            </div>\n        </div>\n    </div>\n</div>");
-$templateCache.put("session-steps.html","<div ng-controller=\"UsageStatesController as usage\">\n    <h1>PT Anywhere usage summary</h1>\n\n    <div class=\"row\">\n        <div class=\"col-md-12\" style=\"margin-top: 20px;\">\n            <p>Number of levels shown in the chart: <span ng-bind=\"usage.slidedLevels\"></span>.</p>\n\n            <div class=\"slider\" slider-max=\"usage.maxLevels\" on-slide=\"usage.onSlide(value)\" on-change=\"usage.onChange(value)\"></div>\n\n            <p>Notes to interpret the chart:</p>\n            <ul>\n                <li>If a session has less than <span ng-bind=\"usage.slidedLevels\"></span> steps, NOOP state will be selected for the remaining levels.</li>\n                <li>If a session has more than <span ng-bind=\"usage.slidedLevels\"></span> steps, the remaining ones are now displayed.</li>\n                <li>The actions have not been divided to consider the type of devices created/deleted/modified to avoid too many states.</li>\n                <li ng-show=\"usage.slidedLevels == usage.maxLevels\">\n                    The final state is based on the solution for the experimentation session carried out in January.\n                    Note that the user of this session might have been using the widget with other purpose.</li>\n                <li ng-show=\"usage.slidedLevels < usage.maxLevels\">To avoid confusions, the final state transition is only shown if all the levels are displayed.</li>\n            </ul>\n        </div>\n    </div>\n\n    <div class=\"row\">\n        <div class=\"stateDiagram\" data=\"usage.data\" levels-to-show=\"usage.levels\"></div>\n    </div>\n</div>");
+$templateCache.put("session-steps.html","<div ng-controller=\"UsageStatesController as usage\">\n    <h1>PT Anywhere usage summary</h1>\n\n    <div class=\"row\">\n        <div class=\"col-md-12\" style=\"margin-top: 20px;\">\n            <p>Number of levels shown in the chart: <span ng-bind=\"usage.slidedLevels\"></span>.</p>\n\n            <div class=\"slider\" ng-model=\"usage.selectedLevels\" range-max=\"usage.maxLevels\" on-slide=\"usage.onSlide(value)\"></div>\n\n            <p>Notes to interpret the chart:</p>\n            <ul>\n                <li>If a session has more than <span ng-bind=\"usage.slidedLevels\"></span> steps, the remaining ones will not be displayed.</li>\n                <li>For the sake of simplicity, the states have not been subdivided to consider the type of devices created, deleted or modified.</li>\n                <li ng-show=\"usage.slidedLevels == usage.maxLevels\">\n                    The final state is based on the solution for the experimentation session carried out in January.\n                    Note that the user of this session might have been using the widget with other purposes.</li>\n                <li ng-show=\"usage.slidedLevels < usage.maxLevels\">To avoid confusions, the final state transition is only shown if all the levels are displayed.</li>\n            </ul>\n        </div>\n    </div>\n\n    <div class=\"row\">\n        <div class=\"col-md-12\">\n            <div class=\"stateDiagram\" data=\"usage.data\" levels-to-show=\"usage.selectedLevels\" final-displayed=\"true\"></div>\n        </div>\n    </div>\n</div>");
 $templateCache.put("sessions-started.html","<div ng-controller=\"SessionsStartedController as started\">\n    <h1>Sessions started</h1>\n\n    <div class=\"row\">\n        <div class=\"col-md-12\">\n            <div class=\"barChart\" chart-data=\"started.data\"></div>\n        </div>\n    </div>\n</div>");
-$templateCache.put("usage-steps.html","<div ng-controller=\"UsageStatesController as usage\">\n    <h1>PT Anywhere usage summary</h1>\n\n    <div class=\"row\">\n        <div class=\"col-md-12\" style=\"margin-top: 20px;\">\n            <p>Number of levels shown in the chart: <span ng-bind=\"usage.slidedLevels\"></span>.</p>\n            <div class=\"slider\" slider-max=\"usage.maxLevels\" on-slide=\"usage.onSlide(value)\" on-change=\"usage.onChange(value)\"></div>\n\n            <p>Notes to interpret the chart:</p>\n            <ul>\n                <li>If a session has less than <span ng-bind=\"usage.slidedLevels\"></span> steps, NOOP state will be selected for the remaining levels.</li>\n                <li>If a session has more than <span ng-bind=\"usage.slidedLevels\"></span> steps, the remaining ones will not be displayed.</li>\n                <li>The actions have not been divided to consider the type of devices created/deleted/modified to avoid too many states.</li>\n                <li>For the sake of clarity, the chart does not show the final states.\n                    You can check the final state for one specific session in the other version of this chart.</li>\n            </ul>\n        </div>\n    </div>\n\n    <div class=\"row\">\n        <div class=\"col-md-12\">\n            <div class=\"stateDiagram\" data=\"usage.data\" levels-to-show=\"usage.levels\"></div>\n        </div>\n    </div>\n</div>\n");}]);
+$templateCache.put("usage-steps.html","<div ng-controller=\"UsageStatesController as usage\">\n    <h1>PT Anywhere usage summary</h1>\n\n    <div class=\"row\">\n        <div class=\"col-md-12\" style=\"margin-top: 20px;\">\n            <p>Number of levels shown in the chart: <span ng-bind=\"usage.slidedLevels\"></span>.</p>\n            <div class=\"slider\" ng-model=\"usage.selectedLevels\" range-max=\"usage.maxLevels\" on-slide=\"usage.onSlide(value)\"></div>\n\n            <p>Notes to interpret the chart:</p>\n            <ul>\n                <li>If a session has less than <span ng-bind=\"usage.slidedLevels\"></span> steps, NOOP state will be selected for the remaining levels.</li>\n                <li>If a session has more than <span ng-bind=\"usage.slidedLevels\"></span> steps, the remaining ones will not be displayed.</li>\n                <li>For the sake of simplicity, the states have not been subdivided to consider the type of devices created, deleted or modified.</li>\n                <li>This aggregation chart does not show final states.\n                    You can check the final state for each session in the session-specific version of this chart.</li>\n            </ul>\n        </div>\n    </div>\n\n    <div class=\"row\">\n        <div class=\"col-md-12\">\n            <div class=\"stateDiagram\" data=\"usage.data\" levels-to-show=\"usage.selectedLevels\"></div>\n        </div>\n    </div>\n</div>\n");}]);
