@@ -1,6 +1,6 @@
 /**
  * ptAnywhere.dashboard - A dashboard to analyse PT Anywhere usage.
- * @version v2.5.0
+ * @version v2.5.2
  * @link http://pt-anywhere.kmi.open.ac.uk
  */
 angular.module('ptAnywhere.dashboard', [])
@@ -194,7 +194,9 @@ angular.module('ptAnywhere.dashboard.session', ['ngRoute', 'ptAnywhere.dashboard
                                                 'ptAnywhere.dashboard.stateDiagram'])
     .constant('ROUTES', {
         script: {name: 'Session script', path: '/script'},
-        states: {name: 'States diagram', path: '/steps'}
+        states: {name: 'States diagram', path: '/steps'},
+        // External web page, not part of AngularJS application (yet).
+        replayer: {name: 'Replayer', url: 'sessions/{id}/replayer.html'}
     })
     .config(['$routeProvider', 'ROUTES', function($routeProvider, ROUTES) {
         $routeProvider.when(ROUTES.script.path, {
@@ -292,12 +294,15 @@ angular.module('ptAnywhere.dashboard.session')
     self.uiid = 'id';
     self.visualizations = [];
 
-    function getVisualizationStructure(vis, urlParams) {
+    function getVisualizationStructure(vis) {
         var ret = [];
+        var urlParams = UrlUtils.serialize($routeParams);
         for (var k in vis) {
+            console.log(urlParams);
+            var url = ('url' in vis[k])? vis[k].url.replace('{id}', self.uiid) : '#' + vis[k].path + urlParams;
             ret.push({
                 name: vis[k].name,
-                url: '#' + vis[k].path + urlParams
+                url: url
             });
         }
         return ret;
@@ -306,8 +311,7 @@ angular.module('ptAnywhere.dashboard.session')
     // The $routeParams service is populated asynchronously. Therefore, it must be empty in the main controller.
     $scope.$on('$routeChangeSuccess', function() {
         self.uiid = $routeParams.id;
-        var urlParams = UrlUtils.serialize($routeParams);
-        self.visualizations = getVisualizationStructure(ROUTES, urlParams);
+        self.visualizations = getVisualizationStructure(ROUTES);
     });
   }]);
 // Starts with (not yet supported by all browsers)
@@ -1059,7 +1063,7 @@ angular.module('ptAnywhere.dashboard.summary.ibook')
     }]);
 angular.module("ptAnywhere.dashboard.templates").run(["$templateCache", function($templateCache) {$templateCache.put("activities-count.html","<div ng-controller=\"ActivityCountController as started\">\n    <h1>Number of activities per session</h1>\n\n    <div class=\"row\">\n        <div class=\"col-md-12\">\n            <div class=\"barChart\" chart-data=\"started.data\"></div>\n        </div>\n    </div>\n</div>");
 $templateCache.put("activities-scatterplot.html","<div ng-controller=\"ActivityScatterplotController as scatter\">\n    <h1>Sessions per number of activities and time</h1>\n\n    <div class=\"row\">\n        <div class=\"col-md-12\">\n            <div class=\"scatterplot\" data=\"scatter.sessions\" options=\"scatter.options\"></div>\n        </div>\n    </div>\n\n    <div class=\"row\" style=\"margin-top: 30px;\" ng-show=\"scatter.sessions !== null\">\n        <div class=\"col-md-12\">\n            <table class=\"table\">\n                <thead>\n                <th>Session</th><th>Started at</th><th>Number of interactions</th>\n                </thead>\n                <tbody>\n                    <tr ng-repeat=\"session in scatter.sessions\">\n                        <td><a href=\"session.html#/script?id={{session.label}}\">{{session.label | simpleUuid}}</a></td>\n                        <td>{{session.x | momentDate: \'LLL\'}}</td>\n                        <td>{{session.y}}</td>\n                    </tr>\n                    <tr ng-if=\"scatter.sessions.length === 0\">\n                        <td colspan=\"3\">No sessions recorded during the specified period.</td>\n                    </tr>\n                </tbody>\n            </table>\n        </div>\n    </div>\n</div>\n</div>");
-$templateCache.put("session-script.html","<div ng-controller=\"ScriptController as script\">\n    <div class=\"container\">\n        <h1>Session</h1>\n\n        <div class=\"row\" style=\"margin: 20px 0;\">\n            <div class=\"col-md-12\">\n                <div class=\"sessionScript\" statements=\"script.statements\"></div>\n            </div>\n        </div>\n    </div>\n</div>");
+$templateCache.put("session-script.html","<div ng-controller=\"ScriptController as script\">\n    <div class=\"container\">\n        <h1>Session script</h1>\n\n        <div class=\"row\" style=\"margin: 20px 0;\">\n            <div class=\"col-md-12\">\n                <div class=\"sessionScript\" statements=\"script.statements\"></div>\n            </div>\n        </div>\n    </div>\n</div>");
 $templateCache.put("session-steps.html","<div ng-controller=\"UsageStatesController as usage\">\n    <h1>PT Anywhere usage summary</h1>\n\n    <div class=\"row\">\n        <div class=\"col-md-12\" style=\"margin-top: 20px;\">\n            <p>Number of levels shown in the chart: <span ng-bind=\"usage.slidedLevels\"></span>.</p>\n\n            <div class=\"slider\" ng-model=\"usage.selectedLevels\" range-max=\"usage.maxLevels\" on-slide=\"usage.onSlide(value)\"></div>\n\n            <p>Notes to interpret the chart:</p>\n            <ul>\n                <li>If a session has more than <span ng-bind=\"usage.slidedLevels\"></span> steps, the remaining ones will not be displayed.</li>\n                <li>For the sake of simplicity, the states have not been subdivided to consider the type of devices created, deleted or modified.</li>\n                <li ng-show=\"usage.slidedLevels == usage.maxLevels\">\n                    The final state is based on the solution for the experimentation session carried out in January.\n                    Note that the user of this session might have been using the widget with other purposes.</li>\n                <li ng-show=\"usage.slidedLevels < usage.maxLevels\">To avoid confusions, the final state transition is only shown if all the levels are displayed.</li>\n            </ul>\n        </div>\n    </div>\n\n    <div class=\"row\">\n        <div class=\"col-md-12\">\n            <div class=\"stateDiagram\" data=\"usage.data\" levels-to-show=\"usage.selectedLevels\" final-displayed=\"true\"></div>\n        </div>\n    </div>\n</div>");
 $templateCache.put("sessions-started.html","<div ng-controller=\"SessionsStartedController as started\">\n    <h1>Sessions started</h1>\n\n    <div class=\"row\">\n        <div class=\"col-md-12\">\n            <div class=\"barChart\" chart-data=\"started.data\"></div>\n        </div>\n    </div>\n</div>");
 $templateCache.put("usage-steps.html","<div ng-controller=\"UsageStatesController as usage\">\n    <h1>PT Anywhere usage summary</h1>\n\n    <div class=\"row\">\n        <div class=\"col-md-12\" style=\"margin-top: 20px;\">\n            <p>Number of levels shown in the chart: <span ng-bind=\"usage.slidedLevels\"></span>.</p>\n            <div class=\"slider\" ng-model=\"usage.selectedLevels\" range-max=\"usage.maxLevels\" on-slide=\"usage.onSlide(value)\"></div>\n\n            <p>Notes to interpret the chart:</p>\n            <ul>\n                <li>If a session has less than <span ng-bind=\"usage.slidedLevels\"></span> steps, NOOP state will be selected for the remaining levels.</li>\n                <li>If a session has more than <span ng-bind=\"usage.slidedLevels\"></span> steps, the remaining ones will not be displayed.</li>\n                <li>For the sake of simplicity, the states have not been subdivided to consider the type of devices created, deleted or modified.</li>\n                <li>This aggregation chart does not show final states.\n                    You can check the final state for each session in the session-specific version of this chart.</li>\n            </ul>\n        </div>\n    </div>\n\n    <div class=\"row\">\n        <div class=\"col-md-12\">\n            <div class=\"stateDiagram\" data=\"usage.data\" levels-to-show=\"usage.selectedLevels\"></div>\n        </div>\n    </div>\n</div>\n");}]);
