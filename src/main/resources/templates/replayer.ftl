@@ -180,7 +180,29 @@
 </head>
 <body>
     <div class="container">
-        <#include "includes/breadcrumb.ftl">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="collapse navbar-collapse">
+                    <div class="nav navbar-nav navbar-text">
+                        <ol class="breadcrumb">
+                            <li><a href="${base}/a/find.html">Home</a></li>
+                            <li>Session ${simplifiedSessionId}</li>
+                            <li class="active">Replayer</li>
+                        </ol>
+                    </div>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Change chart <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="${base}/a/session.html#/script?id=${sessionId}">Session script</a></li>
+                                <li><a href="${base}/a/session.html#/steps?id=${sessionId}">States diagram</a></li>
+                                <li><a href="${base}/a/sessions/${sessionId}/replayer.html">Replayer</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
 
         <h1>Replayer</h1>
 

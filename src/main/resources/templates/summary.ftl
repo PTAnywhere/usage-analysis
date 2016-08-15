@@ -16,26 +16,26 @@
     </script>
 </head>
 <body ng-controller="SummaryController as sum">
-    <div class="container" style="margin-top: 20px;">
+    <div class="container">
         <nav class="navbar navbar-default">
-          <div class="container-fluid">
-            <ul class="nav navbar-nav">
-              <li class="active">
-                <ol class="breadcrumb navbar-text">
-                    <li><a href="${base}/a/find.html">Home</a></li>
-                    <li class="active">Summary</li>
-                </ol>
-            </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-              <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Change chart <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li ng-repeat="chart in sum.charts"><a href="{{ chart.url }}">{{ chart.name }}</a></li>
+            <div class="container-fluid">
+                <div class="collapse navbar-collapse">
+                    <div class="nav navbar-nav navbar-text">
+                        <ol class="breadcrumb">
+                            <li><a href="${base}/a/find.html">Home</a></li>
+                            <li class="active">Summary</li>
+                        </ol>
+                    </div>
+                </div>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Change chart <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li ng-repeat="chart in sum.charts"><a href="{{ chart.url }}">{{ chart.name }}</a></li>
+                        </ul>
+                    </li>
                 </ul>
-              </li>
-            </ul>
-          </div>
+            </div>
         </nav>
 
         <div ng-view></div>
