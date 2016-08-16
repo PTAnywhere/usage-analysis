@@ -26,15 +26,15 @@
                             <li class="active">Summary</li>
                         </ol>
                     </div>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Change chart <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li ng-repeat="chart in sum.charts"><a href="{{ chart.url }}">{{ chart.name }}</a></li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Change chart <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li ng-repeat="chart in sum.charts"><a href="{{ chart.url }}">{{ chart.name }}</a></li>
-                        </ul>
-                    </li>
-                </ul>
             </div>
         </nav>
 
