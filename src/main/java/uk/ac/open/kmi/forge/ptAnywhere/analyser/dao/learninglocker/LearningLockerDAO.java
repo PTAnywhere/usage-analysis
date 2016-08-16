@@ -201,12 +201,8 @@ public class LearningLockerDAO implements DAO {
                 "      \"$gt\":\"" + since.toDateTimeISO() + "\",",
                 "      \"$lt\":\"" + until.toDateTimeISO() + "\"",
                 "    },",
-                "    \"statement.object.definition.type\": {",
-                "      \"$eq\":\"" + BaseVocabulary.COMMAND_LINE + "\"",
-                "    },",
-                "    \"statement.result.response\": {",
-                "      \"$regex\": \"" + containsCmd + "\"," +
-                "      \"$options\": \"im\"" +
+                "    \"statement.verb.id\": {",
+                "      \"$ne\":\"" + BaseVocabulary.READ + "\"",
                 "    },",
                 "    \"voided\": false",
                 "  }",
@@ -214,16 +210,33 @@ public class LearningLockerDAO implements DAO {
                 "  \"$group\": {",
                 "    \"_id\": \"$statement.context.registration\",",
                 "    \"timestamp\": { \"$min\": \"$statement.timestamp\" },",
-                "    \"count\": { \"$sum\": 1 }",
+                "    \"count\": { \"$sum\": 1 },",
+                "    \"statement\": {",
+                "       \"$addToSet\": {",
+                "           \"type\": \"$statement.object.definition.type\",",
+                "           \"response\": \"$statement.result.response\"",
+                "       }",
+                "   }",
                 "  }",
                 "}, {",
                 "  \"$match\": {",
-                "    \"count\": { \"$gt\": " + minStatements + "}",
+                "    \"count\": { \"$gt\": " + minStatements + "},",
+                "    \"statement.type\": {",
+                "      \"$eq\":\"" + BaseVocabulary.COMMAND_LINE + "\"",
+                "    },",
+                "    \"statement.response\": {",
+                "      \"$regex\": \"" + containsCmd + "\"," +
+                "      \"$options\": \"im\"" +
+                "    }",
                 "  }",
                 "}, {",
                 "  \"$sort\": {",
                 "    \"timestamp\": 1",
                 "  }",
+                "}, {",
+                "  \"$project\": {",
+                "    \"filter.not._id\": 1",
+                "  }" +
                 "}]");
         final RegistrationsResponse cr = this.target.queryParam("pipeline", pipeline).request().get(RegistrationsResponse.class);
         return cr.toJson();
