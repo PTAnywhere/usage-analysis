@@ -85,6 +85,12 @@ footer > div {
 
 
 /** BEGIN: loading icon */
+
+.loader-container {
+    /* Class created to avoid changing the layout because of the loader icon height fluctuations */
+    min-height: 5em;
+}
+
 /* Source: http://projects.lukehaas.me/css-loaders/ */
 .loader,
 .loader:before,
