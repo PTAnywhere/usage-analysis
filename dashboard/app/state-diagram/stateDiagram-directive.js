@@ -1,6 +1,10 @@
 angular.module('ptAnywhere.dashboard.stateDiagram')
     .directive('stateDiagram', ['DiagramHelperService', function(DiagramHelperService) {
-        var init = false;
+
+        function isShowingLoading(mainElement) {
+            return mainElement.children().hasClass('loader');
+        }
+
         return {
             restrict: 'C',
             template: '<div><div class="loader">Loading...</div></div>',
@@ -16,11 +20,10 @@ angular.module('ptAnywhere.dashboard.stateDiagram')
                         //Possible bug: vis.js does not show nodes correctly when doing:
                         //var temporaryElement = angular.element('<div></div>')[0];
                         //$element.find('div').replaceWith(temporaryElement);
-                        var temporaryElement = $element.find('div')[0];
-                        if (!init) {
+                        var mainElement = $element.find('div');
+                        if (isShowingLoading(mainElement)) {
                             // Overrides temporary loading message
-                            DiagramHelperService.init($element.find('div')[0], $scope.finalDisplayed==='true');
-                            init = true;
+                            DiagramHelperService.init(mainElement[0], $scope.finalDisplayed==='true');
                         }
                         // Normal update
                         DiagramHelperService.update(newValue);
